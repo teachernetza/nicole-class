@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>B1 Masterclass: All Tenses & Chunks</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+        
+        body { 
+            font-family: 'Quicksand', sans-serif; 
+            background-color: #f8fafc; /* Light slate background */
+            color: #334155; /* Slate 700 text */
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+        }
+
+        .slide-enter { animation: fadeScaleUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeScaleUp {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        .hidden-slide { display: none !important; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+            border-radius: 1.5rem;
+        }
+
+        .interactive-btn { transition: all 0.2s ease; }
+        .interactive-btn:active:not(:disabled) { transform: scale(0.97); }
+        
+        .chunk-selected {
+            background-color: rgba(59, 130, 246, 0.1) !important;
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .is-speaking {
+            animation: pulse-border 1.5s infinite;
+            border-color: #3b82f6 !important;
+        }
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.3); }
+            70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(241, 245, 249, 1); }
+        ::-webkit-scrollbar-thumb { background: rgba(203, 213, 225, 1); border-radius: 4px; }
+        
+        .emoji-highlight { font-size: 1.25em; vertical-align: middle; margin: 0 4px; }
+    </style>
+</head>
+<body class="antialiased selection:bg-blue-200 selection:text-blue-900 min-h-screen flex flex-col">
+
+    <nav class="w-full bg-white/90 backdrop-blur-xl border-b border-slate-200 z-40 sticky top-0 shadow-sm" id="main-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3 sm:gap-4">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-xl flex items-center justify-center text-white text-lg sm:text-xl shadow-md">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg sm:text-xl text-slate-800 tracking-wide leading-tight">Masterclass 🚀</h1>
+                    <p class="text-[10px] sm:text-[11px] font-bold text-blue-500 uppercase tracking-widest" id="nav-title">Introduction</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3 sm:gap-6">
+                <div id="tts-status" class="hidden md:flex items-center gap-2 text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                    <i class="fas fa-spinner fa-spin"></i> Loading Voices... 🎙️
+                </div>
+                <div class="bg-slate-100 text-slate-600 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold border border-slate-200" id="slide-counter">
+                    1 / 16
+                </div>
+            </div>
+        </div>
+        <div class="w-full bg-slate-100 h-1">
+            <div id="main-progress" class="bg-gradient-to-r from-blue-500 via-emerald-500 to-orange-500 h-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 flex flex-col justify-center relative pb-32">
+        
+        <!-- SLIDE 0: Intro -->
+        <section id="slide-0" class="slide-enter text-center py-8 md:py-12">
+            <div class="inline-block px-5 py-2 rounded-full bg-blue-50 text-blue-600 font-bold text-xs sm:text-sm tracking-widest uppercase mb-6 sm:mb-8 border border-blue-100 shadow-sm">
+                Level: B1 Intermediate 📈
+            </div>
+            <h2 class="text-4xl sm:text-5xl md:text-7xl font-extrabold text-slate-800 mb-6 tracking-tight">
+                Tenses Review <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">& Lexical Chunks 🧩</span>
+            </h2>
+            <p class="text-slate-600 text-base sm:text-lg md:text-xl font-medium max-w-3xl mx-auto mb-10 md:mb-12 leading-relaxed px-4">
+                Master <b>Present, Past, Future & Perfect</b> tenses. Learn through <i>Chunks</i>, boost your professional vocabulary, and speak with confidence! 🗣️✨
+            </p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto text-left">
+                <div class="glass-card p-5 sm:p-6 border-t-4 border-t-blue-500 hover:-translate-y-1 transition-transform">
+                    <div class="text-3xl mb-3">🧩</div>
+                    <h3 class="font-bold text-slate-800 mb-1">Lexical Chunks</h3>
+                    <p class="text-slate-500 text-xs sm:text-sm">Speak in blocks, not word-by-word. 🗣️</p>
+                </div>
+                <div class="glass-card p-5 sm:p-6 border-t-4 border-t-emerald-500 hover:-translate-y-1 transition-transform">
+                    <div class="text-3xl mb-3">⏳</div>
+                    <h3 class="font-bold text-slate-800 mb-1">All Tenses</h3>
+                    <p class="text-slate-500 text-xs sm:text-sm">Simple, Continuous & Perfect mastery. 🎯</p>
+                </div>
+                <div class="glass-card p-5 sm:p-6 border-t-4 border-t-orange-500 hover:-translate-y-1 transition-transform">
+                    <div class="text-3xl mb-3">🎧</div>
+                    <h3 class="font-bold text-slate-800 mb-1">Audio Labs</h3>
+                    <p class="text-slate-500 text-xs sm:text-sm">Listen to natural neural voices. 🤖</p>
+                </div>
+                <div class="glass-card p-5 sm:p-6 border-t-4 border-t-purple-500 hover:-translate-y-1 transition-transform">
+                    <div class="text-3xl mb-3">📖</div>
+                    <h3 class="font-bold text-slate-800 mb-1">Visual Reading</h3>
+                    <p class="text-slate-500 text-xs sm:text-sm">Connect words with visual emoji hints. 👀</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 1: Concept - Lexical Chunks -->
+        <section id="slide-1" class="hidden-slide">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-blue-100 text-blue-600 rounded-2xl sm:rounded-3xl flex items-center justify-center text-3xl sm:text-4xl shadow-sm shrink-0">🧩</div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-800">What are "Chunks"? 🤔</h2>
+                    <p class="text-slate-500 font-medium text-base sm:text-lg mt-1">Stop translating word by word. Learn the blocks! 🧱</p>
+                </div>
+            </div>
+
+            <div class="glass-card p-6 sm:p-8 md:p-12 shadow-lg">
+                <div class="grid md:grid-cols-2 gap-8 md:gap-10 items-center">
+                    <div>
+                        <p class="text-slate-700 text-base sm:text-lg mb-6 leading-relaxed">
+                            Instead of thinking: <i>"What + have + you + been + doing?"</i> 🐢<br><br>
+                            Your brain should group it into one smooth sound: <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg font-bold inline-block mt-2 sm:mt-0 break-words whitespace-normal">"Whathaveyoubeendoing..."</span> 🐇🚀
+                        </p>
+                        <div class="bg-slate-50 border border-slate-200 p-5 sm:p-6 rounded-2xl shadow-sm">
+                            <h4 class="text-blue-500 font-bold mb-4 uppercase tracking-widest text-xs">Listen to the flow 🌊</h4>
+                            <ul class="space-y-4">
+                                <li class="flex items-center gap-3">
+                                    <button onclick="playAudio('What are you looking at?')" class="w-10 h-10 rounded-full bg-white text-slate-600 hover:text-white hover:bg-blue-500 border border-slate-200 transition flex items-center justify-center shrink-0 interactive-btn shadow-sm"><i class="fas fa-play text-sm"></i></button>
+                                    <span class="text-slate-700 font-bold text-lg sm:text-xl break-words whitespace-normal">What are you looking at? 👀</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <button onclick="playAudio('Have you ever heard of?')" class="w-10 h-10 rounded-full bg-white text-slate-600 hover:text-white hover:bg-emerald-500 border border-slate-200 transition flex items-center justify-center shrink-0 interactive-btn shadow-sm"><i class="fas fa-play text-sm"></i></button>
+                                    <span class="text-slate-700 font-bold text-lg sm:text-xl break-words whitespace-normal">Have you ever heard of...? 👂</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="relative text-center mt-6 md:mt-0">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-blue-100 to-emerald-100 rounded-3xl blur-2xl opacity-70"></div>
+                        <div class="relative bg-white border border-slate-100 p-6 sm:p-8 rounded-3xl shadow-xl">
+                            <div class="text-6xl sm:text-7xl mb-4">🧠⚡</div>
+                            <h3 class="text-xl sm:text-2xl font-extrabold text-slate-800 mb-3">Instant Fluency</h3>
+                            <p class="text-slate-500 text-sm sm:text-base">Match the <b class="text-slate-700">Chunk</b> + <b class="text-slate-700">Action Verb</b> = Perfect Sentence! 🎉</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: Vocabulary B1 -->
+        <section id="slide-2" class="hidden-slide">
+             <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-emerald-100 text-emerald-600 rounded-2xl sm:rounded-3xl flex items-center justify-center text-3xl sm:text-4xl shadow-sm shrink-0">📚</div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Professional Verbs 💼</h2>
+                    <p class="text-slate-500 font-medium text-base sm:text-lg mt-1">Tap to hear the pronunciation. Memorize the visual hints! 👀</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="vocab-grid"></div>
+        </section>
+
+        <!-- SLIDE 3: Present Forms -->
+        <section id="slide-3" class="hidden-slide">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-teal-100 text-teal-600 rounded-2xl sm:rounded-3xl flex items-center justify-center text-3xl sm:text-4xl shadow-sm shrink-0">⏳</div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Present: Simple vs Continuous ⚖️</h2>
+                    <p class="text-slate-500 font-medium text-base sm:text-lg mt-1">Habits & Routines 🔄 vs. Actions happening right now ⚡</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Present Simple -->
+                <div class="glass-card p-6 sm:p-8 border-t-4 border-t-teal-400 cursor-pointer hover:bg-slate-50 transition group shadow-md" onclick="playAudio('They analyze data every week. What do they analyze?')">
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-teal-600 mb-2">Present Simple 📊</h3>
+                    <p class="text-slate-500 text-sm mb-4">Facts, schedules, and routines. <br>Chunks: <b>Do you / Does she</b> + Verb base</p>
+                    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                        <p class="text-slate-700 font-bold">"They usually <span class="text-teal-600">analyze</span> data 📉"</p>
+                        <p class="text-slate-700 font-bold mt-2">"What <span class="text-teal-600">do they analyze</span>? 🤔"</p>
+                    </div>
+                </div>
+                <!-- Present Continuous -->
+                <div class="glass-card p-6 sm:p-8 border-t-4 border-t-cyan-400 cursor-pointer hover:bg-slate-50 transition group shadow-md" onclick="playAudio('We are evaluating the results. Are you evaluating them too?')">
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-cyan-600 mb-2">Present Continuous 🏃</h3>
+                    <p class="text-slate-500 text-sm mb-4">Right now or temporary situations. <br>Chunks: <b>Are you / Is he</b> + Verb-ing</p>
+                    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                        <p class="text-slate-700 font-bold">"We <span class="text-cyan-600">are evaluating</span> the results 📋"</p>
+                        <p class="text-slate-700 font-bold mt-2">"<span class="text-cyan-600">Are you evaluating</span> them too? 🧐"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: Past Forms -->
+        <section id="slide-4" class="hidden-slide">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-purple-100 text-purple-600 rounded-2xl sm:rounded-3xl flex items-center justify-center text-3xl sm:text-4xl shadow-sm shrink-0">⏪</div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Past: Simple vs Continuous ⚖️</h2>
+                    <p class="text-slate-500 font-medium text-base sm:text-lg mt-1">Finished actions 🛑 vs. Actions in progress in the past 🎞️</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Past Simple -->
+                <div class="glass-card p-6 sm:p-8 border-t-4 border-t-purple-400 cursor-pointer hover:bg-slate-50 transition group shadow-md" onclick="playAudio('She delegated the tasks yesterday. Did you delegate yours?')">
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-purple-600 mb-2">Past Simple 🕰️</h3>
+                    <p class="text-slate-500 text-sm mb-4">Completed events at a specific time. <br>Chunks: <b>Did you</b> + Verb base</p>
+                    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                        <p class="text-slate-700 font-bold">"She <span class="text-purple-600">delegated</span> the tasks 👥"</p>
+                        <p class="text-slate-700 font-bold mt-2">"<span class="text-purple-600">Did you delegate</span> yours? 📝"</p>
+                    </div>
+                </div>
+                <!-- Past Continuous -->
+                <div class="glass-card p-6 sm:p-8 border-t-4 border-t-fuchsia-400 cursor-pointer hover:bg-slate-50 transition group shadow-md" onclick="playAudio('I was troubleshooting the system. What were you doing?')">
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-fuchsia-600 mb-2">Past Continuous 🌊</h3>
+                    <p class="text-slate-500 text-sm mb-4">Background actions or interrupted events. <br>Chunks: <b>Were you / Was she</b> + Verb-ing</p>
+                    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                        <p class="text-slate-700 font-bold">"I <span class="text-fuchsia-600">was troubleshooting</span> 🔧"</p>
+                        <p class="text-slate-700 font-bold mt-2">"What <span class="text-fuchsia-600">were you doing</span>? 🕵️"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: Present Perfect -->
+        <section id="slide-5" class="hidden-slide">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-amber-100 text-amber-600 rounded-2xl sm:rounded-3xl flex items-center justify-center text-3xl sm:text-4xl shadow-sm shrink-0">🏆</div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Present Perfect 🌟</h2>
+                    <p class="text-slate-500 font-medium text-base sm:text-lg mt-1">Life experiences & past actions connected to NOW. 🔗</p>
+                </div>
+            </div>
+
+            <div class="glass-card p-6 sm:p-8 md:p-12 border-t-4 border-t-amber-400 text-center shadow-md">
+                <p class="text-lg sm:text-xl text-slate-600 mb-8 font-medium">
+                    Structure: <span class="text-amber-500 font-bold">Have/Has + Past Participle</span> (e.g., implemented, analyzed, seen)
+                </p>
+                <div class="grid md:grid-cols-2 gap-6 text-left">
+                     <div class="bg-white border border-slate-100 p-5 sm:p-6 rounded-2xl flex flex-col justify-between hover:border-amber-400 hover:shadow-md transition cursor-pointer group shadow-sm" onclick="playAudio('Have you ever implemented a new system?')">
+                        <div>
+                            <span class="text-amber-500 font-bold text-[10px] sm:text-xs uppercase tracking-widest mb-1 block">Experiences 🌍</span>
+                            <h3 class="text-lg sm:text-xl font-bold text-slate-700 mb-2"><span class="text-amber-500">Have you ever implemented</span> a new system? ⚙️</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-100 p-5 sm:p-6 rounded-2xl flex flex-col justify-between hover:border-amber-400 hover:shadow-md transition cursor-pointer group shadow-sm" onclick="playAudio('They have already assembled the team.')">
+                        <div>
+                            <span class="text-amber-500 font-bold text-[10px] sm:text-xs uppercase tracking-widest mb-1 block">Recent Results 🎯</span>
+                            <h3 class="text-lg sm:text-xl font-bold text-slate-700 mb-2">They <span class="text-amber-500">have already assembled</span> the team. 🏗️</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: Future -->
+        <section id="slide-6" class="hidden-slide">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-rose-100 text-rose-600 rounded-2xl sm:rounded-3xl flex items-center justify-center text-3xl sm:text-4xl shadow-sm shrink-0">🔮</div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Future Forms 🚀</h2>
+                    <p class="text-slate-500 font-medium text-base sm:text-lg mt-1">Will (Decisions/Promises) vs Going to (Plans/Intentions). 🗓️</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="glass-card p-6 sm:p-8 border-t-4 border-t-rose-400 shadow-md">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-rose-500 mb-2">Will 💡</h3>
+                    <p class="text-slate-500 mb-6 text-xs sm:text-sm">Instant decisions, promises, and general predictions.</p>
+                    <ul class="space-y-4">
+                        <li class="bg-white p-4 rounded-xl border border-slate-100 cursor-pointer hover:border-rose-300 hover:shadow-sm transition shadow-sm" onclick="playAudio('I will negotiate the contract tomorrow.')">
+                            <span class="text-slate-700 font-bold">I <span class="text-rose-500">will negotiate</span> the contract 🤝</span>
+                        </li>
+                        <li class="bg-white p-4 rounded-xl border border-slate-100 cursor-pointer hover:border-rose-300 hover:shadow-sm transition shadow-sm" onclick="playAudio('When will they evaluate us?')">
+                            <span class="text-slate-700 font-bold">When <span class="text-rose-500">will they evaluate</span> us? 📋</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="glass-card p-6 sm:p-8 border-t-4 border-t-orange-400 shadow-md">
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-orange-500 mb-2">Going to 📅</h3>
+                    <p class="text-slate-500 mb-6 text-xs sm:text-sm">Established plans and clear intentions.</p>
+                    <ul class="space-y-4">
+                        <li class="bg-white p-4 rounded-xl border border-slate-100 cursor-pointer hover:border-orange-300 hover:shadow-sm transition shadow-sm" onclick="playAudio('We are going to brainstorm new ideas.')">
+                            <span class="text-slate-700 font-bold">We <span class="text-orange-500">are going to brainstorm</span> 🧠</span>
+                        </li>
+                        <li class="bg-white p-4 rounded-xl border border-slate-100 cursor-pointer hover:border-orange-300 hover:shadow-sm transition shadow-sm" onclick="playAudio('What are you going to implement?')">
+                            <span class="text-slate-700 font-bold">What <span class="text-orange-500">are you going to</span> implement? ⚙️</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 7: Quiz Present -->
+        <section id="slide-7" class="hidden-slide">
+             <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-teal-100 text-teal-600 rounded-2xl sm:rounded-3xl flex items-center justify-center text-3xl sm:text-4xl shadow-sm shrink-0">🎯</div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Quiz 1: Present Tenses</h2>
+                    <p class="text-slate-500 font-medium text-base sm:text-lg mt-1">Simple vs Continuous</p>
+                </div>
+            </div>
+            <div class="glass-card p-5 sm:p-8 md:p-12 max-w-3xl mx-auto border-t-4 border-t-teal-400 shadow-lg" id="quiz-present"></div>
+        </section>
+
+        <!-- SLIDE 8: Quiz Past -->
+        <section id="slide-8" class="hidden-slide">
+             <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-purple-100 text-purple-600 rounded-2xl sm:rounded-3xl flex items-center justify-center text-3xl sm:text-4xl shadow-sm shrink-0">🎯</div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Quiz 2: Past Tenses</h2>
+                    <p class="text-slate-500 font-medium text-base sm:text-lg mt-1">Simple vs Continuous</p>
+                </div>
+            </div>
+            <div class="glass-card p-5 sm:p-8 md:p-12 max-w-3xl mx-auto border-t-4 border-t-purple-400 shadow-lg" id="quiz-past"></div>
+        </section>
+
+        <!-- SLIDE 9: Quiz Perfect & Future -->
+        <section id="slide-9" class="hidden-slide">
+             <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-amber-100 text-amber-600 rounded-2xl sm:rounded-3xl flex items-center justify-center text-3xl sm:text-4xl shadow-sm shrink-0">🎯</div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Quiz 3: Perfect & Future</h2>
+                    <p class="text-slate-500 font-medium text-base sm:text-lg mt-1">Experiences & Plans</p>
+                </div>
+            </div>
+            <div class="glass-card p-5 sm:p-8 md:p-12 max-w-3xl mx-auto border-t-4 border-t-amber-400 shadow-lg" id="quiz-perfect"></div>
+        </section>
+
+        <!-- SLIDE 10: Reading & Visual Associations -->
+        <section id="slide-10" class="hidden-slide">
+             <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-blue-100 text-blue-600 rounded-2xl sm:rounded-3xl flex items-center justify-center text-3xl sm:text-4xl shadow-sm shrink-0">📖</div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Visual Reading Room</h2>
+                    <p class="text-slate-500 font-medium text-base sm:text-lg mt-1">Read along. Pay attention to how the tenses change the meaning! 🧠</p>
+                </div>
+            </div>
+
+            <div class="glass-card p-6 sm:p-8 md:p-12 relative overflow-hidden shadow-lg border-t-4 border-t-blue-400">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4 border-b border-slate-100 pb-4">
+                    <h3 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-800">The Startup Struggle 📈</h3>
+                    <button id="btn-read-story" onclick="readStory()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2.5 sm:py-3 px-5 sm:px-6 rounded-full shadow-md transition-all interactive-btn flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-center text-sm sm:text-base shrink-0">
+                        <i class="fas fa-volume-up text-base sm:text-lg"></i> Listen
+                    </button>
+                </div>
+                
+                <div class="text-base sm:text-lg md:text-xl text-slate-700 leading-loose space-y-6 font-medium" id="story-text">
+                    <p>
+                        Every Monday, our manager <span class="bg-teal-100 text-teal-700 px-2 py-1 rounded-md shadow-sm">delegates 👥</span> tasks to the team. 
+                        Right now, we <span class="bg-cyan-100 text-cyan-700 px-2 py-1 rounded-md shadow-sm">are brainstorming 🧠</span> ideas for the new app.
+                    </p>
+                    <p>
+                        Last week, we <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded-md shadow-sm">implemented ⚙️</span> a major update. 
+                        While I <span class="bg-fuchsia-100 text-fuchsia-700 px-2 py-1 rounded-md shadow-sm">was troubleshooting 🔧</span> a bug, the entire database went offline! 💥
+                    </p>
+                    <p>
+                        I <span class="bg-amber-100 text-amber-700 px-2 py-1 rounded-md shadow-sm">have evaluated 📋</span> the system, and thankfully, we didn't lose any data. We <span class="bg-amber-100 text-amber-700 px-2 py-1 rounded-md shadow-sm">have already assembled 🏗️</span> a backup server.
+                    </p>
+                    <p>
+                        Next month, the CEO <span class="bg-rose-100 text-rose-700 px-2 py-1 rounded-md shadow-sm">will negotiate 🤝</span> a new partnership. 
+                        We <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded-md shadow-sm">are going to analyze 📊</span> the market trends to prepare for it.
+                    </p>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-slate-100 flex justify-center">
+                    <button onclick="nextSlide()" class="bg-slate-800 text-white font-bold px-8 py-3 rounded-xl hover:bg-slate-700 shadow-md transition interactive-btn w-full sm:w-auto">
+                        I finished reading! 🏁
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 11: Chunk Matcher (All tenses) -->
+        <section id="slide-11" class="hidden-slide">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 bg-indigo-100 text-indigo-600 rounded-2xl sm:rounded-3xl flex items-center justify-center text-3xl sm:text-4xl shadow-sm shrink-0">🔗</div>
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Chunk Matcher 🧩</h2>
+                        <p class="text-slate-500 font-medium text-base sm:text-lg mt-1">Match the question start with the logical ending.</p>
+                    </div>
+                </div>
+                <div class="bg-white px-4 py-2 rounded-xl border border-slate-200 text-indigo-600 font-bold tracking-widest text-xs sm:text-sm shadow-sm w-full md:w-auto text-center" id="match-score">
+                    Matches: 0 / 5
+                </div>
+            </div>
+            <div class="glass-card p-5 sm:p-8 md:p-10 relative border-t-4 border-t-indigo-500 shadow-lg">
+                <div id="match-success" class="absolute inset-0 bg-white/95 backdrop-blur-md rounded-[1.5rem] z-20 flex flex-col items-center justify-center hidden border border-emerald-200">
+                    <div class="text-6xl sm:text-7xl mb-4 drop-shadow-md">🎉</div>
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-800 mb-6 text-center px-4">Perfect Match! 🏆</h3>
+                    <button onclick="nextSlide()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-8 rounded-xl transition interactive-btn shadow-md">Continue 🚀</button>
+                </div>
+                <div class="flex flex-col md:flex-row gap-4 sm:gap-6">
+                    <div class="flex-1 space-y-3" id="match-left"></div>
+                    <div class="hidden md:flex flex-col items-center justify-center w-8 text-slate-400 text-2xl">↔️</div>
+                    <div class="flex-1 space-y-3" id="match-right"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 12: Listening Lab 1 (Shorts) -->
+        <section id="slide-12" class="hidden-slide flex-col">
+             <div class="flex items-center gap-4 mb-6 shrink-0">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-blue-100 text-blue-600 rounded-2xl sm:rounded-3xl flex items-center justify-center text-3xl sm:text-4xl shadow-sm shrink-0">🎧</div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Listening Lab 1: Brainstorming</h2>
+                    <p class="text-slate-500 font-medium text-base sm:text-lg mt-1">Listen to the dialogue and answer the questions.</p>
+                </div>
+            </div>
+
+            <div class="glass-card flex-1 flex flex-col md:flex-row overflow-hidden border-t-4 border-t-blue-400 shadow-lg min-h-[350px]">
+                <div class="md:w-1/2 p-6 md:p-8 border-b md:border-b-0 md:border-r border-slate-100 bg-slate-50 flex flex-col items-center justify-center relative">
+                    <div class="flex justify-center items-center gap-4 sm:gap-8 mb-8 sm:mb-10 w-full">
+                        <div class="flex flex-col items-center gap-2 sm:gap-3 transition-all duration-300 w-1/3" id="lab1-avatar-a">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white text-slate-700 rounded-full flex items-center justify-center text-3xl sm:text-4xl border-2 sm:border-4 border-slate-200 shadow-md">👨‍💼</div>
+                            <span class="font-bold text-slate-600 text-sm sm:text-base">Paul</span>
+                        </div>
+                        <div class="w-1/3 flex justify-center text-blue-400 text-3xl sm:text-4xl opacity-50" id="lab1-visual"><i class="fas fa-wave-square"></i></div>
+                        <div class="flex flex-col items-center gap-2 sm:gap-3 transition-all duration-300 w-1/3" id="lab1-avatar-b">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white text-slate-700 rounded-full flex items-center justify-center text-3xl sm:text-4xl border-2 sm:border-4 border-slate-200 shadow-md">👩‍💻</div>
+                            <span class="font-bold text-slate-600 text-sm sm:text-base">Lucy</span>
+                        </div>
+                    </div>
+                    <button id="btn-lab1-play" onclick="playLab1()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 sm:py-4 px-6 sm:px-10 text-sm sm:text-lg rounded-full shadow-lg transition-all interactive-btn flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-center mt-2 sm:mt-4">
+                        <i class="fas fa-play"></i> Play Audio
+                    </button>
+                </div>
+                <div class="md:w-1/2 p-6 md:p-8 bg-white overflow-y-auto">
+                    <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-slate-800 mb-4 sm:mb-6 border-b border-slate-100 pb-3">Comprehension 🧠</h3>
+                    <div class="space-y-4 sm:space-y-6" id="lab1-quiz-area"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 13: Listening Lab 2 (Long) -->
+        <section id="slide-13" class="hidden-slide flex-col">
+             <div class="flex items-center gap-4 mb-6 shrink-0">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-emerald-100 text-emerald-600 rounded-2xl sm:rounded-3xl flex items-center justify-center text-3xl sm:text-4xl shadow-sm shrink-0">🎙️</div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Listening Lab 2: Tech Issues</h2>
+                    <p class="text-slate-500 font-medium text-base sm:text-lg mt-1">Identify past problems and future solutions.</p>
+                </div>
+            </div>
+
+            <div class="glass-card flex-1 flex flex-col md:flex-row overflow-hidden border-t-4 border-t-emerald-400 shadow-lg min-h-[350px]">
+                <div class="md:w-1/2 p-6 md:p-8 border-b md:border-b-0 md:border-r border-slate-100 bg-slate-50 flex flex-col items-center justify-center relative">
+                    <div class="flex justify-center items-center gap-4 sm:gap-8 mb-8 sm:mb-10 w-full">
+                        <div class="flex flex-col items-center gap-2 sm:gap-3 transition-all duration-300 w-1/3" id="lab2-avatar-a">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white text-slate-700 rounded-full flex items-center justify-center text-3xl sm:text-4xl border-2 sm:border-4 border-slate-200 shadow-md">👱‍♀️</div>
+                            <span class="font-bold text-slate-600 text-sm sm:text-base">Karen</span>
+                        </div>
+                        <div class="w-1/3 flex justify-center text-emerald-400 text-3xl sm:text-4xl opacity-50" id="lab2-visual"><i class="fas fa-wave-square"></i></div>
+                        <div class="flex flex-col items-center gap-2 sm:gap-3 transition-all duration-300 w-1/3" id="lab2-avatar-b">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white text-slate-700 rounded-full flex items-center justify-center text-3xl sm:text-4xl border-2 sm:border-4 border-slate-200 shadow-md">🧔</div>
+                            <span class="font-bold text-slate-600 text-sm sm:text-base">Mark</span>
+                        </div>
+                    </div>
+                    <button id="btn-lab2-play" onclick="playLab2()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 sm:py-4 px-6 sm:px-10 text-sm sm:text-lg rounded-full shadow-lg transition-all interactive-btn flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-center mt-2 sm:mt-4">
+                        <i class="fas fa-play"></i> Play Audio
+                    </button>
+                </div>
+                <div class="md:w-1/2 p-6 md:p-8 bg-white overflow-y-auto">
+                    <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-slate-800 mb-4 sm:mb-6 border-b border-slate-100 pb-3">Comprehension 🧠</h3>
+                    <div class="space-y-4 sm:space-y-6" id="lab2-quiz-area"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 14: Roleplay Setup -->
+        <section id="slide-14" class="hidden-slide">
+             <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-orange-100 text-orange-600 rounded-2xl sm:rounded-3xl flex items-center justify-center text-3xl sm:text-4xl shadow-sm shrink-0">🎭</div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Live Roleplay Prep 🎬</h2>
+                    <p class="text-slate-500 font-medium text-base sm:text-lg mt-1">Choose a scenario and interview your teacher live! 🎤</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 text-center hover:shadow-lg transition cursor-pointer group border-t-4 border-t-orange-400 bg-white" onclick="startRoleplay('event')">
+                    <div class="text-5xl sm:text-6xl mb-4 group-hover:scale-110 transition-transform">🎉</div>
+                    <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-2">Event Planner</h3>
+                    <p class="text-slate-500 text-sm mb-6">Ask about past events and future party plans. 🎈</p>
+                    <button class="w-full bg-orange-50 text-orange-600 border border-orange-200 py-2.5 rounded-xl font-bold group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition shadow-sm">Select ✔️</button>
+                </div>
+                <div class="glass-card p-6 text-center hover:shadow-lg transition cursor-pointer group border-t-4 border-t-blue-500 bg-white" onclick="startRoleplay('marketing')">
+                    <div class="text-5xl sm:text-6xl mb-4 group-hover:scale-110 transition-transform">📊</div>
+                    <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-2">Marketing Dir.</h3>
+                    <p class="text-slate-500 text-sm mb-6">Ask about current campaigns and past results. 📈</p>
+                    <button class="w-full bg-blue-50 text-blue-600 border border-blue-200 py-2.5 rounded-xl font-bold group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-500 transition shadow-sm">Select ✔️</button>
+                </div>
+                <div class="glass-card p-6 text-center hover:shadow-lg transition cursor-pointer group border-t-4 border-t-emerald-500 bg-white" onclick="startRoleplay('engineer')">
+                    <div class="text-5xl sm:text-6xl mb-4 group-hover:scale-110 transition-transform">👷</div>
+                    <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-2">Lead Engineer</h3>
+                    <p class="text-slate-500 text-sm mb-6">Ask what they were fixing when the system broke. 🔧</p>
+                    <button class="w-full bg-emerald-50 text-emerald-600 border border-emerald-200 py-2.5 rounded-xl font-bold group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500 transition shadow-sm">Select ✔️</button>
+                </div>
+            </div>
+            
+            <!-- Hidden Active Roleplay Area -->
+            <div id="rp-active-area" class="hidden mt-8 glass-card p-6 sm:p-8 border-t-4 border-t-slate-400 flex flex-col md:flex-row gap-6 sm:gap-8 bg-white shadow-xl">
+                <div class="md:w-1/3 bg-slate-50 rounded-3xl border border-slate-100 p-6 sm:p-8 text-center shadow-sm">
+                    <div id="rp-emoji" class="text-6xl sm:text-7xl mb-4 drop-shadow-sm">👤</div>
+                    <h3 id="rp-name" class="text-lg sm:text-xl font-extrabold text-slate-800 mb-1">Persona</h3>
+                    <p class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Teacher</p>
+                    <div class="text-left bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <p class="text-[10px] sm:text-xs text-slate-400 font-extrabold uppercase tracking-widest mb-3">Context (For Teacher)</p>
+                        <ul id="rp-facts" class="text-xs sm:text-sm text-slate-600 space-y-2 list-disc list-inside font-medium"></ul>
+                    </div>
+                </div>
+                <div class="md:w-2/3 flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-base sm:text-lg font-extrabold text-slate-800 mb-2">Student Prompts 🗣️</h4>
+                        <p class="text-xs sm:text-sm text-slate-500 mb-6 font-medium">Translate the prompts to English and ask your teacher aloud.</p>
+                        <div class="space-y-4" id="rp-missions"></div>
+                    </div>
+                    <div class="mt-8 pt-6 border-t border-slate-100 flex justify-end">
+                        <button onclick="nextSlide()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-6 sm:px-8 rounded-xl transition interactive-btn shadow-md w-full sm:w-auto">
+                            Conclude Roleplay 🏁
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 15: Outro/Summary -->
+        <section id="slide-15" class="hidden-slide text-center py-8 md:py-12">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 bg-blue-50 text-blue-500 rounded-full mx-auto flex items-center justify-center text-4xl sm:text-5xl mb-6 border border-blue-100 shadow-sm slide-enter">
+                🎓
+            </div>
+            <h2 class="text-3xl sm:text-4xl md:text-6xl font-extrabold text-slate-800 mb-4 slide-enter" style="animation-delay: 0.1s">Masterclass Complete! 🎉</h2>
+            <p class="text-slate-500 text-base sm:text-lg md:text-xl font-medium mb-8 sm:mb-10 max-w-2xl mx-auto slide-enter px-4" style="animation-delay: 0.2s">
+                You've successfully reviewed all major tenses and practiced lexical chunks! 🚀
+            </p>
+            
+            <div class="glass-card bg-white p-6 sm:p-8 max-w-2xl mx-auto mb-8 sm:mb-12 slide-enter text-left border-t-4 border-t-blue-500 shadow-lg" style="animation-delay: 0.3s">
+                <h3 class="text-lg sm:text-xl font-bold text-slate-800 mb-4 sm:mb-6 border-b border-slate-100 pb-3">Key Takeaways 🧠</h3>
+                <ul class="space-y-4">
+                    <li class="flex items-start gap-3 sm:gap-4">
+                        <div class="text-xl sm:text-2xl mt-1 shrink-0">🧩</div>
+                        <div><p class="text-slate-800 font-bold text-sm sm:text-base">Lexical Chunks</p><p class="text-slate-500 text-xs sm:text-sm">Always group the beginning of questions as a single sound.</p></div>
+                    </li>
+                    <li class="flex items-start gap-3 sm:gap-4">
+                        <div class="text-xl sm:text-2xl mt-1 shrink-0">⚖️</div>
+                        <div><p class="text-slate-800 font-bold text-sm sm:text-base">Simple vs Continuous</p><p class="text-slate-500 text-xs sm:text-sm">Simple = Finished/Facts. Continuous = In progress/Temporary.</p></div>
+                    </li>
+                    <li class="flex items-start gap-3 sm:gap-4">
+                        <div class="text-xl sm:text-2xl mt-1 shrink-0">🏆</div>
+                        <div><p class="text-slate-800 font-bold text-sm sm:text-base">Perfect Experiences</p><p class="text-slate-500 text-xs sm:text-sm">Use Present Perfect for past actions that matter NOW.</p></div>
+                    </li>
+                </ul>
+            </div>
+
+            <button onclick="location.reload()" class="bg-slate-800 text-white font-bold py-3 sm:py-4 px-8 sm:px-12 rounded-2xl hover:bg-slate-700 shadow-md transition slide-enter interactive-btn text-sm sm:text-base" style="animation-delay: 0.4s">
+                <i class="fas fa-redo-alt mr-2"></i> Restart Masterclass 🔄
+            </button>
+        </section>
+
+        <!-- Bottom Controls -->
+        <div class="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-xl border-t border-slate-200 p-3 sm:p-4 z-30 shadow-[0_-5px_15px_rgba(0,0,0,0.02)]" id="bottom-nav">
+            <div class="max-w-7xl mx-auto flex justify-between items-center gap-2 sm:gap-4">
+                <button id="btn-prev" onclick="prevSlide()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2.5 sm:py-3 px-5 sm:px-8 rounded-xl border border-slate-200 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center interactive-btn text-sm sm:text-base whitespace-nowrap">
+                    <i class="fas fa-chevron-left mr-1 sm:mr-2"></i> Back
+                </button>
+                <div class="text-[10px] sm:text-xs font-bold text-slate-400 tracking-widest uppercase text-center hidden md:block">B1 Masterclass Navigation 🧭</div>
+                <button id="btn-next" onclick="nextSlide()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2.5 sm:py-3 px-6 sm:px-10 rounded-xl shadow-md transition flex items-center interactive-btn text-sm sm:text-base whitespace-nowrap">
+                    Next <i class="fas fa-chevron-right ml-1 sm:ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- DATA ARCHITECTURE ---
+        const vocabB1 = [
+            { en: "Negotiate", es: "Negociar", icon: "🤝", color: "blue" },
+            { en: "Analyze", es: "Analizar", icon: "📊", color: "teal" },
+            { en: "Implement", es: "Implementar", icon: "⚙️", color: "emerald" },
+            { en: "Evaluate", es: "Evaluar", icon: "📋", color: "orange" },
+            { en: "Brainstorm", es: "Lluvia de ideas", icon: "🧠", color: "purple" },
+            { en: "Troubleshoot", es: "Solucionar problemas", icon: "🔧", color: "fuchsia" },
+            { en: "Assemble", es: "Ensamblar / Reunir", icon: "🏗️", color: "rose" },
+            { en: "Delegate", es: "Delegar", icon: "👥", color: "cyan" }
+        ];
+
+        const quizPresent = [
+            { q: "_____ they usually brainstorm on Mondays? 🧠", opts: ["Do", "Are"], ans: 0, hint: "It's a routine." },
+            { q: "What _____ she troubleshooting right now? 🔧", opts: ["does", "is"], ans: 1, hint: "Action in progress." },
+            { q: "_____ you analyze the reports every month? 📊", opts: ["Do", "Are"], ans: 0, hint: "A regular habit." }
+        ];
+
+        const quizPast = [
+            { q: "What _____ you implement last week? ⚙️", opts: ["did", "were"], ans: 0, hint: "A finished action in the past." },
+            { q: "I _____ evaluating the data when it crashed. 📋", opts: ["did", "was"], ans: 1, hint: "Action interrupted in the past." },
+            { q: "_____ they assemble the team yesterday? 🏗️", opts: ["Did", "Were"], ans: 0, hint: "Question about a finished event." }
+        ];
+
+        const quizPerfect = [
+            { q: "_____ you ever negotiated a big contract? 🤝", opts: ["Have", "Did"], ans: 0, hint: "A life experience." },
+            { q: "We _____ going to delegate more tasks. 👥", opts: ["will", "are"], ans: 1, hint: "A solid plan." },
+            { q: "I think they _____ evaluate the system tomorrow. 📋", opts: ["will", "are going to"], ans: 0, hint: "A prediction or decision." } // Allow either but point to 'will' for prediction focus
+        ];
+
+        // --- GLOBAL STATE ---
+        const totalSlides = 16;
+        let currentSlide = 0;
+
+        const slideData = [
+            { title: "Intro 🚀", p: 0 }, { title: "Lexical Chunks 🧩", p: 6 }, { title: "Vocabulary 📚", p: 12 },
+            { title: "Present ⚖️", p: 18 }, { title: "Past ⚖️", p: 25 }, { title: "Perfect 🌟", p: 31 },
+            { title: "Future 🔮", p: 37 }, { title: "Quiz: Present 🎯", p: 43 }, { title: "Quiz: Past 🎯", p: 50 },
+            { title: "Quiz: Perf/Fut 🎯", p: 56 }, { title: "Reading 👀", p: 62 }, { title: "Chunk Matcher 🔗", p: 68 },
+            { title: "Listening 1 🎧", p: 75 }, { title: "Listening 2 🎙️", p: 81 }, { title: "Roleplay 🎭", p: 88 },
+            { title: "Summary 🎓", p: 100 }
+        ];
+
+        // --- TTS SYSTEM (Optimized for Azure/Natural) ---
+        let voices = [];
+        let maleVoice = null;
+        let femaleVoice = null;
+
+        function initTTS() {
+            voices = window.speechSynthesis.getVoices();
+            if(voices.length === 0) return;
+
+            let enVoices = voices.filter(v => v.lang.startsWith('en'));
+            // Try to find Azure/Online voices specifically for better quality
+            let naturalVoices = enVoices.filter(v => v.name.includes('Natural') || v.name.includes('Online') || v.name.includes('Neural'));
+            
+            let femPool = naturalVoices.length > 0 ? naturalVoices : enVoices;
+            femaleVoice = femPool.find(v => v.name.includes('Jenny') || v.name.includes('Aria') || v.name.includes('Female') || v.name.includes('Samantha') || v.name.includes('Zira')) || enVoices[0];
+            
+            let malePool = naturalVoices.length > 0 ? naturalVoices : enVoices;
+            maleVoice = malePool.find(v => v.name.includes('Guy') || v.name.includes('Christopher') || v.name.includes('Male') || v.name.includes('Alex') || v.name.includes('David')) || enVoices[1] || enVoices[0];
+
+            const status = document.getElementById('tts-status');
+            if(status) {
+                status.innerHTML = `<i class="fas fa-check-circle text-emerald-500"></i> Voices Ready 🎙️`;
+            }
+        }
+        window.speechSynthesis.onvoiceschanged = initTTS;
+        initTTS();
+
+        function playAudio(text, gender = null) {
+            window.speechSynthesis.cancel();
+            // Clean emojis for TTS
+            const cleanText = text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '');
+            
+            const u = new SpeechSynthesisUtterance(cleanText);
+            if(gender === 'f' && femaleVoice) u.voice = femaleVoice;
+            else if(gender === 'm' && maleVoice) u.voice = maleVoice;
+            else if(femaleVoice) u.voice = femaleVoice; 
+            
+            u.rate = 0.95;
+            window.speechSynthesis.speak(u);
+        }
+
+        // --- NAVIGATION ---
+        function updateNav() {
+            document.getElementById('nav-title').innerText = slideData[currentSlide].title;
+            document.getElementById('main-progress').style.width = `${slideData[currentSlide].p}%`;
+            document.getElementById('slide-counter').innerText = `${currentSlide + 1} / ${totalSlides}`;
+
+            for (let i = 0; i < totalSlides; i++) {
+                const s = document.getElementById(`slide-${i}`);
+                if(s) { s.classList.add('hidden-slide'); s.classList.remove('slide-enter'); }
+            }
+            const active = document.getElementById(`slide-${currentSlide}`);
+            if(active) { active.classList.remove('hidden-slide'); void active.offsetWidth; active.classList.add('slide-enter'); }
+
+            document.getElementById('btn-prev').disabled = currentSlide === 0;
+            
+            // Force activities
+            const forceActivities = [7, 8, 9, 11, 12, 13, 14];
+            if (forceActivities.includes(currentSlide)) document.getElementById('btn-next').classList.add('hidden');
+            else document.getElementById('btn-next').classList.remove('hidden');
+
+            const bNav = document.getElementById('bottom-nav');
+            if(currentSlide === totalSlides -1) bNav.classList.add('hidden');
+            else bNav.classList.remove('hidden');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.speechSynthesis.cancel();
+        }
+
+        function nextSlide() { if(currentSlide < totalSlides - 1) { currentSlide++; updateNav(); } }
+        function prevSlide() { if(currentSlide > 0) { currentSlide--; updateNav(); } }
+
+        // --- RENDER VOCABULARY ---
+        function renderVocab() {
+            const grid = document.getElementById('vocab-grid');
+            grid.innerHTML = vocabB1.map(v => `
+                <div class="glass-card bg-white p-4 sm:p-5 flex flex-col items-center text-center hover:shadow-md transition cursor-pointer group shadow-sm border border-slate-100" onclick="playAudio('${v.en}')">
+                    <div class="text-4xl sm:text-5xl mb-2 sm:mb-3 group-hover:scale-110 transition-transform">${v.icon}</div>
+                    <h3 class="text-base sm:text-lg font-bold text-slate-800 mb-1 group-hover:text-${v.color}-500 transition">${v.en}</h3>
+                    <p class="text-slate-500 text-[10px] sm:text-xs font-medium">${v.es}</p>
+                </div>
+            `).join('');
+        }
+
+        // --- GENERIC QUIZ RENDERER ---
+        const quizScores = { 'quiz-present': 0, 'quiz-past': 0, 'quiz-perfect': 0 };
+
+        function buildQuiz(containerId, data, color) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            data.forEach((item, idx) => {
+                const block = document.createElement('div');
+                block.className = `bg-white p-5 sm:p-6 rounded-3xl border border-slate-200 mb-6 shadow-sm`;
+                
+                const blankSpan = '<span class="border-b-2 border-dashed border-slate-400 px-4 text-slate-400">___</span>';
+                let htmlStr = `<p class="text-lg sm:text-xl font-bold text-slate-800 mb-4">${idx+1}. ${item.q.replace('_____', blankSpan)}</p>`;
+                if(item.hint) htmlStr += `<p class="text-xs sm:text-sm font-bold text-${color}-600 mb-4 bg-${color}-50 inline-block px-3 py-1 rounded-lg">Hint 💡: ${item.hint}</p><br>`;
+                
+                htmlStr += `<div class="flex flex-col sm:flex-row gap-3 sm:gap-4">`;
+                item.opts.forEach((opt, i) => {
+                    htmlStr += `<button onclick="checkGenericQuiz(this, '${containerId}', ${idx}, ${i}, ${item.ans}, '${color}', '${opt}')" class="flex-1 bg-slate-50 border border-slate-200 text-slate-700 font-bold py-3 sm:py-4 rounded-2xl hover:bg-slate-100 transition interactive-btn text-base sm:text-lg break-words whitespace-normal">${opt}</button>`;
+                });
+                htmlStr += `</div><div id="fb-${containerId}-${idx}" class="hidden mt-4 p-4 rounded-2xl text-base font-bold flex items-center gap-3"></div>`;
+                
+                block.innerHTML = htmlStr;
+                container.appendChild(block);
+            });
+            
+            container.innerHTML += `<div id="next-${containerId}" class="hidden mt-8 text-right"><button onclick="nextSlide()" class="bg-${color}-500 hover:bg-${color}-600 text-white font-bold py-3 sm:py-4 px-8 sm:px-10 rounded-2xl shadow-md transition interactive-btn text-lg w-full sm:w-auto">Continue 🚀</button></div>`;
+        }
+
+        function checkGenericQuiz(btn, cId, qIdx, selected, correct, color, text) {
+            const container = btn.parentElement;
+            const buttons = container.querySelectorAll('button');
+            const fb = document.getElementById(`fb-${cId}-${qIdx}`);
+            const questionText = container.previousElementSibling.previousElementSibling || container.previousElementSibling;
+            
+            buttons.forEach(b => { b.disabled = true; b.classList.add('opacity-50'); });
+            
+            fb.classList.remove('hidden');
+            if(selected === correct) {
+                btn.className = `flex-1 bg-${color}-500 text-white font-bold py-3 sm:py-4 rounded-2xl shadow-md text-base sm:text-lg`;
+                fb.className = `mt-4 p-4 rounded-2xl text-base font-bold flex items-center gap-3 bg-emerald-50 text-emerald-600 border border-emerald-200`;
+                fb.innerHTML = `✅ Correct`;
+                
+                if(questionText.tagName === 'P') {
+                    questionText.innerHTML = questionText.innerHTML.replace(/<span.*<\/span>/, `<span class="text-${color}-500 font-extrabold border-b-2 border-${color}-500">${text}</span>`);
+                }
+                quizScores[cId]++;
+            } else {
+                btn.className = `flex-1 bg-rose-500 text-white font-bold py-3 sm:py-4 rounded-2xl shadow-md text-base sm:text-lg`;
+                fb.className = `mt-4 p-4 rounded-2xl text-base font-bold flex items-center gap-3 bg-rose-50 text-rose-600 border border-rose-200`;
+                fb.innerHTML = `❌ Incorrect`;
+                buttons[correct].classList.remove('opacity-50');
+                buttons[correct].classList.add(`border-${color}-500`, `text-${color}-600`, `bg-${color}-50`);
+            }
+
+            if(quizScores[cId] >= 2) { 
+                document.getElementById(`next-${cId}`).classList.remove('hidden');
+            }
+        }
+
+        // --- READING STORY ---
+        function readStory() {
+            const text = document.getElementById('story-text').innerText;
+            playAudio(text, 'm');
+        }
+
+        // --- CHUNK MATCHER ---
+        const matchData = [
+            { l: "What do you usually...", r: "...brainstorm about? 🧠", id: 1 },
+            { l: "What are you...", r: "...implementing right now? ⚙️", id: 2 },
+            { l: "Did you...", r: "...delegate the tasks yesterday? 👥", id: 3 },
+            { l: "Have you ever...", r: "...analyzed this data before? 📊", id: 4 },
+            { l: "Are you going to...", r: "...evaluate the team next week? 📋", id: 5 }
+        ];
+        let leftSelected = null, rightSelected = null, matchesFound = 0;
+
+        function renderMatcher() {
+            const leftCol = document.getElementById('match-left');
+            const rightCol = document.getElementById('match-right');
+            leftCol.innerHTML = ''; rightCol.innerHTML = '';
+            
+            let lefts = [...matchData].sort(() => Math.random() - 0.5);
+            let rights = [...matchData].sort(() => Math.random() - 0.5);
+
+            lefts.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = "w-full bg-white text-slate-700 font-bold p-4 sm:p-5 rounded-2xl border border-slate-200 text-left interactive-btn hover:bg-slate-50 transition shadow-sm text-base sm:text-lg break-words whitespace-normal";
+                btn.innerText = item.l; btn.dataset.id = item.id;
+                btn.onclick = () => handleMatchSelect('left', btn);
+                leftCol.appendChild(btn);
+            });
+            rights.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = "w-full bg-white text-slate-600 font-medium p-4 sm:p-5 rounded-2xl border border-slate-200 text-left interactive-btn hover:bg-slate-50 transition shadow-sm text-base sm:text-lg break-words whitespace-normal";
+                btn.innerText = item.r; btn.dataset.id = item.id;
+                btn.onclick = () => handleMatchSelect('right', btn);
+                rightCol.appendChild(btn);
+            });
+        }
+        
+        function handleMatchSelect(side, btn) {
+            if(btn.disabled) return;
+            if(side === 'left') {
+                if(leftSelected) leftSelected.classList.remove('chunk-selected');
+                leftSelected = btn; leftSelected.classList.add('chunk-selected');
+                playAudio(btn.innerText);
+            } else {
+                if(rightSelected) rightSelected.classList.remove('chunk-selected');
+                rightSelected = btn; rightSelected.classList.add('chunk-selected');
+            }
+            if(leftSelected && rightSelected) checkMatch();
+        }
+        
+        function checkMatch() {
+            if(leftSelected.dataset.id === rightSelected.dataset.id) {
+                leftSelected.classList.replace('chunk-selected', 'bg-indigo-50');
+                leftSelected.classList.add('border-indigo-400', 'text-indigo-600'); leftSelected.disabled = true;
+                rightSelected.classList.replace('chunk-selected', 'bg-indigo-50');
+                rightSelected.classList.add('border-indigo-400', 'text-indigo-600'); rightSelected.disabled = true;
+                
+                playAudio(leftSelected.innerText + " " + rightSelected.innerText);
+                matchesFound++;
+                document.getElementById('match-score').innerText = `Matches: ${matchesFound} / 5`;
+                leftSelected = null; rightSelected = null;
+
+                if(matchesFound === 5) {
+                    setTimeout(() => { document.getElementById('match-success').classList.remove('hidden'); }, 800);
+                }
+            } else {
+                leftSelected.classList.add('border-rose-400', 'bg-rose-50'); rightSelected.classList.add('border-rose-400', 'bg-rose-50');
+                setTimeout(() => {
+                    leftSelected.classList.remove('chunk-selected', 'border-rose-400', 'bg-rose-50');
+                    rightSelected.classList.remove('chunk-selected', 'border-rose-400', 'bg-rose-50');
+                    leftSelected = null; rightSelected = null;
+                }, 600);
+            }
+        }
+
+        // --- LISTENING LABS ---
+        const scriptLab1 = [
+            { s: 'A', g: 'm', t: "Lucy, what are you brainstorming right now? 🧠" },
+            { s: 'B', g: 'f', t: "I am brainstorming ideas for the new marketing campaign. 📈" },
+            { s: 'A', g: 'm', t: "Have you analyzed the target audience yet? 📊" },
+            { s: 'B', g: 'f', t: "Yes, I analyzed it yesterday. We are going to target teenagers. 🎯" }
+        ];
+        const quizLab1 = [
+            { q: "What is Lucy brainstorming?", opts: ["A new software.", "A new marketing campaign.", "A new logo."], a: 1 },
+            { q: "Who are they going to target?", opts: ["Teenagers.", "Adults.", "Children."], a: 0 }
+        ];
+
+        const scriptLab2 = [
+            { s: 'A', g: 'f', t: "Mark, what were you troubleshooting this morning? 🔧" },
+            { s: 'B', g: 'm', t: "I was fixing the main server. It crashed again. 💥" },
+            { s: 'A', g: 'f', t: "Are you going to assemble a new server soon? 🏗️" },
+            { s: 'B', g: 'm', t: "Yes, I will assemble it next week. 📅" }
+        ];
+        const quizLab2 = [
+            { q: "What was Mark troubleshooting?", opts: ["The database.", "The main server.", "His laptop."], a: 1 },
+            { q: "When will he assemble the new one?", opts: ["Next week.", "Tomorrow.", "He already did it."], a: 0 }
+        ];
+
+        let isPlayingLab = false;
+        
+        function runLabAudio(script, visualId, avaIdA, avaIdB, btnId, onComplete) {
+            if(isPlayingLab) return;
+            isPlayingLab = true;
+            let idx = 0;
+            
+            document.getElementById(btnId).classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById(visualId).innerHTML = `<i class="fas fa-spinner fa-spin text-4xl"></i>`;
+
+            function speakNext() {
+                if(idx >= script.length) {
+                    isPlayingLab = false;
+                    document.getElementById(btnId).classList.remove('opacity-50', 'cursor-not-allowed');
+                    document.getElementById(visualId).innerHTML = `<i class="fas fa-wave-square"></i>`;
+                    document.getElementById(avaIdA).classList.remove('is-speaking');
+                    document.getElementById(avaIdB).classList.remove('is-speaking');
+                    if(onComplete) onComplete();
+                    return;
+                }
+
+                const line = script[idx];
+                const cleanText = line.t.replace(/[\u{1F600}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, ''); 
+                const u = new SpeechSynthesisUtterance(cleanText);
+                
+                if(line.g === 'f' && femaleVoice) u.voice = femaleVoice;
+                else if(line.g === 'm' && maleVoice) u.voice = maleVoice;
+                
+                u.rate = 0.95;
+
+                document.getElementById(avaIdA).classList.remove('is-speaking');
+                document.getElementById(avaIdB).classList.remove('is-speaking');
+                if(line.s === 'A') document.getElementById(avaIdA).classList.add('is-speaking');
+                else document.getElementById(avaIdB).classList.add('is-speaking');
+
+                u.onend = () => { idx++; setTimeout(speakNext, 400); };
+                window.speechSynthesis.speak(u);
+            }
+            speakNext();
+        }
+
+        function buildLabQuiz(containerId, quizData, onPass) {
+            const area = document.getElementById(containerId);
+            if(area.innerHTML.trim() !== '') return;
+            
+            let correctCount = 0;
+
+            quizData.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = "bg-white p-5 rounded-2xl border border-slate-200 slide-enter shadow-sm";
+                div.style.animationDelay = `${idx * 0.15}s`;
+                
+                let btns = item.opts.map((opt, i) => `
+                    <button onclick="checkLabAns(${idx}, ${i}, ${item.a}, this, '${containerId}')" class="w-full text-left bg-slate-50 border border-slate-200 text-slate-700 font-bold p-3 sm:p-4 rounded-xl hover:bg-slate-100 transition mt-2 break-words whitespace-normal text-sm sm:text-base">
+                        ${opt}
+                    </button>
+                `).join('');
+                
+                div.innerHTML = `<p class="font-extrabold text-slate-800 mb-2 text-base sm:text-lg">${idx+1}. ${item.q}</p>${btns}<div id="fb-${containerId}-${idx}" class="hidden mt-3 text-sm font-bold p-3 rounded-xl"></div>`;
+                area.appendChild(div);
+            });
+
+            window[`checkLabAns_${containerId}`] = function() {
+                correctCount++;
+                if(correctCount >= quizData.length) onPass();
+            };
+        }
+
+        function checkLabAns(qIdx, selected, correct, btn, containerId) {
+            const container = btn.parentElement;
+            const buttons = container.querySelectorAll('button');
+            const fb = document.getElementById(`fb-${containerId}-${qIdx}`);
+            
+            buttons.forEach(b => { b.disabled = true; b.classList.add('opacity-50'); });
+            fb.classList.remove('hidden');
+
+            if(selected === correct) {
+                btn.classList.remove('opacity-50', 'bg-slate-50', 'border-slate-200');
+                btn.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-700');
+                fb.className = "mt-3 text-sm font-bold p-3 rounded-xl bg-emerald-100 text-emerald-700 border border-emerald-200";
+                fb.innerHTML = `✅ Correct`;
+                window[`checkLabAns_${containerId}`]();
+            } else {
+                btn.classList.remove('opacity-50', 'bg-slate-50', 'border-slate-200');
+                btn.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-700');
+                fb.className = "mt-3 text-sm font-bold p-3 rounded-xl bg-rose-100 text-rose-700 border border-rose-200";
+                fb.innerHTML = `❌ Incorrect`;
+                buttons[correct].classList.remove('opacity-50', 'bg-slate-50', 'border-slate-200');
+                buttons[correct].classList.add('border-emerald-400', 'text-emerald-700', 'bg-emerald-50');
+            }
+        }
+
+        function playLab1() {
+            runLabAudio(scriptLab1, 'lab1-visual', 'lab1-avatar-a', 'lab1-avatar-b', 'btn-lab1-play', () => {
+                buildLabQuiz('lab1-quiz-area', quizLab1, () => {
+                    document.getElementById('btn-next').classList.remove('hidden');
+                });
+            });
+        }
+        function playLab2() {
+            runLabAudio(scriptLab2, 'lab2-visual', 'lab2-avatar-a', 'lab2-avatar-b', 'btn-lab2-play', () => {
+                buildLabQuiz('lab2-quiz-area', quizLab2, () => {
+                    document.getElementById('btn-next').classList.remove('hidden');
+                });
+            });
+        }
+
+        // --- ROLEPLAY ---
+        const roleplayData = {
+            event: {
+                emoji: '🎉', name: 'Event Planner',
+                facts: ['Present: Usually delegates tasks. 👥', 'Past: Evaluated a venue yesterday. 📋', 'Future: Going to brainstorm party themes. 🧠'],
+                missions: [
+                    { p: "Ask what she usually delegates.", c: "What do you usually delegate?" },
+                    { p: "Ask what she evaluated yesterday.", c: "What did you evaluate yesterday?" },
+                    { p: "Ask what she is going to brainstorm.", c: "What are you going to brainstorm?" }
+                ]
+            },
+            marketing: {
+                emoji: '📊', name: 'Marketing Dir.',
+                facts: ['Present Cont: Is analyzing the data. 📉', 'Past Cont: Was negotiating when you called. 🤝', 'Perfect: Has implemented 3 campaigns. ⚙️'],
+                missions: [
+                    { p: "Ask what he is analyzing right now.", c: "What are you analyzing right now?" },
+                    { p: "Ask what he was negotiating.", c: "What were you negotiating?" },
+                    { p: "Ask how many campaigns he has implemented.", c: "How many campaigns have you implemented?" }
+                ]
+            },
+            engineer: {
+                emoji: '👷', name: 'Lead Engineer',
+                facts: ['Past: The system crashed. 💥', 'Perfect: Have never seen this error. 🚫', 'Future: Will assemble a new server. 🏗️'],
+                missions: [
+                    { p: "Ask what happened (Past).", c: "What happened?" },
+                    { p: "Ask if they have ever seen this.", c: "Have you ever seen this?" },
+                    { p: "Ask when they will assemble the server.", c: "When will you assemble the server?" }
+                ]
+            }
+        };
+
+        function startRoleplay(type) {
+            const d = roleplayData[type];
+            
+            // Hide selection, show active area
+            const gridCards = document.querySelector('#slide-14 .grid');
+            if (gridCards) gridCards.classList.add('hidden');
+            
+            document.getElementById('rp-active-area').classList.remove('hidden');
+            
+            document.getElementById('rp-emoji').innerText = d.emoji;
+            document.getElementById('rp-name').innerText = d.name;
+            document.getElementById('rp-facts').innerHTML = d.facts.map(f => `<li>${f}</li>`).join('');
+            
+            document.getElementById('rp-missions').innerHTML = d.missions.map((m, i) => `
+                <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between md:items-center gap-4">
+                    <div class="flex-1">
+                        <p class="font-bold text-slate-800 text-base sm:text-lg"><span class="text-blue-500 mr-2">${i+1}.</span> ${m.p}</p>
+                        <p class="hidden text-sm sm:text-base text-emerald-600 font-bold mt-3 rp-check bg-emerald-50 px-3 py-1 rounded-lg inline-block break-words whitespace-normal">✅ Target: ${m.c}</p>
+                    </div>
+                    <button onclick="revealRP(this)" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-5 py-3 rounded-xl text-sm sm:text-base font-bold transition shrink-0 interactive-btn shadow-sm w-full md:w-auto">Reveal Answer 👀</button>
+                </div>
+            `).join('');
+            
+            document.getElementById('btn-next').classList.add('hidden'); 
+        }
+
+        function revealRP(btn) {
+            btn.previousElementSibling.querySelector('.rp-check').classList.remove('hidden');
+            btn.classList.add('hidden');
+            if(document.querySelectorAll('.rp-check.hidden').length === 0) {
+                 document.getElementById('btn-next').classList.remove('hidden');
+            }
+        }
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+            buildQuiz('quiz-present', quizPresent, 'teal');
+            buildQuiz('quiz-past', quizPast, 'purple');
+            buildQuiz('quiz-perfect', quizPerfect, 'amber');
+            renderMatcher();
+            updateNav();
+        });
+
+    </script>
+</body>
+</html>
