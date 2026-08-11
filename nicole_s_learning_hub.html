@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nicole's Learning Hub</title>
+    
+    <!-- Fonts: Poppins for friendly headings, Plus Jakarta Sans for high legibility in text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Friendly & Educational Palette */
+            --bg-base: #f4f7fb; /* Soft light blue/gray background */
+            --primary: #6366f1; /* Soft Indigo */
+            --primary-light: #e0e7ff;
+            --primary-hover: #4f46e5;
+            --accent: #f43f5e; /* Rose/Pink accent for fun details */
+            --accent-light: #ffe4e6;
+            
+            --text-main: #334155;
+            --text-muted: #64748b;
+            
+            --card-bg: #ffffff;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            --card-shadow-hover: 0 20px 25px -5px rgba(99, 102, 241, 0.15), 0 8px 10px -6px rgba(99, 102, 241, 0.1);
+
+            /* Typography */
+            --font-heading: 'Poppins', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,0) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,0) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,0) 0, transparent 50%);
+        }
+
+        .ambient-shapes {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+        
+        .shape-1 {
+            width: 50vw; height: 50vw;
+            background: #e0e7ff; /* Soft indigo glow */
+            top: -20%; left: -10%;
+        }
+        
+        .shape-2 {
+            width: 40vw; height: 40vw;
+            background: #fce7f3; /* Soft pink glow */
+            bottom: -10%; right: -10%;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(5%, 10%) scale(1.1); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem 6rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeDown 1s ease-out;
+        }
+
+        .student-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            background: #fff;
+            color: var(--primary);
+            border-radius: 100px;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--primary-light);
+        }
+
+        .student-badge svg { color: var(--accent); }
+
+        .hero-title {
+            font-family: var(--font-heading);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+        }
+        
+        .hero-title span {
+            color: var(--primary);
+            position: relative;
+        }
+        
+        .hero-title span::after {
+            content: '';
+            position: absolute;
+            bottom: 5px; left: 0; width: 100%; height: 12px;
+            background: var(--accent-light);
+            z-index: -1;
+            border-radius: 10px;
+            transform: rotate(-1deg);
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .instruction-banner {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #b45309;
+            padding: 0.75rem 1.5rem;
+            border-radius: 100px;
+            font-size: 0.95rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            animation: fadeUp 1s ease-out 0.3s both;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 3rem 1rem 1rem;
+            margin-top: 4rem;
+            border-top: 1px dashed #cbd5e1;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        
+        .footer strong {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .block-section {
+            margin-bottom: 4rem;
+            animation: fadeUp 0.8s ease-out both;
+        }
+
+        .block-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .block-title {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .block-icon {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            background-color: var(--primary-light);
+            color: var(--primary);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .labs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .lab-card {
+            display: block;
+            text-decoration: none;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .lab-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--card-shadow-hover);
+            border-color: var(--primary-light);
+        }
+
+        .card-icon-box {
+            width: 54px; height: 54px;
+            border-radius: 16px;
+            background: var(--primary-light);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            transition: 0.3s;
+        }
+
+        .lab-card:hover .card-icon-box {
+            background: var(--primary);
+            color: #fff;
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .card-title {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-action {
+            display: flex; align-items: center; gap: 0.5rem;
+            font-weight: 600; color: var(--primary);
+            font-size: 0.95rem; transition: 0.3s;
+        }
+
+        .card-action svg { transition: transform 0.3s ease; }
+        .lab-card:hover .card-action svg { transform: translateX(5px); }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            padding: 3rem 2rem;
+            background: #fff;
+            border: 2px dashed #cbd5e1;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .empty-state-icon {
+            width: 60px; height: 60px;
+            background: #f1f5f9;
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            color: #94a3b8;
+            flex-shrink: 0;
+        }
+
+        .empty-state-text h3 {
+            font-family: var(--font-heading);
+            color: var(--text-main); 
+            margin-bottom: 0.25rem; 
+            font-size: 1.2rem;
+        }
+        
+        .empty-state-text p { color: var(--text-muted); font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="student-badge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                Student: Nicole 👩🏻‍💻
+            </div>
+            <h1 class="hero-title">Nicole's <span>Learning Hub</span> ✨</h1>
+            <p class="hero-subtitle">Welcome to your personal learning space! 🌟 Explore your blocks, practice your skills, and achieve your goals!</p>
+            
+            <div class="instruction-banner">
+                💡 <strong>Tip:</strong> Complete these activities and ask teacher for help when needed. 🙋🏻‍♀️
+            </div>
+        </section>
+
+        <!-- Dynamic Container for Sections -->
+        <div id="hub-blocks-container">
+            <!-- Sections will be injected here via JS -->
+        </div>
+
+        <!-- Footer Branding -->
+        <footer class="footer">
+            <p>Designed with ❤️ by <strong>Teacher Netza</strong></p>
+        </footer>
+    </main>
+
+    <script>
+        // REPOSITORY CONFIGURATION
+        const GITHUB_CONFIG = {
+            owner: 'teachernetza',
+            repo: 'nicole-class', // Lowercase as requested
+            // Configuration for each folder and how it should be displayed
+            sections: [
+                { folder: 'Bloque 1', displayTitle: 'Block 1' },
+                { folder: 'Bloque 2', displayTitle: 'Block 2' },
+                { folder: 'Bloque 3', displayTitle: 'Block 3' },
+                { folder: 'Bloque 4', displayTitle: 'Block 4' },
+                { folder: 'Practice', displayTitle: 'Extra Practice' } // Special folder for extra practice
+            ]
+        };
+
+        const hubContainer = document.getElementById('hub-blocks-container');
+
+        function formatLabTitle(filename) {
+            let clean = filename.replace(/\.html$/i, ''); // Remove extension
+            clean = clean.replace(/[-_]/g, ' '); // Replace dashes/underscores with spaces
+            
+            // Capitalize first letter of each word
+            clean = clean.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+            
+            return clean;
+        }
+
+        function createBlockSection(title, id) {
+            const section = document.createElement('section');
+            section.className = 'block-section';
+            section.id = `section-${id}`;
+            
+            // Pick an icon based on if it's the Practice section or a regular Block
+            const iconSvg = title === 'Extra Practice' 
+                ? '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>' // Star icon
+                : '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line>'; // Grid/Book icon
+
+            section.innerHTML = `
+                <div class="block-header">
+                    <div class="block-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            ${iconSvg}
+                        </svg>
+                    </div>
+                    <h2 class="block-title">${title}</h2>
+                </div>
+                <div class="labs-grid" id="grid-${id}">
+                    ${generateSkeletons(3)}
+                </div>
+            `;
+            return section;
+        }
+
+        function generateSkeletons(count) {
+            let skeletons = '';
+            for(let i=0; i<count; i++) {
+                skeletons += `
+                    <div class="lab-card" style="pointer-events: none; border-color: transparent; box-shadow: none;">
+                        <div class="skeleton" style="width: 54px; height: 54px; border-radius: 16px; margin-bottom: 1.5rem;"></div>
+                        <div class="skeleton" style="width: 70%; height: 24px; margin-bottom: 0.5rem;"></div>
+                        <div class="skeleton" style="width: 100%; height: 16px; margin-bottom: 1.5rem;"></div>
+                        <div class="skeleton" style="width: 120px; height: 16px;"></div>
+                    </div>
+                `;
+            }
+            return skeletons;
+        }
+
+        function getEmptyStateHTML(message) {
+            return `
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    </div>
+                    <div class="empty-state-text">
+                        <h3>Coming Soon! 🚧</h3>
+                        <p>${message} ⏳</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadBlockData(sectionConfig) {
+            const folderName = sectionConfig.folder;
+            const displayTitle = sectionConfig.displayTitle;
+            
+            // Safe ID for HTML (e.g., "bloque-1")
+            const blockId = folderName.replace(/\s+/g, '-').toLowerCase();
+            
+            // Insert section with skeletons into DOM first
+            const sectionNode = createBlockSection(displayTitle, blockId);
+            hubContainer.appendChild(sectionNode);
+            
+            const gridContainer = document.getElementById(`grid-${blockId}`);
+
+            try {
+                // Encode URL (e.g. "Bloque 1" becomes "Bloque%201")
+                const folderPath = encodeURIComponent(folderName);
+                const url = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${folderPath}`;
+                
+                const res = await fetch(url);
+                
+                if (!res.ok) {
+                    if (res.status === 404) {
+                        gridContainer.innerHTML = getEmptyStateHTML(`The folder "${folderName}" is not available yet. Check back later!`);
+                        return;
+                    }
+                    throw new Error(`Connection error: ${res.status}`);
+                }
+                
+                const data = await res.json();
+                
+                // Filter only .html files
+                const htmlFiles = data.filter(file => file.type === 'file' && file.name.endsWith('.html'));
+
+                if (htmlFiles.length === 0) {
+                    gridContainer.innerHTML = getEmptyStateHTML(`Currently there are no activities in this section. More coming soon!`);
+                    return;
+                }
+
+                // Clear skeletons
+                gridContainer.innerHTML = '';
+                
+                // Render cards
+                htmlFiles.forEach((file) => {
+                    const title = formatLabTitle(file.name);
+                    
+                    const card = document.createElement('a');
+                    card.href = file.path; // Points to the file path in GitHub Pages
+                    card.className = 'lab-card';
+                    
+                    card.innerHTML = `
+                        <div class="card-icon-box">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">${title}</h3>
+                        <p class="card-desc">Complete this activity to practice and improve your skills. 🧠</p>
+                        <div class="card-action">
+                            <span>Start Activity 🚀</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                    `;
+                    gridContainer.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error(`Error loading ${folderName}:`, error);
+                gridContainer.innerHTML = getEmptyStateHTML(`Failed to connect to the repository for ${displayTitle}.`);
+            }
+        }
+
+        async function initializeHub() {
+            // Loop through sections and load them in order
+            for (const section of GITHUB_CONFIG.sections) {
+                await loadBlockData(section);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', initializeHub);
+    </script>
+</body>
+</html>
