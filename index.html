@@ -160,6 +160,39 @@
             animation: fadeUp 1s ease-out 0.3s both;
         }
 
+        /* Presentation Viewer Styles */
+        .presentation-section {
+            margin-bottom: 4rem;
+            animation: fadeUp 0.8s ease-out both;
+        }
+
+        .presentation-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .presentation-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            background-color: #f8fafc;
+        }
+
+        .presentation-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
         .footer {
             text-align: center;
             padding: 3rem 1rem 1rem;
@@ -340,6 +373,30 @@
             </div>
         </section>
 
+        <!-- Presentation Viewer Section -->
+        <section class="presentation-section">
+            <div class="block-header">
+                <div class="block-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 3h20v14H2z"></path><path d="M8 21h8"></path><path d="M12 17v4"></path>
+                    </svg>
+                </div>
+                <h2 class="block-title">Class Presentation 📊</h2>
+            </div>
+            <div class="presentation-container">
+                <div class="presentation-wrapper">
+                    <!-- Cambiamos /edit por /embed para que funcione el visor -->
+                    <iframe 
+                        src="https://docs.google.com/presentation/d/1DOtbVXJsf44GJgF55c16_-khoETWNRTdMRN1C5pKMgU/embed?start=false&loop=false&delayms=3000" 
+                        frameborder="0" 
+                        allowfullscreen="true" 
+                        mozallowfullscreen="true" 
+                        webkitallowfullscreen="true">
+                    </iframe>
+                </div>
+            </div>
+        </section>
+
         <!-- Dynamic Container for Sections -->
         <div id="hub-blocks-container">
             <!-- Sections will be injected here via JS -->
@@ -357,6 +414,7 @@
             owner: 'teachernetza',
             repo: 'nicole-class', // Lowercase as requested
             // Configuration for each folder and how it should be displayed
+            // El orden aquí determina el orden de renderizado (Practice va al final)
             sections: [
                 { folder: 'Bloque 1', displayTitle: 'Block 1' },
                 { folder: 'Bloque 2', displayTitle: 'Block 2' },
