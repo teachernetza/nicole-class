@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>B1/B2 Practice: Airport & Travel</title>
+    <!-- Loading Tailwind CSS and Google Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary: #0284c7; /* Sky 600 - Airline Blue */
+            --primary-dark: #075985; /* Sky 800 */
+            --secondary: #0ea5e9; /* Sky 500 */
+            --accent: #e11d48; /* Rose 600 - Ticket accents */
+            --perfect: #16a34a; /* Green 600 */
+        }
+
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background-color: #f0f9ff; /* Sky background */
+            color: #0f172a; 
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Abstract Flight Background */
+        .bg-shapes {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+        .bg-shapes::before, .bg-shapes::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+        .bg-shapes::before {
+            width: 60vw; height: 60vw;
+            background: #bae6fd; 
+            top: -20vw; left: -10vw;
+        }
+        .bg-shapes::after {
+            width: 50vw; height: 50vw;
+            background: #fecdd3; 
+            bottom: -10vw; right: -10vw;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(5vw, 5vw) scale(1.1); }
+        }
+
+        /* Smooth Slide Animations */
+        .slide-enter { animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hidden-slide { display: none !important; }
+
+        /* Modern Glass UI - Boarding Pass Style */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(14, 165, 233, 0.2); 
+            box-shadow: 0 15px 35px -5px rgba(2, 132, 199, 0.1);
+            border-radius: 1rem;
+        }
+
+        .journal-font { font-family: 'Lora', serif; }
+
+        .btn-modern {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 700;
+        }
+        .btn-modern:active:not(:disabled) { transform: scale(0.96); }
+        
+        /* Audio & Mic Animations */
+        .viz-bar {
+            width: 6px;
+            background: var(--accent);
+            border-radius: 4px;
+            display: inline-block;
+            margin: 0 2px;
+            transition: height 0.1s ease;
+        }
+        .mic-listening {
+            animation: micPulse 1.5s infinite;
+            background-color: #e11d48 !important; 
+            color: white !important;
+            border-color: #be123c !important;
+        }
+        @keyframes micPulse {
+            0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.4); transform: scale(1); }
+            70% { box-shadow: 0 0 0 15px rgba(225, 29, 72, 0); transform: scale(1.05); }
+            100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); transform: scale(1); }
+        }
+
+        .speaker-glow {
+            border-color: var(--secondary) !important;
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.6);
+            transform: scale(1.05);
+            transition: all 0.3s ease;
+        }
+
+        /* Word Builder Tokens */
+        .word-token {
+            display: inline-block;
+            background: #fff;
+            border: 2px solid #38bdf8;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            color: #0284c7;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            font-size: 1.1rem;
+        }
+        .word-token:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px); }
+        .word-token.used { opacity: 0; pointer-events: none; transform: scale(0.9); }
+
+        /* Custom Inline Select */
+        .inline-blank {
+            display: inline-block;
+            min-width: 90px;
+            border-bottom: 2px border-dashed #94a3b8;
+            margin: 0 5px;
+            padding: 0 5px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--secondary);
+            cursor: pointer;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 4px; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col selection:bg-sky-200 selection:text-sky-900">
+    <div class="bg-shapes"></div>
+
+    <!-- Responsive Top Navigation -->
+    <nav class="w-full bg-white/95 backdrop-blur-md border-b border-sky-200 z-40 sticky top-0 shadow-sm" id="main-nav">
+        <div class="max-w-5xl mx-auto px-4 h-14 md:h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-sky-600 rounded-lg flex items-center justify-center text-white text-sm md:text-lg shadow-md">
+                    <i class="fas fa-plane"></i>
+                </div>
+                <div>
+                    <h1 class="font-black text-base md:text-lg text-sky-900 leading-none tracking-wide journal-font">Flight Academy</h1>
+                    <p class="text-[9px] md:text-[10px] font-bold text-sky-600 uppercase tracking-widest mt-0.5" id="nav-title">Homework Practice</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3 md:gap-4">
+                <div id="tts-status" class="hidden md:flex items-center gap-2 text-xs font-bold text-sky-700 bg-sky-50 px-3 py-1 rounded-md border border-sky-200">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <div class="bg-sky-100 text-sky-800 px-3 py-1 md:px-4 md:py-1.5 rounded-lg text-xs md:text-sm font-bold border border-sky-300" id="slide-counter">
+                    1 / 10
+                </div>
+            </div>
+        </div>
+        <div class="w-full bg-sky-100 h-1">
+            <div id="main-progress" class="bg-sky-500 h-full transition-all duration-300 shadow-[0_0_10px_rgba(14,165,233,0.5)]" style="width: 0%"></div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow w-full max-w-5xl mx-auto px-4 py-6 md:py-10 flex flex-col relative pb-28 md:pb-32">
+        
+        <!-- SLIDE 0: Intro -->
+        <section id="slide-0" class="slide-enter flex flex-col items-center justify-center min-h-[65vh] text-center">
+            <div class="mb-6 flex gap-2 text-6xl md:text-8xl drop-shadow-lg">
+                <span>🎫</span><span>✈️</span><span>🧳</span>
+            </div>
+            <h2 class="text-4xl md:text-6xl font-black text-sky-900 mb-4 tracking-tight journal-font uppercase">
+                Airport & Travel
+            </h2>
+            <p class="text-slate-700 text-base md:text-lg font-medium max-w-2xl mx-auto mb-10 leading-relaxed">
+                Welcome to your interactive homework! We have already studied this vocabulary in class. Complete these exercises to test your memory and listening skills before your next flight.
+            </p>
+            <div class="flex flex-wrap justify-center gap-3 mb-6">
+                <span class="bg-white text-sky-800 px-4 py-2 rounded-full text-sm font-bold shadow-sm border border-sky-200"><i class="fas fa-check-circle mr-2"></i> 11 Points Total</span>
+                <span class="bg-white text-sky-800 px-4 py-2 rounded-full text-sm font-bold shadow-sm border border-sky-200"><i class="fas fa-tasks mr-2"></i> 10 Sections</span>
+            </div>
+        </section>
+
+        <!-- SLIDE 1: Vocabulary Review -->
+        <section id="slide-1" class="hidden-slide">
+            <h2 class="text-2xl md:text-3xl font-black text-sky-900 mb-2 journal-font uppercase border-b-2 border-sky-200 pb-2">1. Vocabulary Review</h2>
+            <p class="text-slate-600 mb-6 text-sm md:text-base">Tap on the flashcards to listen to the pronunciation of our key terms.</p>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="glass-panel p-5 border-l-4 border-sky-500 cursor-pointer hover:bg-sky-50 transition" onclick="TTS.speak('Boarding Pass. The document you need to get on the plane.')">
+                    <h3 class="font-black text-sky-800 text-lg mb-1"><i class="fas fa-ticket-alt mr-2 text-sky-500"></i>Boarding Pass</h3>
+                    <p class="text-sm text-slate-600 font-medium">The official document or ticket you need to get on the plane.</p>
+                </div>
+                <div class="glass-panel p-5 border-l-4 border-amber-500 cursor-pointer hover:bg-amber-50 transition" onclick="TTS.speak('Customs. The place where officers check your bags when you enter a country.')">
+                    <h3 class="font-black text-amber-800 text-lg mb-1"><i class="fas fa-passport mr-2 text-amber-500"></i>Customs</h3>
+                    <p class="text-sm text-slate-600 font-medium">The place at the airport where officers check your bags when you enter a new country.</p>
+                </div>
+                <div class="glass-panel p-5 border-l-4 border-rose-500 cursor-pointer hover:bg-rose-50 transition" onclick="TTS.speak('Baggage Claim. The area where you collect your suitcases after a flight.')">
+                    <h3 class="font-black text-rose-800 text-lg mb-1"><i class="fas fa-suitcase-rolling mr-2 text-rose-500"></i>Baggage Claim</h3>
+                    <p class="text-sm text-slate-600 font-medium">The specific area with moving belts where you collect your suitcases after landing.</p>
+                </div>
+                <div class="glass-panel p-5 border-l-4 border-teal-500 cursor-pointer hover:bg-teal-50 transition" onclick="TTS.speak('Departure Lounge. The waiting area near your gate before you board.')">
+                    <h3 class="font-black text-teal-800 text-lg mb-1"><i class="fas fa-couch mr-2 text-teal-500"></i>Departure Lounge</h3>
+                    <p class="text-sm text-slate-600 font-medium">The waiting area near your gate before you board the airplane.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: Fill in the Blanks -->
+        <section id="slide-2" class="hidden-slide">
+            <h2 class="text-2xl md:text-3xl font-black text-sky-900 mb-2 journal-font uppercase border-b-2 border-sky-200 pb-2">2. In Context</h2>
+            <p class="text-slate-600 mb-6 text-sm md:text-base">Tap the blanks to select the correct vocabulary word. (3 Points)</p>
+
+            <div class="glass-panel p-8 text-center text-xl md:text-2xl font-serif text-slate-700 leading-loose border-2 border-dashed border-sky-300 bg-white relative">
+                <i class="fas fa-pen-fancy absolute top-4 left-4 text-sky-200 text-4xl"></i>
+                
+                "As soon as we landed, I went through 
+                <span class="inline-blank" id="blank-1" onclick="BlankFill.showOptions(1, ['customs', 'the runway', 'my boarding pass'], 'customs')">[ Select ]</span> 
+                and then waited at the 
+                <span class="inline-blank" id="blank-2" onclick="BlankFill.showOptions(2, ['cockpit', 'baggage claim', 'departure lounge'], 'baggage claim')">[ Select ]</span> 
+                for my heavy 
+                <span class="inline-blank" id="blank-3" onclick="BlankFill.showOptions(3, ['customs', 'suitcase', 'pilot'], 'suitcase')">[ Select ]</span>."
+                
+                <!-- Options Popover -->
+                <div id="options-popover" class="hidden absolute bg-white border border-slate-200 shadow-xl rounded-lg p-2 z-50 flex flex-col gap-1 min-w-[150px]"></div>
+            </div>
+            
+            <div id="blank-fb" class="hidden mt-6 text-center font-bold p-4 rounded-xl text-lg"></div>
+        </section>
+
+        <!-- SLIDE 3: Reading Passage -->
+        <section id="slide-3" class="hidden-slide">
+            <h2 class="text-2xl md:text-3xl font-black text-sky-900 mb-2 journal-font uppercase border-b-2 border-sky-200 pb-2">3. Travel Blog Entry</h2>
+            <p class="text-slate-600 mb-6 text-sm md:text-base">Read Sarah's experience at the airport.</p>
+
+            <div class="glass-panel p-8 relative bg-slate-50 border-sky-200">
+                <div class="absolute top-4 right-4 opacity-20 text-6xl">📖</div>
+                <h3 class="text-xl font-black text-slate-800 mb-4 journal-font border-b border-sky-300 pb-2">A Stressful Morning</h3>
+                
+                <p class="text-slate-800 leading-relaxed font-medium text-lg journal-font space-y-4" id="reading-1-text">
+                    <span class="block">I arrived at the airport two hours early, but there was a massive line at the check-in desk. By the time I dropped off my luggage, I only had 30 minutes before my flight.</span>
+                    
+                    <span class="block mt-4">I ran through security, holding my <b class="text-sky-700 bg-sky-100 px-1 rounded">boarding pass</b> tightly. When I finally reached the <b class="text-sky-700 bg-sky-100 px-1 rounded">departure lounge</b>, the <b class="text-sky-700 bg-sky-100 px-1 rounded">flight attendant</b> was already closing the gate. Thankfully, she let me in just in time!</span>
+                </p>
+                
+                <button onclick="TTS.speak(document.getElementById('reading-1-text').innerText, 'f')" class="mt-6 bg-white border-2 border-sky-600 text-sky-800 font-bold px-5 py-2.5 rounded-lg hover:bg-sky-50 transition btn-modern text-sm shadow-sm flex items-center">
+                    <i class="fas fa-volume-up mr-2"></i> Listen to Entry
+                </button>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: Reading Quiz -->
+        <section id="slide-4" class="hidden-slide">
+            <h2 class="text-2xl md:text-3xl font-black text-sky-900 mb-6 journal-font uppercase border-b-2 border-sky-200 pb-2">4. Reading Comprehension</h2>
+            <p class="text-slate-600 mb-6 text-sm md:text-base">Answer the questions based on Sarah's blog. (3 Points)</p>
+            <div id="quiz-reading-1" class="space-y-4"></div>
+        </section>
+
+        <!-- SLIDE 5: Audio Lab -->
+        <section id="slide-5" class="hidden-slide">
+            <h2 class="text-2xl md:text-3xl font-black text-sky-900 mb-2 journal-font uppercase border-b-2 border-sky-200 pb-2">5. Airport Announcement</h2>
+            <p class="text-slate-600 mb-6 text-sm md:text-base">Listen carefully to the PA system announcement.</p>
+
+            <div class="glass-panel p-6 bg-slate-800 border-4 border-slate-700 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, #fff 2px, #fff 4px);"></div>
+
+                <div class="flex items-center gap-6 md:gap-12 mb-8 w-full justify-center mt-6 relative z-10">
+                    <div class="flex flex-col items-center gap-2" id="lab-A">
+                        <div class="w-16 h-16 bg-slate-600 text-white text-3xl rounded-full flex items-center justify-center shadow-lg border-2 border-slate-500 transition-all">📢</div>
+                        <span class="text-xs font-bold text-slate-300 uppercase tracking-widest">PA System</span>
+                    </div>
+                    <div class="flex items-center justify-center h-12 gap-1 opacity-30" id="lab-viz">
+                        <div class="viz-bar bg-sky-400 h-2"></div><div class="viz-bar bg-sky-400 h-6"></div><div class="viz-bar bg-sky-400 h-3"></div><div class="viz-bar bg-sky-400 h-8"></div><div class="viz-bar bg-sky-400 h-2"></div>
+                    </div>
+                </div>
+                <button id="btn-play-lab" onclick="AudioLab.play()" class="w-full max-w-sm mx-auto bg-sky-600 hover:bg-sky-700 text-white font-bold py-4 px-6 rounded-xl btn-modern shadow-md flex items-center justify-center gap-2 text-lg relative z-10 border-b-4 border-sky-800">
+                    <i class="fas fa-play-circle"></i> Play Audio
+                </button>
+            </div>
+            
+            <div class="text-center mt-6">
+                <button onclick="document.getElementById('trans-lab').classList.toggle('hidden');" class="text-sm font-bold text-sky-700 hover:underline"><i class="fas fa-file-alt mr-1"></i> Toggle Transcripts</button>
+                <div id="trans-lab" class="hidden mt-4 p-5 bg-white rounded-xl border border-slate-200 shadow-sm text-sm text-slate-700 space-y-3 text-left max-w-2xl mx-auto font-mono">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: Audio Quiz -->
+        <section id="slide-6" class="hidden-slide">
+            <h2 class="text-2xl md:text-3xl font-black text-sky-900 mb-6 journal-font uppercase border-b-2 border-sky-200 pb-2">6. Listening Check</h2>
+            <p class="text-slate-600 mb-6 text-sm md:text-base">What did the announcer say? (3 Points)</p>
+            <div id="quiz-listening" class="space-y-4"></div>
+        </section>
+
+        <!-- SLIDE 7: Sentence Builder -->
+        <section id="slide-7" class="hidden-slide">
+             <h2 class="text-2xl md:text-3xl font-black text-sky-900 mb-2 journal-font uppercase border-b-2 border-sky-200 pb-2">7. Construct the Phrase</h2>
+             <p class="text-slate-600 mb-6 text-sm md:text-base">Order the words to create a polite request often heard at the gate. (1 Point)</p>
+
+            <div class="glass-panel p-6 md:p-8 bg-white" id="builder-container">
+                <!-- Generado por JS -->
+            </div>
+        </section>
+
+        <!-- SLIDE 8: Voice Record -->
+        <section id="slide-8" class="hidden-slide">
+            <h2 class="text-2xl md:text-3xl font-black text-sky-900 mb-2 journal-font uppercase border-b-2 border-sky-200 pb-2">8. Speak like Staff</h2>
+            <p class="text-slate-600 mb-8 text-sm md:text-base">Speak into the microphone to practice your pronunciation. (1 Point)</p>
+
+            <div class="glass-panel p-6 md:p-10 text-center max-w-2xl mx-auto border-t-8 border-t-rose-500 shadow-lg relative bg-white">
+                <div class="mb-8">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-rose-600 mb-3 bg-rose-50 inline-block px-3 py-1 rounded-full border border-rose-200">Voice Dictation Required</p>
+                    <h3 class="text-2xl md:text-3xl font-black text-slate-800 leading-snug journal-font italic" id="speak-target">Please have your boarding pass ready.</h3>
+                    <button onclick="TTS.speak(document.getElementById('speak-target').innerText, 'f')" class="mt-5 text-rose-700 bg-rose-50 rounded-full w-12 h-12 flex items-center justify-center mx-auto hover:bg-rose-100 transition border border-rose-200 shadow-sm"><i class="fas fa-volume-up"></i></button>
+                </div>
+                
+                <button id="mic-btn" onclick="VoiceAI.start('Please have your boarding pass ready.')" class="bg-slate-100 border-4 border-slate-200 text-slate-700 w-24 h-24 rounded-full text-3xl shadow-md hover:bg-rose-100 hover:text-rose-600 hover:border-rose-300 transition-all btn-modern flex items-center justify-center mx-auto">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <p class="text-xs text-slate-500 mt-4 font-bold uppercase tracking-widest" id="mic-status">Tap to Record</p>
+                
+                <div id="voice-fb" class="hidden mt-6 p-4 rounded-xl text-sm font-bold border"></div>
+            </div>
+        </section>
+
+        <!-- SLIDE 9: Outro & Score -->
+        <section id="slide-9" class="hidden-slide text-center flex flex-col items-center justify-center min-h-[60vh]">
+            <div class="w-28 h-28 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-6xl mb-6 border-4 border-white shadow-xl slide-enter mx-auto">
+                <i class="fas fa-award"></i>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-black text-slate-800 mb-2 slide-enter journal-font uppercase" style="animation-delay: 0.1s">Practice Complete!</h2>
+            
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-sky-200 max-w-md mx-auto w-full my-6 slide-enter" style="animation-delay: 0.15s">
+                <h3 class="text-xl font-bold text-slate-500 uppercase tracking-widest mb-2">Final Score</h3>
+                <div class="text-6xl font-black text-sky-600 mb-2" id="final-score-display">0/11</div>
+                <p class="text-sm font-bold text-slate-400" id="final-pct-display">0%</p>
+            </div>
+
+            <p class="text-slate-700 text-base md:text-lg font-medium mb-10 max-w-xl mx-auto slide-enter bg-sky-50 p-4 rounded-lg border border-sky-100" id="score-feedback" style="animation-delay: 0.2s">
+                Calculating your feedback...
+            </p>
+
+            <button onclick="location.reload()" class="bg-sky-600 text-white font-bold py-3 md:py-4 px-10 rounded-xl hover:bg-sky-700 transition slide-enter btn-modern shadow-lg text-sm md:text-base mx-auto tracking-widest uppercase" style="animation-delay: 0.3s">
+                <i class="fas fa-redo mr-2"></i> Try Again
+            </button>
+        </section>
+
+        <!-- Responsive Bottom Navigation -->
+        <div class="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-sky-200 p-3 md:p-4 z-30" id="bottom-nav">
+            <div class="max-w-5xl mx-auto flex justify-between items-center gap-3">
+                <button id="btn-prev" onclick="Nav.prev()" class="bg-white hover:bg-sky-50 text-slate-500 font-bold py-2 md:py-3 px-4 md:px-6 rounded-lg border border-sky-200 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center btn-modern text-sm shadow-sm">
+                    <i class="fas fa-chevron-left md:mr-2"></i> <span class="hidden md:inline">Back</span>
+                </button>
+                <button id="btn-next" onclick="Nav.next()" class="bg-sky-600 hover:bg-sky-700 text-white font-black py-2 md:py-3 px-6 md:px-8 rounded-lg transition flex items-center btn-modern shadow-md text-sm uppercase tracking-wide">
+                    Next <i class="fas fa-chevron-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- SCORE SYSTEM ---
+        const AppScore = {
+            points: 0,
+            max: 11,
+            awarded: {},
+            add(id, amount) {
+                if(!this.awarded[id]) {
+                    this.awarded[id] = true;
+                    this.points += amount;
+                }
+            },
+            calculateFeedback() {
+                const pct = (this.points / this.max) * 100;
+                let msg = "";
+                if(pct >= 90) msg = "Excellent job! You are ready to travel the world without any language barriers! 🌍✈️";
+                else if(pct >= 70) msg = "Great work! You have a solid grasp of this vocabulary. Just a little more practice and you'll be perfect. 👍";
+                else if(pct >= 50) msg = "Good effort! You might want to review some of these terms again before your next trip. 📖";
+                else msg = "Keep practicing! Review the vocabulary flashcards and try this homework again. You can do it! 💪";
+                return { pct: Math.round(pct), msg };
+            }
+        };
+
+        // --- DATA ---
+        const quizRead1 = [
+            { q: "Why was the author stressed when she arrived?", opts: ["She forgot her ticket.", "There was a massive line at check-in.", "Her luggage was lost."], a: 1 },
+            { q: "What did she hold tightly while running?", opts: ["Her passport.", "Her boarding pass.", "Her suitcase."], a: 1 },
+            { q: "Where did she finally meet the flight attendant?", opts: ["At customs.", "At the baggage claim.", "At the departure lounge."], a: 2 }
+        ];
+
+        const convoData = {
+            script: [
+                { s: 'A', g: 'f', n: 'Announcer', t: "Attention all passengers. Flight 882 to Tokyo is now boarding at Gate 14." },
+                { s: 'A', g: 'f', n: 'Announcer', t: "Please have your boarding pass and passport ready for the flight attendant." }
+            ],
+            quiz: [
+                { q: "What is the destination of the flight?", opts: ["London.", "Tokyo.", "New York."], a: 1 },
+                { q: "Which gate is the flight boarding at?", opts: ["Gate 4.", "Gate 14.", "Gate 40."], a: 1 },
+                { q: "What documents must passengers have ready?", opts: ["Only their passport.", "Their boarding pass and passport.", "Their luggage tags."], a: 1 }
+            ]
+        };
+
+        // --- 1. TTS ENGINE ---
+        const TTS = {
+            voices: [], maleVoice1: null, maleVoice2: null, femaleVoice: null,
+            init() {
+                const load = () => {
+                    this.voices = window.speechSynthesis.getVoices();
+                    if(this.voices.length > 0) {
+                        let en = this.voices.filter(v => v.lang.startsWith('en'));
+                        let ms = en.filter(v => v.name.includes('Microsoft') || v.name.includes('Google'));
+                        
+                        this.femaleVoice = ms.find(v => v.name.includes('Jenny') || v.name.includes('Female')) || en[0];
+                        let males = ms.filter(v => v.name.includes('Guy') || v.name.includes('Male'));
+                        this.maleVoice1 = males[0] || en[1] || en[0];
+                        this.maleVoice2 = males[1] || males[0] || en[2] || en[0];
+
+                        const st = document.getElementById('tts-status');
+                        st.innerHTML = `<i class="fas fa-check-circle text-sky-600"></i>`;
+                    } else { setTimeout(load, 100); }
+                };
+                window.speechSynthesis.onvoiceschanged = load; load();
+            },
+            speak(text, gender = 'm', cb = null) {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(text);
+                if (gender === 'f') u.voice = this.femaleVoice;
+                else if (gender === 'm2') u.voice = this.maleVoice2;
+                else u.voice = this.maleVoice1; 
+                
+                u.rate = 0.90; 
+                
+                if(cb) u.onend = cb;
+                window.speechSynthesis.speak(u);
+            },
+            stop() { window.speechSynthesis.cancel(); }
+        };
+
+
+        // --- 4. INLINE BLANK FILLER ---
+        const BlankFill = {
+            activeBlankId: null,
+            answers: { 1: 'customs', 2: 'baggage claim', 3: 'suitcase' },
+            state: { 1: null, 2: null, 3: null },
+            
+            showOptions(blankId, optionsArray, correctAnswer) {
+                this.activeBlankId = blankId;
+                const blankEl = document.getElementById(`blank-${blankId}`);
+                const popover = document.getElementById('options-popover');
+                
+                const rect = blankEl.getBoundingClientRect();
+                const containerRect = blankEl.parentElement.getBoundingClientRect();
+                
+                popover.style.top = `${rect.bottom - containerRect.top + 5}px`;
+                popover.style.left = `${rect.left - containerRect.left}px`;
+                
+                popover.innerHTML = optionsArray.map(opt => 
+                    `<div class="p-2 hover:bg-sky-50 cursor-pointer rounded font-bold text-sky-900 border-b border-sky-100 last:border-0" onclick="BlankFill.selectOption(${blankId}, '${opt}')">${opt}</div>`
+                ).join('');
+                
+                popover.classList.remove('hidden');
+            },
+            selectOption(blankId, selectedWord) {
+                const blankEl = document.getElementById(`blank-${blankId}`);
+                const popover = document.getElementById('options-popover');
+                
+                blankEl.innerText = selectedWord;
+                blankEl.classList.remove('text-secondary', 'border-dashed');
+                blankEl.classList.add('text-sky-700', 'border-solid', 'border-sky-400');
+                
+                this.state[blankId] = selectedWord;
+                popover.classList.add('hidden');
+                TTS.speak(selectedWord, 'f');
+                
+                this.checkCompletion();
+            },
+            checkCompletion() {
+                if(this.state[1] && this.state[2] && this.state[3]) {
+                    const fb = document.getElementById('blank-fb');
+                    fb.classList.remove('hidden');
+                    
+                    if(this.state[1] === this.answers[1] && this.state[2] === this.answers[2] && this.state[3] === this.answers[3]) {
+                        fb.className = "mt-6 text-center font-bold p-4 rounded-xl text-lg bg-green-50 text-green-800 border border-green-300";
+                        fb.innerHTML = `<i class="fas fa-check-circle"></i> Excellent!`;
+                        AppScore.add('blanks', 3); // 3 points total for this exercise
+                    } else {
+                        fb.className = "mt-6 text-center font-bold p-4 rounded-xl text-lg bg-red-50 text-red-800 border border-red-300";
+                        fb.innerHTML = `<i class="fas fa-times-circle"></i> Some words are incorrect. Try changing them!`;
+                    }
+                }
+            }
+        };
+
+        // --- 5. AUDIO LAB ---
+        const AudioLab = {
+            playing: false,
+            play() {
+                if(this.playing) return;
+                this.playing = true;
+                
+                const btn = document.getElementById(`btn-play-lab`);
+                const viz = document.getElementById(`lab-viz`);
+                const avA = document.getElementById(`lab-A`).querySelector('div');
+                
+                btn.classList.add('opacity-50', 'pointer-events-none');
+                btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Broadcasting...`;
+                viz.classList.remove('opacity-30');
+
+                let idx = 0;
+                const step = () => {
+                    if(idx >= convoData.script.length) {
+                        this.playing = false;
+                        btn.classList.remove('opacity-50', 'pointer-events-none');
+                        btn.innerHTML = `<i class="fas fa-redo"></i> Replay Audio`;
+                        viz.classList.add('opacity-30');
+                        avA.classList.remove('speaker-glow');
+                        return;
+                    }
+                    const line = convoData.script[idx];
+                    avA.classList.add('speaker-glow');
+                    TTS.speak(line.t, line.g, () => { idx++; setTimeout(step, 400); });
+                };
+                step();
+            },
+            buildTrans() {
+                document.getElementById('trans-lab').innerHTML = convoData.script.map(l => {
+                    return `<p><b class="text-sky-700 uppercase text-xs tracking-widest">${l.n}:</b> "${l.t}"</p>`;
+                }).join('');
+            }
+        };
+
+        // --- 6. QUIZ RENDERER ---
+        function buildGenericQuiz(containerId, data) {
+            const container = document.getElementById(containerId);
+            if(container.innerHTML.trim() !== '') return;
+            
+            container.innerHTML = data.map((q, qIdx) => `
+                <div class="glass-panel p-6 bg-white question-row shadow-sm border-l-4 border-sky-300 mb-4">
+                    <p class="font-bold text-slate-800 mb-4 text-lg journal-font">Question ${qIdx+1}: ${q.q}</p>
+                    <div class="space-y-3">
+                        ${q.opts.map((opt, oIdx) => `
+                            <button onclick="checkQuiz(this, ${qIdx}, ${oIdx}, ${q.a}, '${containerId}', ${data.length})" class="w-full text-left font-bold p-4 rounded-lg bg-slate-50 border border-slate-200 hover:border-sky-500 hover:bg-sky-50 transition btn-modern text-slate-700">${opt}</button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function checkQuiz(btn, qIdx, selected, correct, containerId, totalQs) {
+            const parent = btn.parentElement;
+            const mainRow = btn.closest('.question-row'); 
+            
+            if(parent.querySelector('.opacity-50')) return;
+            
+            Array.from(parent.children).forEach(b => { b.disabled = true; b.classList.add('opacity-50'); });
+            
+            if(selected === correct) {
+                btn.classList.remove('opacity-50', 'bg-slate-50', 'border-slate-200');
+                btn.classList.add('bg-green-50', 'border-green-500', 'text-green-800', 'opacity-100');
+                mainRow.classList.replace('border-sky-300', 'border-green-500');
+                AppScore.add(`quiz_${containerId}_${qIdx}`, 1); // 1 point per correct answer
+            } else {
+                btn.classList.remove('opacity-50', 'bg-slate-50', 'border-slate-200');
+                btn.classList.add('bg-red-50', 'border-red-500', 'text-red-800', 'opacity-100');
+                parent.children[correct].classList.remove('opacity-50', 'bg-slate-50', 'border-slate-200');
+                parent.children[correct].classList.add('border-green-500', 'bg-green-50', 'text-green-800', 'opacity-100');
+                mainRow.classList.replace('border-sky-300', 'border-red-500');
+            }
+        }
+
+        // --- 7. SENTENCE BUILDER ---
+        const Builder = {
+            words: ["Please", "have", "your", "boarding", "pass", "ready."],
+            target: "Please have your boarding pass ready.",
+            userWords: [],
+            render() {
+                const c = document.getElementById('builder-container');
+                if(c.innerHTML.trim() !== '') return;
+                
+                const shuffled = [...this.words].sort(() => Math.random() - 0.5);
+                c.innerHTML = `
+                    <div class="bg-sky-50 border-2 border-dashed border-sky-300 rounded-xl min-h-[100px] p-5 flex flex-wrap gap-2 items-center justify-center mb-8" id="drop-zone">
+                        <span class="text-sky-600/50 italic text-sm font-serif">Place the fragments here...</span>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-3 mb-8" id="word-bank">
+                        ${shuffled.map(w => `<div class="word-token" onclick="Builder.add('${w}', this)">${w}</div>`).join('')}
+                    </div>
+                    <div class="text-center flex justify-center gap-4">
+                        <button onclick="Builder.reset()" class="bg-white border border-slate-300 text-slate-600 font-bold py-3 px-6 rounded-lg hover:bg-slate-50 btn-modern uppercase tracking-wide text-sm"><i class="fas fa-undo"></i> Reset</button>
+                        <button onclick="Builder.check()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-10 rounded-lg btn-modern uppercase tracking-wide text-sm shadow-md">Check Order</button>
+                    </div>
+                    <div id="build-fb" class="hidden mt-6 text-center font-bold p-4 rounded-xl border"></div>
+                `;
+            },
+            add(w, el) {
+                if(el.classList.contains('used')) return;
+                el.classList.add('used');
+                this.userWords.push(w);
+                this.updateUI();
+                TTS.speak(w, 'f');
+            },
+            updateUI() {
+                const dz = document.getElementById('drop-zone');
+                if(this.userWords.length === 0) dz.innerHTML = `<span class="text-sky-600/50 italic font-serif">Place fragments here...</span>`;
+                else dz.innerHTML = this.userWords.map(w => `<div class="bg-sky-600 text-white px-4 py-2 rounded-lg shadow-sm font-serif text-lg">${w}</div>`).join('');
+            },
+            reset() {
+                this.userWords = [];
+                document.querySelectorAll('.word-token').forEach(el => el.classList.remove('used'));
+                this.updateUI();
+                document.getElementById('build-fb').classList.add('hidden');
+            },
+            check() {
+                const fb = document.getElementById('build-fb');
+                fb.classList.remove('hidden');
+                
+                if(this.userWords.length !== this.words.length) {
+                    fb.className = "mt-6 text-center font-bold p-4 rounded-xl bg-amber-50 text-amber-800 border border-amber-300";
+                    fb.innerText = "Incomplete sentence! Use all words.";
+                    return;
+                }
+
+                if(this.userWords.join(' ') === this.target) {
+                    fb.className = "mt-6 text-center font-bold p-4 rounded-xl bg-green-50 text-green-800 border border-green-300";
+                    fb.innerHTML = `<i class="fas fa-check-circle"></i> Perfect reconstruction.`;
+                    TTS.speak(this.target, 'f');
+                    AppScore.add('builder', 1);
+                } else {
+                    fb.className = "mt-6 text-center font-bold p-4 rounded-xl bg-red-50 text-red-800 border border-red-300";
+                    fb.innerHTML = `<i class="fas fa-times-circle"></i> The sequence is incorrect. Try again.`;
+                    setTimeout(() => this.reset(), 2000);
+                }
+            }
+        };
+
+        // --- 8. VOICE RECOGNITION ---
+        const VoiceAI = {
+            recognition: null, supported: false,
+            init() {
+                window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (window.SpeechRecognition) {
+                    this.supported = true;
+                    this.recognition = new window.SpeechRecognition();
+                    this.recognition.lang = 'en-US';
+                    this.recognition.interimResults = false;
+                    this.recognition.maxAlternatives = 1;
+                }
+            },
+            start(targetSentence) {
+                const btn = document.getElementById(`mic-btn`);
+                const status = document.getElementById(`mic-status`);
+                const fb = document.getElementById(`voice-fb`);
+
+                if (!this.supported) {
+                    fb.classList.remove('hidden');
+                    fb.className = "mt-6 p-4 rounded-xl text-sm font-bold border bg-slate-100 text-slate-700 border-slate-300";
+                    fb.innerText = "Voice recording not supported in this browser. Please skip to the next section.";
+                    return;
+                }
+
+                btn.classList.add('mic-listening');
+                status.innerText = "Listening...";
+                fb.classList.add('hidden');
+
+                this.recognition.start();
+
+                this.recognition.onresult = (e) => {
+                    const transcript = e.results[0][0].transcript.trim().toLowerCase().replace(/[^a-z0-9 ]/g, '');
+                    
+                    btn.classList.remove('mic-listening');
+                    status.innerText = `Heard: "${e.results[0][0].transcript}"`;
+                    fb.classList.remove('hidden');
+                    fb.classList.add('slide-enter');
+
+                    if(transcript.includes("boarding pass")) {
+                        fb.className = "mt-6 p-4 rounded-xl text-sm font-bold border bg-green-50 text-green-800 border-green-300";
+                        fb.innerHTML = `<i class="fas fa-check-circle mr-1"></i> Great pronunciation!`;
+                        AppScore.add('voice', 1);
+                    } else {
+                        fb.className = "mt-6 p-4 rounded-xl text-sm font-bold border bg-red-50 text-red-800 border-red-300";
+                        fb.innerHTML = `<i class="fas fa-times-circle mr-1"></i> Not quite. Remember to say "boarding pass".`;
+                    }
+                };
+
+                this.recognition.onerror = () => {
+                    btn.classList.remove('mic-listening');
+                    status.innerText = "Mic error or blocked.";
+                };
+                this.recognition.onend = () => { btn.classList.remove('mic-listening'); };
+            }
+        };
+
+        // --- NAVIGATION ---
+        const Nav = {
+            current: 0,
+            total: 10,
+            slidesData: [
+                { title: "Briefing" }, { title: "Vocabulary" }, { title: "Fill in Blanks" }, 
+                { title: "Reading" }, { title: "Reading Quiz" }, { title: "Audio" },
+                { title: "Audio Quiz" }, { title: "Sentence Builder" }, { title: "Dictation" }, 
+                { title: "Results" }
+            ],
+            update() {
+                document.getElementById('nav-title').innerText = this.slidesData[this.current].title;
+                document.getElementById('main-progress').style.width = `${(this.current / (this.total-1)) * 100}%`;
+                document.getElementById('slide-counter').innerText = `${this.current + 1} / ${this.total}`;
+
+                for(let i=0; i<this.total; i++) {
+                    const s = document.getElementById(`slide-${i}`);
+                    if(s) { s.classList.add('hidden-slide'); s.classList.remove('slide-enter'); }
+                }
+                
+                const act = document.getElementById(`slide-${this.current}`);
+                if(act) { act.classList.remove('hidden-slide'); void act.offsetWidth; act.classList.add('slide-enter'); }
+
+                document.getElementById('btn-prev').disabled = this.current === 0;
+                document.getElementById('bottom-nav').classList.toggle('hidden', this.current === this.total - 1);
+                
+                // Note: The "Next" button is NEVER hidden. Students can progress at any time.
+                
+                // Lazy Renders & Score Calculation trigger
+                if(this.current === 3) buildGenericQuiz('quiz-reading-1', quizRead1);
+                if(this.current === 4) buildGenericQuiz('quiz-reading-1', quizRead1);
+                if(this.current === 5) AudioLab.buildTrans();
+                if(this.current === 6) buildGenericQuiz('quiz-listening', convoData.quiz);
+                if(this.current === 7) Builder.render();
+                
+                if(this.current === 9) {
+                    // Update Final Score UI
+                    const feedback = AppScore.calculateFeedback();
+                    document.getElementById('final-score-display').innerText = `${AppScore.points}/${AppScore.max}`;
+                    document.getElementById('final-pct-display').innerText = `${feedback.pct}% Score`;
+                    document.getElementById('score-feedback').innerText = feedback.msg;
+                }
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                TTS.stop();
+            },
+            next() { if(this.current < this.total - 1) { this.current++; this.update(); } },
+            prev() { if(this.current > 0) { this.current--; this.update(); } }
+        };
+
+        // Click outside to close popover in Slide 2
+        document.addEventListener('click', function(event) {
+            const popover = document.getElementById('options-popover');
+            if (popover && !popover.classList.contains('hidden')) {
+                if (!event.target.closest('.inline-blank') && !event.target.closest('#options-popover')) {
+                    popover.classList.add('hidden');
+                }
+            }
+        });
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            TTS.init();
+            VoiceAI.init();
+            Nav.update();
+        });
+
+    </script>
+</body>
+</html>
