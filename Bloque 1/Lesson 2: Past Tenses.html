@@ -169,6 +169,11 @@
             </div>
             
             <div class="flex items-center gap-3 md:gap-4">
+                <!-- Dictionary Button -->
+                <button onclick="DictionaryUI.toggle()" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-3 py-1.5 md:px-4 rounded-lg text-xs md:text-sm font-bold border border-indigo-300 shadow-sm transition flex items-center gap-2">
+                    <i class="fas fa-book-open"></i> <span class="hidden md:inline">Dictionary</span>
+                </button>
+                
                 <div id="tts-status" class="hidden md:flex items-center gap-2 text-xs font-bold text-sky-700 bg-sky-50 px-3 py-1 rounded-md border border-sky-200">
                     <i class="fas fa-spinner fa-spin"></i>
                 </div>
@@ -181,6 +186,19 @@
             <div id="main-progress" class="bg-sky-500 h-full transition-all duration-300 shadow-[0_0_10px_rgba(14,165,233,0.5)]" style="width: 0%"></div>
         </div>
     </nav>
+
+    <!-- Dictionary Modal Overlay -->
+    <div id="dictionary-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden slide-enter border border-sky-200">
+            <div class="p-5 border-b border-sky-100 flex justify-between items-center bg-gradient-to-r from-sky-50 to-indigo-50">
+                <h3 class="text-xl font-black text-indigo-900 journal-font"><i class="fas fa-book mr-2 text-indigo-500"></i> Flight Dictionary</h3>
+                <button onclick="DictionaryUI.toggle()" class="text-slate-400 hover:text-rose-600 text-2xl transition"><i class="fas fa-times-circle"></i></button>
+            </div>
+            <div class="p-5 overflow-y-auto flex-grow space-y-3 bg-slate-50" id="dict-content">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
 
     <!-- Main Content Container -->
     <main class="flex-grow w-full max-w-5xl mx-auto px-4 py-6 md:py-10 flex flex-col relative pb-28 md:pb-32">
@@ -198,32 +216,17 @@
             </p>
             <div class="flex flex-wrap justify-center gap-3 mb-6">
                 <span class="bg-white text-sky-800 px-4 py-2 rounded-full text-sm font-bold shadow-sm border border-sky-200"><i class="fas fa-check-circle mr-2"></i> 11 Points Total</span>
-                <span class="bg-white text-sky-800 px-4 py-2 rounded-full text-sm font-bold shadow-sm border border-sky-200"><i class="fas fa-tasks mr-2"></i> 10 Sections</span>
+                <span class="bg-white text-sky-800 px-4 py-2 rounded-full text-sm font-bold shadow-sm border border-sky-200"><i class="fas fa-book mr-2"></i> Tap Dictionary anytime</span>
             </div>
         </section>
 
         <!-- SLIDE 1: Vocabulary Review -->
         <section id="slide-1" class="hidden-slide">
-            <h2 class="text-2xl md:text-3xl font-black text-sky-900 mb-2 journal-font uppercase border-b-2 border-sky-200 pb-2">1. Vocabulary Review</h2>
-            <p class="text-slate-600 mb-6 text-sm md:text-base">Tap on the flashcards to listen to the pronunciation of our key terms.</p>
+            <h2 class="text-2xl md:text-3xl font-black text-sky-900 mb-2 journal-font uppercase border-b-2 border-sky-200 pb-2">1. Essential Vocabulary</h2>
+            <p class="text-slate-600 mb-6 text-sm md:text-base">Tap the sound button to hear the pronunciation. Open the dictionary (top right) to see the full list and verbs!</p>
 
-            <div class="grid md:grid-cols-2 gap-4">
-                <div class="glass-panel p-5 border-l-4 border-sky-500 cursor-pointer hover:bg-sky-50 transition" onclick="TTS.speak('Boarding Pass. The document you need to get on the plane.')">
-                    <h3 class="font-black text-sky-800 text-lg mb-1"><i class="fas fa-ticket-alt mr-2 text-sky-500"></i>Boarding Pass</h3>
-                    <p class="text-sm text-slate-600 font-medium">The official document or ticket you need to get on the plane.</p>
-                </div>
-                <div class="glass-panel p-5 border-l-4 border-amber-500 cursor-pointer hover:bg-amber-50 transition" onclick="TTS.speak('Customs. The place where officers check your bags when you enter a country.')">
-                    <h3 class="font-black text-amber-800 text-lg mb-1"><i class="fas fa-passport mr-2 text-amber-500"></i>Customs</h3>
-                    <p class="text-sm text-slate-600 font-medium">The place at the airport where officers check your bags when you enter a new country.</p>
-                </div>
-                <div class="glass-panel p-5 border-l-4 border-rose-500 cursor-pointer hover:bg-rose-50 transition" onclick="TTS.speak('Baggage Claim. The area where you collect your suitcases after a flight.')">
-                    <h3 class="font-black text-rose-800 text-lg mb-1"><i class="fas fa-suitcase-rolling mr-2 text-rose-500"></i>Baggage Claim</h3>
-                    <p class="text-sm text-slate-600 font-medium">The specific area with moving belts where you collect your suitcases after landing.</p>
-                </div>
-                <div class="glass-panel p-5 border-l-4 border-teal-500 cursor-pointer hover:bg-teal-50 transition" onclick="TTS.speak('Departure Lounge. The waiting area near your gate before you board.')">
-                    <h3 class="font-black text-teal-800 text-lg mb-1"><i class="fas fa-couch mr-2 text-teal-500"></i>Departure Lounge</h3>
-                    <p class="text-sm text-slate-600 font-medium">The waiting area near your gate before you board the airplane.</p>
-                </div>
+            <div class="grid md:grid-cols-2 gap-4" id="vocab-container">
+                <!-- Populated by JS from Dictionary Data -->
             </div>
         </section>
 
@@ -252,7 +255,7 @@
         <!-- SLIDE 3: Reading Passage -->
         <section id="slide-3" class="hidden-slide">
             <h2 class="text-2xl md:text-3xl font-black text-sky-900 mb-2 journal-font uppercase border-b-2 border-sky-200 pb-2">3. Travel Blog Entry</h2>
-            <p class="text-slate-600 mb-6 text-sm md:text-base">Read Sarah's experience at the airport.</p>
+            <p class="text-slate-600 mb-6 text-sm md:text-base">Read Sarah's experience at the airport. Remember you can check the Dictionary if you forget a word!</p>
 
             <div class="glass-panel p-8 relative bg-slate-50 border-sky-200">
                 <div class="absolute top-4 right-4 opacity-20 text-6xl">📖</div>
@@ -261,7 +264,7 @@
                 <p class="text-slate-800 leading-relaxed font-medium text-lg journal-font space-y-4" id="reading-1-text">
                     <span class="block">I arrived at the airport two hours early, but there was a massive line at the check-in desk. By the time I dropped off my luggage, I only had 30 minutes before my flight.</span>
                     
-                    <span class="block mt-4">I ran through security, holding my <b class="text-sky-700 bg-sky-100 px-1 rounded">boarding pass</b> tightly. When I finally reached the <b class="text-sky-700 bg-sky-100 px-1 rounded">departure lounge</b>, the <b class="text-sky-700 bg-sky-100 px-1 rounded">flight attendant</b> was already closing the gate. Thankfully, she let me in just in time!</span>
+                    <span class="block mt-4">I ran through security, holding my <b class="text-sky-700 bg-sky-100 px-1 rounded">boarding pass</b> tightly. When I finally reached the <b class="text-sky-700 bg-sky-100 px-1 rounded">departure lounge</b>, the <b class="text-sky-700 bg-sky-100 px-1 rounded">flight attendant</b> was already closing the gate. Thankfully, she let me board just in time!</span>
                 </p>
                 
                 <button onclick="TTS.speak(document.getElementById('reading-1-text').innerText, 'f')" class="mt-6 bg-white border-2 border-sky-600 text-sky-800 font-bold px-5 py-2.5 rounded-lg hover:bg-sky-50 transition btn-modern text-sm shadow-sm flex items-center">
@@ -381,6 +384,58 @@
     </main>
 
     <script>
+        // --- DICTIONARY SYSTEM ---
+        const DictionaryUI = {
+            data: [
+                { w: "Boarding Pass", e: "🎫", t: "noun", m: "The official document you need to get on the plane." },
+                { w: "Customs", e: "🛂", t: "noun", m: "The place where officers check your bags when you enter a new country." },
+                { w: "Baggage Claim", e: "🛄", t: "noun", m: "The area with moving belts where you collect your suitcases." },
+                { w: "Departure Lounge", e: "🛋️", t: "noun", m: "The waiting area near your gate before you board the airplane." },
+                { w: "Suitcase", e: "🧳", t: "noun", m: "A large case used for carrying clothes and belongings when traveling." },
+                { w: "Flight Attendant", e: "👩‍✈️", t: "noun", m: "A person who serves passengers and ensures safety on an aircraft." },
+                { w: "To Board", e: "🚶‍♂️✈️", t: "verb", f: "board / boarded / boarded", m: "To get on a plane or vehicle." },
+                { w: "To Land", e: "🛬", t: "verb", f: "land / landed / landed", m: "When the plane arrives and touches the ground." },
+                { w: "To Arrive", e: "📍", t: "verb", f: "arrive / arrived / arrived", m: "To reach a destination or a place." },
+                { w: "To Drop off", e: "🎒", t: "verb", f: "drop off / dropped off / dropped off", m: "To leave something (like luggage) at a specific place." }
+            ],
+            renderModal() {
+                const c = document.getElementById('dict-content');
+                c.innerHTML = this.data.map(item => `
+                    <div class="p-4 border border-sky-100 rounded-xl flex items-start gap-4 bg-white hover:border-sky-300 transition shadow-sm">
+                        <div class="text-3xl bg-sky-50 p-2 rounded-lg">${item.e}</div>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-start mb-1">
+                                <h4 class="font-black text-sky-900 text-lg">${item.w} <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-2 bg-slate-100 px-2 py-0.5 rounded">${item.t}</span></h4>
+                                <button onclick="TTS.speak('${item.w}', 'f')" class="text-sky-400 hover:text-sky-700 transition w-8 h-8 flex items-center justify-center bg-sky-50 rounded-full"><i class="fas fa-volume-up"></i></button>
+                            </div>
+                            ${item.f ? `<p class="text-xs font-mono text-amber-600 font-bold mb-1.5">${item.f}</p>` : ''}
+                            <p class="text-sm text-slate-600 font-medium">${item.m}</p>
+                        </div>
+                    </div>
+                `).join('');
+            },
+            renderVocabSlide() {
+                const c = document.getElementById('vocab-container');
+                // Select only the first 6 nouns for the presentation flashcards
+                const subset = this.data.slice(0, 6); 
+                c.innerHTML = subset.map(item => `
+                    <div class="glass-panel p-5 border-l-4 border-sky-500 flex items-center gap-4 hover:bg-sky-50 transition">
+                        <div class="text-4xl w-14 text-center">${item.e}</div>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-center mb-1">
+                                <h3 class="font-black text-sky-800 text-lg leading-tight">${item.w}</h3>
+                                <button onclick="TTS.speak('${item.w}. ${item.m}', 'f')" class="text-sky-600 hover:text-white hover:bg-sky-500 bg-sky-100 rounded-full w-8 h-8 flex flex-shrink-0 items-center justify-center transition"><i class="fas fa-volume-up"></i></button>
+                            </div>
+                            <p class="text-sm text-slate-600 font-medium leading-snug">${item.m}</p>
+                        </div>
+                    </div>
+                `).join('');
+            },
+            toggle() {
+                document.getElementById('dictionary-modal').classList.toggle('hidden');
+            }
+        };
+
         // --- SCORE SYSTEM ---
         const AppScore = {
             points: 0,
@@ -398,7 +453,7 @@
                 if(pct >= 90) msg = "Excellent job! You are ready to travel the world without any language barriers! 🌍✈️";
                 else if(pct >= 70) msg = "Great work! You have a solid grasp of this vocabulary. Just a little more practice and you'll be perfect. 👍";
                 else if(pct >= 50) msg = "Good effort! You might want to review some of these terms again before your next trip. 📖";
-                else msg = "Keep practicing! Review the vocabulary flashcards and try this homework again. You can do it! 💪";
+                else msg = "Keep practicing! Check the dictionary again and retry this homework. You can do it! 💪";
                 return { pct: Math.round(pct), msg };
             }
         };
@@ -580,7 +635,7 @@
                 btn.classList.remove('opacity-50', 'bg-slate-50', 'border-slate-200');
                 btn.classList.add('bg-green-50', 'border-green-500', 'text-green-800', 'opacity-100');
                 mainRow.classList.replace('border-sky-300', 'border-green-500');
-                AppScore.add(`quiz_${containerId}_${qIdx}`, 1); // 1 point per correct answer
+                AppScore.add(`quiz_${containerId}_${qIdx}`, 1); 
             } else {
                 btn.classList.remove('opacity-50', 'bg-slate-50', 'border-slate-200');
                 btn.classList.add('bg-red-50', 'border-red-500', 'text-red-800', 'opacity-100');
@@ -738,8 +793,6 @@
                 document.getElementById('btn-prev').disabled = this.current === 0;
                 document.getElementById('bottom-nav').classList.toggle('hidden', this.current === this.total - 1);
                 
-                // Note: The "Next" button is NEVER hidden. Students can progress at any time.
-                
                 // Lazy Renders & Score Calculation trigger
                 if(this.current === 3) buildGenericQuiz('quiz-reading-1', quizRead1);
                 if(this.current === 4) buildGenericQuiz('quiz-reading-1', quizRead1);
@@ -748,7 +801,6 @@
                 if(this.current === 7) Builder.render();
                 
                 if(this.current === 9) {
-                    // Update Final Score UI
                     const feedback = AppScore.calculateFeedback();
                     document.getElementById('final-score-display').innerText = `${AppScore.points}/${AppScore.max}`;
                     document.getElementById('final-pct-display').innerText = `${feedback.pct}% Score`;
@@ -776,6 +828,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             TTS.init();
             VoiceAI.init();
+            DictionaryUI.renderModal();
+            DictionaryUI.renderVocabSlide();
             Nav.update();
         });
 
