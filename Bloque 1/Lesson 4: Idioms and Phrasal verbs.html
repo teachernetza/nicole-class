@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Advanced Phrasal Verbs & Idioms: Interactive Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+        
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+            color: #1e293b; 
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Glassmorphism Containers */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.05), 0 10px 15px -6px rgba(0, 0, 0, 0.02);
+            border-radius: 1.5rem;
+        }
+        
+        .glass-header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .btn-press { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .btn-press:active:not(:disabled) { transform: scale(0.95); }
+
+        /* Compact Flip Cards for Dictionary */
+        .flip-card { perspective: 1000px; height: 140px; }
+        .flip-card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+            transform-style: preserve-3d; cursor: pointer;
+        }
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back {
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+            border-radius: 1rem; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0.75rem;
+        }
+        .flip-card-front { background: rgba(255,255,255,0.9); border: 2px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        
+        /* Phrasal Verbs Colors */
+        .pv-back { background: linear-gradient(135deg, #4f46e5, #3b82f6); color: white; transform: rotateY(180deg); border: 2px solid #6366f1; }
+        
+        /* Idioms Colors */
+        .id-back { background: linear-gradient(135deg, #f59e0b, #ea580c); color: white; transform: rotateY(180deg); border: 2px solid #fbbf24; }
+
+        /* Inline Selects */
+        .inline-select {
+            -webkit-appearance: none; appearance: none;
+            background: white; border: 2px dashed #94a3b8; color: #475569;
+            padding: 0.25rem 1rem; border-radius: 0.5rem; font-weight: 700;
+            cursor: pointer; transition: all 0.2s; outline: none;
+            text-align: center; font-size: 1rem;
+        }
+        .inline-select:focus { border-color: #4f46e5; border-style: solid; box-shadow: 0 0 0 4px rgba(79,70,229,0.15); }
+        .inline-select.correct { border-color: #10b981; border-style: solid; background: #ecfdf5; color: #065f46; pointer-events: none; }
+        .inline-select.incorrect { border-color: #ef4444; border-style: solid; background: #fef2f2; color: #991b1b; animation: shake 0.4s; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Floating Score Badge */
+        .score-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white; padding: 0.5rem 1.25rem; border-radius: 9999px; font-weight: 800;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .score-bump { transform: scale(1.15); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <nav class="fixed top-0 w-full glass-header z-50 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-xl flex items-center justify-center text-white text-lg shadow-md">
+                    <i class="fas fa-puzzle-piece"></i>
+                </div>
+                <div>
+                    <h1 class="font-black text-slate-800 leading-none text-lg">PV & Idioms Lab</h1>
+                    <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-0.5">Advanced Practice</p>
+                </div>
+            </div>
+            <div class="score-badge flex items-center gap-2" id="score-container">
+                <i class="fas fa-star text-yellow-300"></i>
+                <span id="score-display">0</span> <span class="text-emerald-100 text-sm">/ 340</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-4 pt-24 space-y-10">
+
+        <!-- Header -->
+        <header class="text-center py-6">
+            <h2 class="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight">Advanced Vocabulary Lab</h2>
+            <p class="text-slate-600 font-medium max-w-2xl mx-auto text-lg leading-relaxed">
+                Master the 15 most common Phrasal Verbs and 12 essential Idioms. Review the dictionary, check the rules, and conquer the practice sections.
+            </p>
+        </header>
+
+        <!-- Dictionary Section -->
+        <section class="glass p-6 md:p-8 relative overflow-hidden border-t-4 border-t-indigo-500">
+            <h3 class="text-2xl font-black text-slate-800 mb-2 uppercase tracking-wide"><i class="fas fa-book-open text-indigo-500 mr-2"></i> The Master Dictionary</h3>
+            <p class="text-slate-500 text-sm font-medium mb-6">Tap the cards to reveal their definitions, translations, and an example. Review these before starting the practice!</p>
+            
+            <div class="space-y-8">
+                <!-- Phrasal Verbs -->
+                <div>
+                    <h4 class="font-bold text-indigo-700 border-b-2 border-indigo-100 pb-2 mb-4 flex items-center gap-2"><i class="fas fa-bolt"></i> 15 Essential Phrasal Verbs</h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3" id="dict-pv">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Idioms -->
+                <div>
+                    <h4 class="font-bold text-amber-600 border-b-2 border-amber-100 pb-2 mb-4 flex items-center gap-2"><i class="fas fa-comment-dots"></i> 12 Essential Idioms</h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" id="dict-id">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass p-6 md:p-8 border-t-4 border-t-emerald-500">
+            <h3 class="text-2xl font-black text-slate-800 mb-2 uppercase tracking-wide"><i class="fas fa-balance-scale text-emerald-500 mr-2"></i> Quick Rules Review</h3>
+            <p class="text-slate-500 text-sm font-medium mb-6">Keep these two golden rules in mind while practicing.</p>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                    <h4 class="font-black text-emerald-700 text-lg mb-2">1. Separability (Phrasal Verbs)</h4>
+                    <p class="text-sm text-slate-600 mb-3">Some phrasal verbs can be separated by their object (especially pronouns like <i>it</i>). Others cannot.</p>
+                    <ul class="text-sm font-bold text-slate-700 space-y-2">
+                        <li class="bg-emerald-50 p-2 rounded text-emerald-900 border border-emerald-100">✅ Call it off (Separable)</li>
+                        <li class="bg-red-50 p-2 rounded text-red-900 line-through border border-red-100">❌ Call off it</li>
+                        <li class="bg-emerald-50 p-2 rounded text-emerald-900 border border-emerald-100">✅ Look forward to it (Inseparable)</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                    <h4 class="font-black text-amber-600 text-lg mb-2">2. Figurative Meaning (Idioms)</h4>
+                    <p class="text-sm text-slate-600 mb-3">Idioms <b>never</b> mean what they literally say. You must understand the cultural or figurative context.</p>
+                    <ul class="text-sm font-bold text-slate-700 space-y-2">
+                        <li class="bg-amber-50 p-2 rounded text-amber-900 border border-amber-100">"Hit the sack" = Go to sleep</li>
+                        <li class="bg-slate-50 p-2 rounded text-slate-500 font-normal italic border border-slate-100">(Not physically punching a sack)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Practice 1 -->
+        <section class="glass p-6 md:p-8 bg-indigo-50/30">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl md:text-2xl font-black text-slate-800 uppercase tracking-wide">Practice 1: PV Meanings</h3>
+                <span class="text-xs font-bold bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-full shadow-sm">30 PTS</span>
+            </div>
+            <div class="space-y-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <p class="font-bold text-slate-700 mb-3 text-base">1. Which phrasal verb means "to cancel an event"?</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2" id="q1">
+                        <button onclick="Logic.checkMC(this, 'q1', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">Bring up</button>
+                        <button onclick="Logic.checkMC(this, 'q1', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">Call off</button>
+                        <button onclick="Logic.checkMC(this, 'q1', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">Put off</button>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <p class="font-bold text-slate-700 mb-3 text-base">2. Which one means "to search for information"?</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2" id="q2">
+                        <button onclick="Logic.checkMC(this, 'q2', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">Look up</button>
+                        <button onclick="Logic.checkMC(this, 'q2', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">Figure out</button>
+                        <button onclick="Logic.checkMC(this, 'q2', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">Point out</button>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <p class="font-bold text-slate-700 mb-3 text-base">3. Which one means "to tolerate someone or something"?</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2" id="q3">
+                        <button onclick="Logic.checkMC(this, 'q3', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">Make up</button>
+                        <button onclick="Logic.checkMC(this, 'q3', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">Catch up</button>
+                        <button onclick="Logic.checkMC(this, 'q3', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">Put up with</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Practice 2 -->
+        <section class="glass p-6 md:p-8 bg-amber-50/30">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl md:text-2xl font-black text-slate-800 uppercase tracking-wide">Practice 2: Idiom Meanings</h3>
+                <span class="text-xs font-bold bg-amber-100 text-amber-700 px-3 py-1.5 rounded-full shadow-sm">30 PTS</span>
+            </div>
+            <div class="space-y-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <p class="font-bold text-slate-700 mb-3 text-base">1. If something is "very expensive", it...</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2" id="q4">
+                        <button onclick="Logic.checkMC(this, 'q4', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl text-left">Costs an arm and a leg</button>
+                        <button onclick="Logic.checkMC(this, 'q4', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl text-left">Is a piece of cake</button>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <p class="font-bold text-slate-700 mb-3 text-base">2. If you accidentally "reveal a secret", you...</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2" id="q5">
+                        <button onclick="Logic.checkMC(this, 'q5', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl text-left">Beat around the bush</button>
+                        <button onclick="Logic.checkMC(this, 'q5', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl text-left">Spill the beans</button>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <p class="font-bold text-slate-700 mb-3 text-base">3. If you say "I'm going to hit the sack", you are...</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2" id="q6">
+                        <button onclick="Logic.checkMC(this, 'q6', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl text-left">Going to sleep</button>
+                        <button onclick="Logic.checkMC(this, 'q6', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl text-left">Stopping work for the day</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reminder Note 1 -->
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-xl shadow-sm my-6 flex items-start sm:items-center gap-3">
+            <i class="fas fa-lightbulb text-yellow-500 text-xl mt-1 sm:mt-0"></i>
+            <p class="text-sm font-bold text-yellow-800">Reminder: Pronouns go in the middle of separable phrasal verbs! (e.g., "Turn <span class="text-yellow-600">it</span> down", NOT "Turn down it").</p>
+        </div>
+
+        <!-- Practice 3 -->
+        <section class="glass p-6 md:p-8 bg-blue-50/30">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl md:text-2xl font-black text-slate-800 uppercase tracking-wide">Practice 3: Workplace PVs</h3>
+                <span class="text-xs font-bold bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full shadow-sm">30 PTS</span>
+            </div>
+            <p class="text-slate-600 mb-6 text-sm font-medium">Complete the sentence with the correct contextual phrasal verb.</p>
+            <div class="bg-white p-6 md:p-8 rounded-2xl leading-loose text-lg font-medium text-slate-700 shadow-sm border border-slate-100">
+                "We had to 
+                <select class="inline-select mx-1" onchange="Logic.checkInline(this, 'call off', 10)">
+                    <option value="" disabled selected>...</option>
+                    <option value="bring up">bring up</option>
+                    <option value="call off">call off</option>
+                    <option value="make up">make up</option>
+                </select>
+                the meeting because we completely 
+                <select class="inline-select mx-1" onchange="Logic.checkInline(this, 'ran out of', 10)">
+                    <option value="" disabled selected>...</option>
+                    <option value="ran out of">ran out of</option>
+                    <option value="turned down">turned down</option>
+                    <option value="caught up">caught up</option>
+                </select>
+                paper for the presentation. Can someone please 
+                <select class="inline-select mx-1" onchange="Logic.checkInline(this, 'figure out', 10)">
+                    <option value="" disabled selected>...</option>
+                    <option value="put off">put off</option>
+                    <option value="figure out">figure out</option>
+                    <option value="look up">look up</option>
+                </select>
+                why the printer isn't working?"
+            </div>
+        </section>
+
+        <!-- Practice 4 -->
+        <section class="glass p-6 md:p-8 bg-purple-50/30">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl md:text-2xl font-black text-slate-800 uppercase tracking-wide">Practice 4: Social Context</h3>
+                <span class="text-xs font-bold bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full shadow-sm">30 PTS</span>
+            </div>
+            <div class="space-y-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <p class="font-bold text-slate-700 text-base">1. You are very excited for a party. You are...</p>
+                    <div class="flex gap-2" id="q7">
+                        <button onclick="Logic.checkMC(this, 'q7', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">Looking forward to it</button>
+                        <button onclick="Logic.checkMC(this, 'q7', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">Putting it off</button>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <p class="font-bold text-slate-700 text-base">2. Meeting a friend after a long time to talk.</p>
+                    <div class="flex gap-2" id="q8">
+                        <button onclick="Logic.checkMC(this, 'q8', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">Make up</button>
+                        <button onclick="Logic.checkMC(this, 'q8', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">Catch up</button>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <p class="font-bold text-slate-700 text-base">3. You must reject an invitation to a dinner.</p>
+                    <div class="flex gap-2" id="q9">
+                        <button onclick="Logic.checkMC(this, 'q9', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">Turn it down</button>
+                        <button onclick="Logic.checkMC(this, 'q9', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">Give it up</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Practice 5 -->
+        <section class="glass p-6 md:p-8 bg-pink-50/30">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl md:text-2xl font-black text-slate-800 uppercase tracking-wide">Practice 5: Idiom Scenarios</h3>
+                <span class="text-xs font-bold bg-pink-100 text-pink-700 px-3 py-1.5 rounded-full shadow-sm">30 PTS</span>
+            </div>
+            <div class="space-y-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <p class="font-bold text-slate-700 mb-3 text-base">1. The test was incredibly easy for you.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2" id="q10">
+                        <button onclick="Logic.checkMC(this, 'q10', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl text-left">"It was a piece of cake."</button>
+                        <button onclick="Logic.checkMC(this, 'q10', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl text-left">"I bit the bullet."</button>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <p class="font-bold text-slate-700 mb-3 text-base">2. Someone won't answer your direct question.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2" id="q11">
+                        <button onclick="Logic.checkMC(this, 'q11', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl text-left">"Stop cutting corners!"</button>
+                        <button onclick="Logic.checkMC(this, 'q11', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl text-left">"Stop beating around the bush!"</button>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <p class="font-bold text-slate-700 mb-3 text-base">3. A builder used cheap, bad materials to save money.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2" id="q12">
+                        <button onclick="Logic.checkMC(this, 'q12', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl text-left">"He cut corners."</button>
+                        <button onclick="Logic.checkMC(this, 'q12', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl text-left">"He let the cat out of the bag."</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reminder Note 2 -->
+        <div class="bg-indigo-50 border-l-4 border-indigo-400 p-4 rounded-xl shadow-sm my-6 flex items-start sm:items-center gap-3">
+            <i class="fas fa-brain text-indigo-500 text-xl mt-1 sm:mt-0"></i>
+            <p class="text-sm font-bold text-indigo-800">Note: Idioms are figurative! "Spill the beans" has nothing to do with food; it is a cultural expression meaning "reveal a secret".</p>
+        </div>
+
+        <!-- Practice 6 -->
+        <section class="glass p-6 md:p-8 bg-emerald-50/30">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl md:text-2xl font-black text-slate-800 uppercase tracking-wide">Practice 6: Separability Check</h3>
+                <span class="text-xs font-bold bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-full shadow-sm">30 PTS</span>
+            </div>
+            <p class="text-slate-600 mb-6 text-sm font-medium">Which sentence is grammatically correct?</p>
+            <div class="space-y-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="q13">
+                        <button onclick="Logic.checkMC(this, 'q13', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl text-left">✅ "Call it off."</button>
+                        <button onclick="Logic.checkMC(this, 'q13', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl text-left">❌ "Call off it."</button>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="q14">
+                        <button onclick="Logic.checkMC(this, 'q14', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl text-left">❌ "Look forward it to."</button>
+                        <button onclick="Logic.checkMC(this, 'q14', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl text-left">✅ "Look forward to it."</button>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="q15">
+                        <button onclick="Logic.checkMC(this, 'q15', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl text-left">✅ "Figure it out."</button>
+                        <button onclick="Logic.checkMC(this, 'q15', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl text-left">❌ "Figure out it."</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Practice 7 -->
+        <section class="glass p-6 md:p-8 bg-sky-50/30">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl md:text-2xl font-black text-slate-800 uppercase tracking-wide">Practice 7: Actions & Logistics</h3>
+                <span class="text-xs font-bold bg-sky-100 text-sky-700 px-3 py-1.5 rounded-full shadow-sm">30 PTS</span>
+            </div>
+            <div class="bg-white p-6 md:p-8 rounded-2xl leading-loose text-lg font-medium text-slate-700 shadow-sm border border-slate-100">
+                "My car 
+                <select class="inline-select mx-1" onchange="Logic.checkInline(this, 'broke down', 10)">
+                    <option value="" disabled selected>...</option>
+                    <option value="broke down">broke down</option>
+                    <option value="turned out">turned out</option>
+                </select>
+                in the middle of the highway, so I had to 
+                <select class="inline-select mx-1" onchange="Logic.checkInline(this, 'give up', 10)">
+                    <option value="" disabled selected>...</option>
+                    <option value="make up">make up</option>
+                    <option value="give up">give up</option>
+                </select>
+                on driving and walk to a station. I really hope the repair doesn't 
+                <select class="inline-select mx-1" onchange="Logic.checkInline(this, 'turn out', 10)">
+                    <option value="" disabled selected>...</option>
+                    <option value="turn out">turn out</option>
+                    <option value="point out">point out</option>
+                </select>
+                to be too expensive."
+            </div>
+        </section>
+
+        <!-- Practice 8 -->
+        <section class="glass p-6 md:p-8 bg-orange-50/30">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl md:text-2xl font-black text-slate-800 uppercase tracking-wide">Practice 8: Business Email</h3>
+                <span class="text-xs font-bold bg-orange-100 text-orange-700 px-3 py-1.5 rounded-full shadow-sm">30 PTS</span>
+            </div>
+            <div class="bg-white p-6 md:p-8 rounded-2xl leading-loose text-lg font-medium text-slate-700 shadow-sm border border-slate-100">
+                "Hi Team, I wanted to 
+                <select class="inline-select mx-1" onchange="Logic.checkInline(this, 'bring up', 10)">
+                    <option value="" disabled selected>...</option>
+                    <option value="bring up">bring up</option>
+                    <option value="look up">look up</option>
+                </select>
+                the new project deadline. Please don't 
+                <select class="inline-select mx-1" onchange="Logic.checkInline(this, 'put off', 10)">
+                    <option value="" disabled selected>...</option>
+                    <option value="put off">put off</option>
+                    <option value="call off">call off</option>
+                </select>
+                the decision any longer. Anyway, it's getting late. Let's 
+                <select class="inline-select mx-1" onchange="Logic.checkInline(this, 'call it a day', 10)">
+                    <option value="" disabled selected>...</option>
+                    <option value="hit the sack">hit the sack</option>
+                    <option value="call it a day">call it a day</option>
+                </select>
+                and discuss it tomorrow morning."
+            </div>
+        </section>
+
+        <!-- Practice 9 -->
+        <section class="glass p-6 md:p-8 bg-teal-50/30">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl md:text-2xl font-black text-slate-800 uppercase tracking-wide">Practice 9: Conversation Responses</h3>
+                <span class="text-xs font-bold bg-teal-100 text-teal-700 px-3 py-1.5 rounded-full shadow-sm">30 PTS</span>
+            </div>
+            <div class="space-y-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <p class="font-bold text-slate-700 text-base">"I can't come to the party, I feel a bit sick."</p>
+                    <div class="flex gap-2" id="q16">
+                        <button onclick="Logic.checkMC(this, 'q16', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">"Break a leg!"</button>
+                        <button onclick="Logic.checkMC(this, 'q16', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">"Under the weather?"</button>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <p class="font-bold text-slate-700 text-base">"Come on, tell me what her secret is!"</p>
+                    <div class="flex gap-2" id="q17">
+                        <button onclick="Logic.checkMC(this, 'q17', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">"Spill the beans!"</button>
+                        <button onclick="Logic.checkMC(this, 'q17', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">"Cut corners!"</button>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <p class="font-bold text-slate-700 text-base">"I am about to go on stage for my big speech!"</p>
+                    <div class="flex gap-2" id="q18">
+                        <button onclick="Logic.checkMC(this, 'q18', true, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">"Break a leg!"</button>
+                        <button onclick="Logic.checkMC(this, 'q18', false, 10)" class="btn-press bg-slate-50 border border-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl">"Hit the sack!"</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Practice 10 -->
+        <section class="glass p-6 md:p-8 border-t-4 border-t-slate-800 bg-slate-100/50">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl md:text-2xl font-black text-slate-800 uppercase tracking-wide">Practice 10: The Ultimate Story</h3>
+                <span class="text-xs font-bold bg-slate-200 text-slate-800 px-3 py-1.5 rounded-full shadow-sm">30 PTS</span>
+            </div>
+            <div class="bg-white p-6 md:p-8 rounded-2xl leading-loose text-lg font-medium text-slate-700 shadow-sm border border-slate-200">
+                "It happens 
+                <select class="inline-select mx-1" onchange="Logic.checkInline(this, 'once in a blue moon', 10)">
+                    <option value="" disabled selected>...</option>
+                    <option value="once in a blue moon">once in a blue moon</option>
+                    <option value="a piece of cake">a piece of cake</option>
+                </select>
+                that I completely forget a major meeting. I didn't want to 
+                <select class="inline-select mx-1" onchange="Logic.checkInline(this, 'bite the bullet', 10)">
+                    <option value="" disabled selected>...</option>
+                    <option value="bite the bullet">bite the bullet</option>
+                    <option value="spill the beans">spill the beans</option>
+                </select>
+                and tell the boss the truth, so I stupidly tried to 
+                <select class="inline-select mx-1" onchange="Logic.checkInline(this, 'make up', 10)">
+                    <option value="" disabled selected>...</option>
+                    <option value="put up with">put up with</option>
+                    <option value="make up">make up</option>
+                </select>
+                an excuse about my car. It was a disaster."
+            </div>
+        </section>
+
+        <!-- Practice 11: Chat Simulator -->
+        <section class="glass p-6 md:p-8 bg-sky-50/30 border-t-4 border-t-sky-500">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl md:text-2xl font-black text-slate-800 uppercase tracking-wide">Practice 11: Chat Simulator</h3>
+                <span class="text-xs font-bold bg-sky-100 text-sky-700 px-3 py-1.5 rounded-full shadow-sm">40 PTS</span>
+            </div>
+            <p class="text-slate-600 mb-6 text-sm font-medium">Chat with your colleague Alex. Choose the correct idiom or phrasal verb to respond and keep the conversation going.</p>
+            
+            <div class="max-w-md mx-auto">
+                <div id="chat-simulator-container" class="bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-white rounded-3xl p-4 h-[350px] md:h-[400px] flex flex-col gap-4 overflow-y-auto shadow-inner border border-slate-200 mb-4 custom-scrollbar">
+                    <div class="flex flex-col items-center justify-center h-full text-center">
+                        <div class="w-16 h-16 bg-sky-500 text-white rounded-full flex items-center justify-center text-3xl mb-4 shadow-md">👨‍💻</div>
+                        <p class="font-bold text-slate-500 mb-4">Ready to chat with Alex?</p>
+                        <button onclick="startChat()" class="btn-press bg-sky-600 text-white font-bold py-2 px-6 rounded-full shadow hover:bg-sky-700 transition">Start Chat</button>
+                    </div>
+                </div>
+                <div id="chat-simulator-options" class="grid grid-cols-1 gap-2 min-h-[100px]"></div>
+            </div>
+        </section>
+
+        <!-- Final Button -->
+        <div class="text-center pt-8">
+            <button onclick="Logic.showResults()" class="btn-press bg-slate-900 hover:bg-black text-white font-black py-5 px-12 rounded-2xl shadow-xl text-xl uppercase tracking-widest border border-slate-700 w-full sm:w-auto">
+                <i class="fas fa-flag-checkered mr-2"></i> Finish & Calculate Score
+            </button>
+        </div>
+
+    </main>
+
+    <div id="results-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden justify-center items-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl flex flex-col items-center text-center p-10 transform scale-95 transition-transform duration-300" id="modal-content">
+            <div class="w-28 h-28 bg-gradient-to-tr from-indigo-100 to-indigo-200 text-indigo-600 rounded-full flex items-center justify-center text-6xl mb-6 shadow-inner border-4 border-white" id="icon-container">
+                <i class="fas fa-trophy" id="result-icon"></i>
+            </div>
+            <h2 class="text-4xl font-black text-slate-800 mb-2">Final Score</h2>
+            <div class="text-6xl font-black text-indigo-600 mb-4"><span id="final-score-val">0</span><span class="text-3xl text-slate-400">/340</span></div>
+            <p class="text-slate-500 font-medium text-lg mb-8" id="result-message">Great effort!</p>
+            <button onclick="location.reload()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-xl transition btn-press text-lg uppercase tracking-wide">
+                <i class="fas fa-redo mr-2"></i> Retry Lab
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Data arrays for dictionary
+        const dictionaryData = {
+            phrasal: [
+                { en: "Bring up", def: "Mention a topic", es: "Mencionar un tema", ex: "Don\\'t bring up politics.", emoji: "🗣️" },
+                { en: "Call off", def: "Cancel", es: "Cancelar", ex: "They called off the game.", emoji: "❌" },
+                { en: "Put off", def: "Postpone", es: "Posponer", ex: "Don\\'t put off your homework.", emoji: "📅" },
+                { en: "Look forward to", def: "Anticipate with joy", es: "Esperar con ansias", ex: "I look forward to the trip.", emoji: "🤩" },
+                { en: "Give up", def: "Quit / Stop trying", es: "Rendirse", ex: "Never give up.", emoji: "🏳️" },
+                { en: "Turn out", def: "Result / Become", es: "Resultar", ex: "It turned out great.", emoji: "🔄" },
+                { en: "Figure out", def: "Solve / Understand", es: "Resolver / Descifrar", ex: "I\\'ll figure it out.", emoji: "🧩" },
+                { en: "Run out of", def: "Deplete supply", es: "Quedarse sin", ex: "We ran out of milk.", emoji: "🪫" },
+                { en: "Break down", def: "Stop working / Explain", es: "Descomponerse", ex: "My car broke down.", emoji: "🚗" },
+                { en: "Look up", def: "Search for info", es: "Buscar información", ex: "Look up the word.", emoji: "🔍" },
+                { en: "Point out", def: "Highlight", es: "Señalar", ex: "He pointed out the error.", emoji: "👉" },
+                { en: "Catch up", def: "Get up to date", es: "Ponerse al día", ex: "Let\\'s catch up soon.", emoji: "🏃" },
+                { en: "Put up with", def: "Tolerate", es: "Tolerar / Soportar", ex: "I can\\'t put up with this noise.", emoji: "😤" },
+                { en: "Turn down", def: "Reject", es: "Rechazar", ex: "She turned down the job.", emoji: "👎" },
+                { en: "Make up", def: "Invent / Reconcile", es: "Inventar (una excusa)", ex: "Don\\'t make up excuses.", emoji: "🤥" }
+            ],
+            idioms: [
+                { en: "Piece of cake", def: "Very easy", es: "Pan comido", ex: "The exam was a piece of cake.", emoji: "🍰" },
+                { en: "Under the weather", def: "Sick", es: "Enfermo", ex: "I\\'m feeling under the weather.", emoji: "🤒" },
+                { en: "Bite the bullet", def: "Face a hard situation", es: "Afrontar lo inevitable", ex: "I have to bite the bullet and do it.", emoji: "😬" },
+                { en: "Break a leg", def: "Good luck", es: "¡Buena suerte!", ex: "Break a leg on stage!", emoji: "🎭" },
+                { en: "Call it a day", def: "Stop working", es: "Dar por terminado el día", ex: "It\\'s late, let\\'s call it a day.", emoji: "🌇" },
+                { en: "Hit the sack", def: "Go to sleep", es: "Irse a dormir", ex: "I\\'m tired, time to hit the sack.", emoji: "🛌" },
+                { en: "Cost an arm & a leg", def: "Very expensive", es: "Costar un ojo de la cara", ex: "That car costs an arm and a leg.", emoji: "💸" },
+                { en: "Let the cat out...", def: "Reveal a secret", es: "Irse de la lengua", ex: "He let the cat out of the bag.", emoji: "🐈" },
+                { en: "Once in a blue moon", def: "Very rarely", es: "Muy de vez en cuando", ex: "I eat junk food once in a blue moon.", emoji: "🌒" },
+                { en: "Spill the beans", def: "Reveal a secret", es: "Soltar la sopa", ex: "Come on, spill the beans!", emoji: "🫘" },
+                { en: "Beat around the bush", def: "Avoid the topic", es: "Andarse por las ramas", ex: "Stop beating around the bush.", emoji: "🌳" },
+                { en: "Cut corners", def: "Do cheaply/poorly", es: "Ahorrar esfuerzos / Hacerlo mal", ex: "Don\\'t cut corners on safety.", emoji: "✂️" }
+            ]
+        };
+
+        const TTS = {
+            speak(text) {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    // Ensure quotes are stripped for the speech API if passed with slashes
+                    const cleanText = text.replace(/\\'/g, "'");
+                    const u = new SpeechSynthesisUtterance(cleanText);
+                    u.lang = 'en-US';
+                    u.rate = 0.9;
+                    window.speechSynthesis.speak(u);
+                }
+            }
+        };
+
+        // Render dictionary
+        function renderDictionary() {
+            const pvContainer = document.getElementById('dict-pv');
+            let pvHtml = '';
+            dictionaryData.phrasal.forEach(item => {
+                pvHtml += `
+                <div class="flip-card" onclick="this.classList.toggle('flipped'); TTS.speak('${item.en}');">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl md:text-4xl mb-1 drop-shadow-sm">${item.emoji}</span>
+                            <h4 class="font-bold text-slate-800 text-sm leading-tight">${item.en}</h4>
+                        </div>
+                        <div class="flip-card-back pv-back">
+                            <h4 class="font-bold text-sm mb-1">${item.def}</h4>
+                            <p class="text-[11px] text-indigo-100 font-medium mb-1 border-b border-indigo-400 pb-1 w-full">${item.es}</p>
+                            <p class="text-[10px] italic opacity-90 leading-tight">"${item.ex}"</p>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            pvContainer.innerHTML = pvHtml;
+
+            const idContainer = document.getElementById('dict-id');
+            let idHtml = '';
+            dictionaryData.idioms.forEach(item => {
+                idHtml += `
+                <div class="flip-card" onclick="this.classList.toggle('flipped'); TTS.speak('${item.en}');">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl md:text-4xl mb-1 drop-shadow-sm">${item.emoji}</span>
+                            <h4 class="font-bold text-slate-800 text-sm leading-tight">${item.en}</h4>
+                        </div>
+                        <div class="flip-card-back id-back">
+                            <h4 class="font-bold text-sm mb-1">${item.def}</h4>
+                            <p class="text-[11px] text-amber-100 font-medium mb-1 border-b border-amber-400 pb-1 w-full">${item.es}</p>
+                            <p class="text-[10px] italic opacity-90 leading-tight">"${item.ex}"</p>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            idContainer.innerHTML = idHtml;
+        }
+
+        // Chat Logic
+        const chatScript = [
+            { bot: "Hey! We need to talk about the new project. Are you free to catch up?", options: ["Yes, let's catch up!", "Yes, let's make up!"], correct: 0 },
+            { bot: "Great. I have to point out that we are running out of time.", options: ["We need to cut corners.", "We need to bite the bullet and work hard."], correct: 1 },
+            { bot: "Exactly. No cutting corners! We have to do it right. Are you looking forward to the presentation?", options: ["Yes, it will be a piece of cake!", "Yes, it will cost an arm and a leg."], correct: 0 },
+            { bot: "I like your confidence! Let's call it a day for now and start fresh tomorrow.", options: ["Okay, time to hit the sack.", "Okay, time to spill the beans."], correct: 0 }
+        ];
+        let chatStep = 0;
+
+        function startChat() {
+            chatStep = 0;
+            document.getElementById('chat-simulator-container').innerHTML = '';
+            showBotMessage(chatScript[chatStep].bot);
+        }
+
+        function showBotMessage(msg) {
+            const container = document.getElementById('chat-simulator-container');
+            const bubble = document.createElement('div');
+            bubble.className = "self-start bg-slate-50 p-3 rounded-2xl rounded-tl-sm shadow-sm max-w-[85%] text-slate-700 font-medium border border-slate-200 text-sm md:text-base";
+            bubble.innerText = msg;
+            container.appendChild(bubble);
+            container.scrollTop = container.scrollHeight;
+            
+            showChatOptions();
+            TTS.speak(msg);
+        }
+
+        function showChatOptions() {
+            const optionsContainer = document.getElementById('chat-simulator-options');
+            optionsContainer.innerHTML = '';
+            const script = chatScript[chatStep];
+            
+            script.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "bg-white hover:bg-sky-50 text-sky-700 font-bold p-3 rounded-2xl border-2 border-sky-200 transition text-left text-sm md:text-base shadow-sm hover:border-sky-400";
+                btn.innerText = opt;
+                btn.onclick = () => handleChatOption(index, script.correct, opt);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleChatOption(selectedIndex, correctIndex, text) {
+            if(selectedIndex === correctIndex) {
+                const container = document.getElementById('chat-simulator-container');
+                const bubble = document.createElement('div');
+                bubble.className = "self-end bg-sky-600 text-white p-3 rounded-2xl rounded-tr-sm shadow-sm max-w-[85%] font-medium text-sm md:text-base";
+                bubble.innerText = text;
+                container.appendChild(bubble);
+                container.scrollTop = container.scrollHeight;
+                
+                document.getElementById('chat-simulator-options').innerHTML = '';
+                Logic.addScore(10);
+                
+                chatStep++;
+                if(chatStep < chatScript.length) {
+                    setTimeout(() => {
+                        showBotMessage(chatScript[chatStep].bot);
+                    }, 800);
+                } else {
+                    setTimeout(() => {
+                        const endMsg = document.createElement('div');
+                        endMsg.className = "text-center text-slate-500 font-bold mt-4 bg-white py-2 px-4 rounded-full border shadow-sm self-center text-sm";
+                        endMsg.innerText = "¡Conversación completada! 🎉";
+                        container.appendChild(endMsg);
+                        container.scrollTop = container.scrollHeight;
+                    }, 500);
+                }
+            } else {
+                const btn = document.getElementById('chat-simulator-options').children[selectedIndex];
+                btn.classList.add('bg-red-50', 'text-red-600', 'border-red-400');
+                btn.classList.remove('bg-white', 'text-sky-700', 'border-sky-200');
+                setTimeout(() => {
+                    btn.classList.remove('bg-red-50', 'text-red-600', 'border-red-400');
+                    btn.classList.add('bg-white', 'text-sky-700', 'border-sky-200');
+                }, 500);
+            }
+        }
+
+        const Logic = {
+            score: 0,
+            maxScore: 340,
+            
+            addScore(points) {
+                this.score += points;
+                const display = document.getElementById('score-display');
+                const container = document.getElementById('score-container');
+                display.innerText = this.score;
+                
+                // Animation bump
+                container.classList.add('score-bump');
+                setTimeout(() => container.classList.remove('score-bump'), 300);
+            },
+            
+            checkInline(element, correctAnswer, points) {
+                if(element.dataset.answered === 'true') return;
+                
+                if(element.value === correctAnswer) {
+                    element.classList.add('correct');
+                    element.dataset.answered = 'true';
+                    this.addScore(points);
+                    TTS.speak(correctAnswer);
+                } else {
+                    element.classList.add('incorrect');
+                    setTimeout(() => {
+                        element.classList.remove('incorrect');
+                        element.value = "";
+                    }, 500);
+                }
+            },
+
+            checkMC(button, groupId, isCorrect, points) {
+                const group = document.getElementById(groupId);
+                if(group.dataset.answered === 'true') return;
+
+                const buttons = group.querySelectorAll('button');
+                
+                if(isCorrect) {
+                    button.className = button.className.replace('bg-slate-50', 'bg-emerald-50').replace('border-slate-200', 'border-emerald-500').replace('text-slate-600', 'text-emerald-800').replace('text-slate-700', 'text-emerald-800');
+                    group.dataset.answered = 'true';
+                    this.addScore(points);
+                    buttons.forEach(b => { if(b !== button) b.classList.add('opacity-40', 'pointer-events-none'); });
+                } else {
+                    const originalClass = button.className;
+                    button.className = button.className.replace('bg-slate-50', 'bg-red-50').replace('border-slate-200', 'border-red-400').replace('text-slate-600', 'text-red-800').replace('text-slate-700', 'text-red-800');
+                    setTimeout(() => {
+                        button.className = originalClass;
+                    }, 800);
+                }
+            },
+
+            showResults() {
+                const modal = document.getElementById('results-modal');
+                const content = document.getElementById('modal-content');
+                const finalScore = document.getElementById('final-score-val');
+                const msg = document.getElementById('result-message');
+                const icon = document.getElementById('result-icon');
+                const iconCont = document.getElementById('icon-container');
+                
+                finalScore.innerText = this.score;
+                
+                if(this.score === this.maxScore) {
+                    msg.innerHTML = "<b class='text-emerald-600'>Master Speaker!</b> Perfect score. You know your idioms and phrasal verbs inside out.";
+                    icon.className = "fas fa-crown";
+                    iconCont.className = "w-28 h-28 bg-gradient-to-tr from-yellow-300 to-yellow-500 text-white rounded-full flex items-center justify-center text-6xl mb-6 shadow-xl border-4 border-white";
+                } else if(this.score >= 230) {
+                    msg.innerHTML = "<b class='text-indigo-600'>Excellent job!</b> You have a strong grasp of advanced vocabulary.";
+                    icon.className = "fas fa-medal";
+                } else {
+                    msg.innerHTML = "Keep practicing! Review the dictionary at the top and try again.";
+                    icon.className = "fas fa-book-reader";
+                }
+
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => content.classList.remove('scale-95'), 10);
+            }
+        };
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            renderDictionary();
+        });
+
+    </script>
+</body>
+</html>
