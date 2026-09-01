@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Phrasal Verbs Ultimate: Master Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f8fafc; /* Slate 50 */
+            color: #334155; /* Slate 700 */
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+
+        .solid-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease, transform 0.2s ease;
+        }
+
+        .flip-card-container {
+            perspective: 1000px;
+            height: 280px;
+            width: 100%;
+        }
+        
+        .flip-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .flip-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card:hover:not(.flipped) {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+        }
+        .flip-card.flipped:hover {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transform: rotateY(180deg) translateY(-5px);
+        }
+
+        .flip-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        .flip-front .card-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .flip-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .tts-btn {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(4px);
+            border: none;
+            color: inherit;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .flip-front .tts-btn {
+            background: #f1f5f9;
+            color: #4f46e5;
+        }
+        .tts-btn:hover {
+            transform: scale(1.1);
+            background: #4f46e5;
+            color: white;
+        }
+        .flip-back .tts-btn:hover {
+            background: white;
+            color: #4f46e5;
+        }
+
+        .opt-btn {
+            transition: all 0.2s ease; border: 2px solid #e2e8f0; width: 100%; text-align: left; padding: 1rem 1.25rem; 
+            border-radius: 0.75rem; font-weight: 700; color: #475569; background-color: #f8fafc;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: #94a3b8; background-color: #ffffff; transform: translateY(-2px); }
+        .opt-btn:active:not(:disabled) { transform: scale(0.98); }
+        .opt-btn.correct { background-color: #ecfdf5; border-color: #10b981; color: #047857; font-weight: 800; pointer-events: none; }
+        .opt-btn.incorrect { background-color: #fef2f2; border-color: #ef4444; color: #b91c1c; opacity: 0.7; pointer-events: none; }
+        .opt-btn:disabled { cursor: not-allowed; }
+
+        .check-btn {
+            background-color: #6366f1; color: white; font-weight: bold; padding: 0.6rem 1.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            margin-top: 1rem; display: inline-flex; align-items: center; gap: 0.5rem; justify-content: center; width: 100%; max-width: 250px;
+        }
+        .check-btn:hover:not(:disabled) { background-color: #4f46e5; transform: translateY(-1px); box-shadow: 0 4px 6px -1px rgba(99,102,241,0.3); }
+        .check-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .fitb-input {
+            border: 2px solid #cbd5e1; background-color: #f8fafc; border-radius: 0.5rem; padding: 0.5rem 1rem; font-weight: 700; color: #0f172a; width: 100%; max-width: 250px; transition: all 0.2s; outline: none;
+        }
+        .fitb-input:focus { border-color: #6366f1; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .fitb-input.correct { border-color: #10b981; background-color: #ecfdf5; color: #047857; }
+        .fitb-input.incorrect { border-color: #ef4444; background-color: #fef2f2; color: #b91c1c; }
+
+        .scramble-pool, .scramble-target { min-height: 3.5rem; border-radius: 0.75rem; padding: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .scramble-target { border: 2px dashed #94a3b8; background-color: #f8fafc; margin-bottom: 1rem; transition: border-color 0.2s; }
+        .scramble-target.filled { border-color: #6366f1; border-style: solid; background-color: #e0e7ff; }
+        .scramble-word {
+            background-color: #ffffff; border: 1px solid #cbd5e1; padding: 0.4rem 0.8rem; border-radius: 0.5rem; font-weight: 700; color: #334155; cursor: pointer; user-select: none; transition: transform 0.1s, box-shadow 0.1s; box-shadow: 0 2px 4px -1px rgba(0,0,0,0.05);
+        }
+        .scramble-word:active { transform: scale(0.95); }
+
+        .error-chunk {
+            display: inline-block; padding: 0.25rem 0.5rem; margin: 0.25rem; background-color: #f1f5f9; border: 2px solid transparent; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 1.1rem;
+        }
+        .error-chunk:hover:not(.locked) { background-color: #e2e8f0; transform: translateY(-2px); }
+        .error-chunk.wrong-guess { background-color: #fef2f2; border-color: #ef4444; color: #b91c1c; pointer-events: none; opacity: 0.7; }
+        .error-chunk.correct-guess { background-color: #ecfdf5; border-color: #10b981; color: #047857; pointer-events: none; }
+        .error-chunk.locked { pointer-events: none; opacity: 0.5; }
+
+        .match-column { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .match-item {
+            border: 2px solid #e2e8f0; background-color: #ffffff; padding: 0.75rem 1rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; user-select: none;
+        }
+        .match-item:hover:not(.paired) { border-color: #94a3b8; }
+        .match-item.selected { border-color: #6366f1; background-color: #eef2ff; transform: scale(1.02); }
+        .match-item.paired { color: #0f172a; pointer-events: none; }
+
+        .feedback-box { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, margin 0.4s ease; opacity: 0; margin-top: 0; }
+        .feedback-box.show { max-height: 600px; opacity: 1; margin-top: 1.25rem; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white text-lg shadow-md transform rotate-3">
+                    <i class="fas fa-layer-group -rotate-3"></i>
+                </div>
+                <div>
+                    <h1 class="font-black text-slate-900 leading-tight md:text-lg text-base">Phrasal Verbs Ultimate</h1>
+                    <p class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Top 20 Edition</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 md:gap-4">
+                <div class="hidden md:block text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
+                    Progreso: <span id="progress-text" class="text-indigo-600 font-black">0/0</span>
+                </div>
+                <div class="text-xs md:text-sm font-black text-white bg-gradient-to-r from-indigo-500 to-purple-600 px-3 md:px-4 py-1.5 rounded-full shadow-md">
+                    <span id="score-text">0</span> PTS
+                </div>
+            </div>
+        </div>
+        <div class="h-1.5 w-full bg-slate-100">
+            <div id="progress-bar" class="h-full bg-indigo-600 transition-all duration-500 ease-out w-0"></div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 pt-10 space-y-16">
+
+        <section class="text-center">
+            <h2 class="text-3xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight">Domina los Phrasal Verbs</h2>
+            <p class="text-slate-600 font-medium max-w-2xl mx-auto text-lg">Los 20 verbos compuestos más usados en inglés. Toca las tarjetas para girarlas, escucha su pronunciación y luego pon a prueba tus conocimientos en la zona de práctica.</p>
+        </section>
+
+        <section>
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-extrabold text-slate-800 uppercase tracking-wider text-sm">
+                    <i class="fas fa-clone text-indigo-500 mr-2"></i> 1. Tarjetas Interactivas (Top 20)
+                </h3>
+                <span class="text-xs font-bold text-slate-500 bg-slate-200 px-2 py-1 rounded-full"><i class="fas fa-hand-pointer mr-1"></i> Toca para girar</span>
+            </div>
+            
+            <div id="flashcards-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Flashcards injected via JS -->
+            </div>
+        </section>
+
+        <section>
+            <div class="border-t border-slate-200 pt-10 mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <h3 class="text-xl font-extrabold text-slate-800 uppercase tracking-wider text-sm"><i class="fas fa-gamepad text-indigo-500 mr-2"></i> 2. Zona de Práctica</h3>
+                    <p class="text-slate-500 text-sm mt-1">Demuestra lo que aprendiste. Completa los desafíos para ganar puntos.</p>
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                    <span class="text-[10px] font-bold px-2 py-1 bg-slate-200 text-slate-600 rounded">MCQ</span>
+                    <span class="text-[10px] font-bold px-2 py-1 bg-slate-200 text-slate-600 rounded">Match</span>
+                    <span class="text-[10px] font-bold px-2 py-1 bg-slate-200 text-slate-600 rounded">Scramble</span>
+                    <span class="text-[10px] font-bold px-2 py-1 bg-slate-200 text-slate-600 rounded">Error</span>
+                </div>
+            </div>
+
+            <div id="practice-container" class="space-y-8">
+                <!-- Exercises injected via JS -->
+            </div>
+
+            <div id="completion-box" class="hidden mt-12 solid-card bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200 p-10 text-center shadow-2xl relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 text-indigo-100 opacity-50 transform rotate-12"><i class="fas fa-trophy text-9xl"></i></div>
+                <div class="relative z-10">
+                    <div class="w-20 h-20 bg-gradient-to-tr from-indigo-600 to-purple-600 text-white rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-lg transform rotate-3"><i class="fas fa-award"></i></div>
+                    <h3 class="text-4xl font-black text-slate-900 mb-3 tracking-tight">¡Eres un Maestro!</h3>
+                    <p class="text-slate-600 font-medium text-lg mb-8 max-w-md mx-auto">Has completado el entrenamiento de los 20 Phrasal Verbs más esenciales del inglés.</p>
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 mb-8 inline-block w-full max-w-xs shadow-sm">
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Puntaje Final</p>
+                        <div class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+                            <span id="final-score">0</span><span class="text-2xl text-slate-300">pts</span>
+                        </div>
+                    </div>
+                    <button onclick="location.reload()" class="block w-full max-w-xs mx-auto bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-10 rounded-xl transition-all hover:scale-105 shadow-xl text-sm uppercase tracking-widest">
+                        Reiniciar Entrenamiento
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const AppState = { score: 0, answeredCount: 0, ptsPerQuestion: 10, totalQuestions: 0 };
+        const ActivityState = {}; 
+
+        // Top 20 Phrasal Verbs Data (Images, Meanings, Examples)
+        const flashcardsData = [
+            { verb: "Bring up", img: "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?auto=format&fit=crop&w=400&q=80", meaningEn: "To mention a topic", meaningEs: "Mencionar un tema", example: "Don't bring up the budget in the meeting." },
+            { verb: "Call off", img: "https://images.unsplash.com/photo-1506784926709-22f1ec395907?auto=format&fit=crop&w=400&q=80", meaningEn: "To cancel", meaningEs: "Cancelar (un evento)", example: "They had to call off the wedding due to rain." },
+            { verb: "Carry on", img: "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=400&q=80", meaningEn: "To continue", meaningEs: "Continuar", example: "Please carry on with your work, don't stop." },
+            { verb: "Come across", img: "https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?auto=format&fit=crop&w=400&q=80", meaningEn: "To find by chance", meaningEs: "Encontrar por casualidad", example: "I came across my old photos while cleaning." },
+            { verb: "Come up with", img: "https://images.unsplash.com/photo-1493612276216-ee3925520721?auto=format&fit=crop&w=400&q=80", meaningEn: "To think of an idea", meaningEs: "Ocurrirse una idea", example: "We need to come up with a new plan." },
+            { verb: "Find out", img: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=400&q=80", meaningEn: "To discover information", meaningEs: "Descubrir / Enterarse", example: "I will find out what time the train leaves." },
+            { verb: "Get along", img: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=400&q=80", meaningEn: "To have a good relationship", meaningEs: "Llevarse bien", example: "I get along very well with my neighbors." },
+            { verb: "Get away", img: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=400&q=80", meaningEn: "To escape / go on vacation", meaningEs: "Escaparse / Ir de vacaciones", example: "We are hoping to get away to the beach this weekend." },
+            { verb: "Get over", img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=400&q=80", meaningEn: "To recover from something", meaningEs: "Recuperarse / Superar", example: "It took her a long time to get over the flu." },
+            { verb: "Give up", img: "https://images.unsplash.com/photo-1525011268546-bf3f9b007f6a?auto=format&fit=crop&w=400&q=80", meaningEn: "To quit / stop trying", meaningEs: "Rendirse / Dejar de hacer algo", example: "He decided to give up smoking last year." },
+            { verb: "Go on", img: "https://images.unsplash.com/photo-1470229722913-7c092db658cb?auto=format&fit=crop&w=400&q=80", meaningEn: "To happen / continue", meaningEs: "Pasar (ocurrir) / Continuar", example: "What is going on in this room?" },
+            { verb: "Hold on", img: "https://images.unsplash.com/photo-1501139083538-0139583c060f?auto=format&fit=crop&w=400&q=80", meaningEn: "To wait (a short time)", meaningEs: "Esperar (un momento)", example: "Hold on a minute, I'll be right there." },
+            { verb: "Look after", img: "https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=400&q=80", meaningEn: "To take care of", meaningEs: "Cuidar de", example: "Can you look after my cat while I'm away?" },
+            { verb: "Look forward to", img: "https://images.unsplash.com/photo-1506784365847-bbad939e9335?auto=format&fit=crop&w=400&q=80", meaningEn: "To anticipate with pleasure", meaningEs: "Esperar con ansias", example: "I am looking forward to seeing you again." },
+            { verb: "Look up", img: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=400&q=80", meaningEn: "To search for information", meaningEs: "Buscar información", example: "If you don't know the word, look it up in a dictionary." },
+            { verb: "Make up", img: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=400&q=80", meaningEn: "To invent a story/excuse", meaningEs: "Inventar (historia/excusa) / Reconciliarse", example: "He had to make up an excuse for being late." },
+            { verb: "Pass out", img: "https://images.unsplash.com/photo-1531353826977-0941b4779a1c?auto=format&fit=crop&w=400&q=80", meaningEn: "To faint or distribute", meaningEs: "Desmayarse / Repartir", example: "It was so hot in the room that I almost passed out." },
+            { verb: "Put off", img: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=400&q=80", meaningEn: "To postpone", meaningEs: "Posponer", example: "Never put off until tomorrow what you can do today." },
+            { verb: "Turn out", img: "https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?auto=format&fit=crop&w=400&q=80", meaningEn: "To result / end up", meaningEs: "Resultar / Terminar siendo", example: "The party turned out to be a huge success." },
+            { verb: "Work out", img: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=400&q=80", meaningEn: "To exercise / find a solution", meaningEs: "Hacer ejercicio / Resolver", example: "I need to work out a way to fix this problem." }
+        ];
+
+        const practiceData = [
+            // 1. MCQ
+            {
+                type: "mcq", category: "Contexto Lógico",
+                q: "The concert was _______ because the lead singer lost his voice.",
+                options: ["called off", "brought up"],
+                correct: 0,
+                expTitle: "Called off (Cancelar)",
+                expText: "Se usa <b>call off</b> para cancelar un evento que estaba planeado. <i>Brought up</i> significa mencionar un tema."
+            },
+            // 2. FITB
+            {
+                type: "fitb", category: "Escritura",
+                q: "I am going to _______ (buscar) this word in the dictionary because I don't know it.",
+                correct: ["look up", "look it up"],
+                expTitle: "Look up (Buscar info)",
+                expText: "<b>Look up</b> se usa específicamente para buscar información en diccionarios, internet, o listas."
+            },
+            // 3. Match
+            {
+                type: "match", category: "Unir Definiciones",
+                q: "Empareja cada Phrasal Verb con su definición en español.",
+                left: ["Get along", "Give up", "Carry on"],
+                right: ["Continuar", "Llevarse bien", "Rendirse"],
+                correctMap: {0: 1, 1: 2, 2: 0},
+                expTitle: "Vocabulario Esencial",
+                expText: "<i>Get along</i> (Tener buena relación), <i>Give up</i> (Dejar de intentar/renunciar), y <i>Carry on</i> (Seguir adelante)."
+            },
+            // 4. Order (Scramble)
+            {
+                type: "order", category: "Sintaxis",
+                q: "Ordena las palabras para formar una oración correcta.",
+                words: ["looking", "to", "forward", "I", "am", "seeing", "you."],
+                correct: ["I", "am", "looking", "forward", "to", "seeing", "you."],
+                expTitle: "Look forward to + Verb(ing)",
+                expText: "Después de <b>look forward to</b> (esperar con ansias), el verbo que le sigue debe terminar siempre en <b>-ing</b> (seeing)."
+            },
+            // 5. Error
+            {
+                type: "error", category: "Corrección",
+                q: "Encuentra el error en el uso del Phrasal Verb.",
+                chunks: ["She ", "couldn't ", "came up with ", "a good idea."],
+                correct: 2,
+                expTitle: "Verbos modales + Forma Base",
+                expText: "Después de un modal como 'couldn't', el verbo debe ir en forma base. Lo correcto es <b>come up with</b>, no 'came'."
+            },
+            // 6. FITB
+            {
+                type: "fitb", category: "Escritura",
+                q: "Please don't _______ (mencionar) that topic, it makes everyone sad.",
+                correct: ["bring up"],
+                expTitle: "Bring up (Mencionar)",
+                expText: "<b>Bring up</b> significa sacar un tema a colación en una conversación."
+            },
+            // 7. MCQ
+            {
+                type: "mcq", category: "Comprensión",
+                q: "If you 'pass out' due to the heat, what happens to you?",
+                options: ["You distribute things.", "You faint/lose consciousness."],
+                correct: 1,
+                expTitle: "Pass out (Desmayarse)",
+                expText: "Aunque <i>pass out</i> también significa repartir (ej. folletos), en el contexto del calor extremo significa <b>desmayarse</b>."
+            },
+            // 8. Error
+            {
+                type: "error", category: "Corrección",
+                q: "Encuentra la preposición incorrecta.",
+                chunks: ["Can you ", "look after ", "my dog ", "while I get out?"],
+                correct: 3,
+                expTitle: "Get away (Escaparse)",
+                expText: "Para decir 'mientras salgo de vacaciones/me escapo', usamos <b>get away</b>. 'Get out' significa salir de un lugar cerrado (¡Vete!)."
+            },
+            // 9. Match
+            {
+                type: "match", category: "Sinónimos",
+                q: "Une cada Phrasal Verb con su verbo formal equivalente de una sola palabra.",
+                left: ["Put off", "Find out", "Turn out"],
+                right: ["Result", "Postpone", "Discover"],
+                correctMap: {0: 1, 1: 2, 2: 0},
+                expTitle: "Formal vs Informal",
+                expText: "Los Phrasal verbs son comunes en el habla diaria, mientras que los verbos latinos (postpone, discover, result) son más formales."
+            },
+            // 10. Order
+            {
+                type: "order", category: "Sintaxis",
+                q: "Ordena esta excusa común.",
+                words: ["He", "a story", "to", "late.", "up", "made", "explain", "why", "he", "was"],
+                correct: ["He", "made", "up", "a story", "to", "explain", "why", "he", "was", "late."],
+                expTitle: "Make up (Inventar)",
+                expText: "<b>Make up</b> se usa para inventar historias, excusas o mentiras."
+            }
+        ];
+
+        function speakContent(text, e) {
+            // Prevent triggering the flip card animation when clicking the button
+            if (e) e.stopPropagation();
+            
+            if ('speechSynthesis' in window) {
+                // Cancel any ongoing speech
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US'; 
+                utterance.rate = 0.9; // Slightly slower for language learners
+                utterance.pitch = 1.0;
+                
+                // Try to find a good English voice (preferably US or UK)
+                const voices = window.speechSynthesis.getVoices();
+                const engVoice = voices.find(v => v.lang.startsWith('en-'));
+                if (engVoice) {
+                    utterance.voice = engVoice;
+                }
+
+                window.speechSynthesis.speak(utterance);
+            } else {
+                console.log("Text-to-speech no soportado en este navegador.");
+            }
+        }
+
+        function renderFlashcards() {
+            const container = document.getElementById('flashcards-container');
+            let html = '';
+            
+            flashcardsData.forEach((card, idx) => {
+                // We format the english text carefully for the TTS
+                const escapedVerb = card.verb.replace(/'/g, "\\'");
+                const escapedExample = card.example.replace(/'/g, "\\'");
+
+                html += `
+                <div class="flip-card-container">
+                    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-face flip-front">
+                            <img src="${card.img}" class="card-img" alt="${card.verb}" loading="lazy" onerror="this.src='https://placehold.co/400x150/e2e8f0/475569?text=${card.verb}'">
+                            <div class="p-4 flex flex-col justify-between flex-grow">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="text-xl font-black text-slate-800">${card.verb}</h3>
+                                    <button class="tts-btn" onclick="speakContent('${escapedVerb}', event)" title="Escuchar pronunciación">
+                                        <i class="fas fa-volume-up"></i>
+                                    </button>
+                                </div>
+                                <p class="text-xs font-bold text-slate-400 mt-2 uppercase tracking-widest text-center mt-auto"><i class="fas fa-sync-alt mr-1"></i> Girar para ver</p>
+                            </div>
+                        </div>
+                        <div class="flip-face flip-back">
+                            <h4 class="text-xl font-bold mb-1">${card.meaningEs}</h4>
+                            <p class="text-sm text-indigo-100 mb-4 font-medium">${card.meaningEn}</p>
+                            
+                            <div class="bg-indigo-800/40 p-3 rounded-lg w-full text-left relative group border border-indigo-500/30">
+                                <p class="text-sm font-medium italic text-indigo-50 pr-8">"${card.example}"</p>
+                                <button class="tts-btn absolute top-2 right-2 scale-75 opacity-70 group-hover:opacity-100" onclick="speakContent('${escapedExample}', event)" title="Escuchar ejemplo">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderPractice() {
+            AppState.totalQuestions = practiceData.length;
+            updateProgressUI();
+            const container = document.getElementById('practice-container');
+            let html = '';
+
+            practiceData.forEach((data, index) => {
+                let tagClass = 'bg-slate-100 text-slate-600';
+                if(data.category.includes('Contexto') || data.category.includes('Comprensión')) tagClass = 'bg-blue-100 text-blue-700';
+                if(data.category.includes('Corrección')) tagClass = 'bg-rose-100 text-rose-700';
+                if(data.category.includes('Escritura')) tagClass = 'bg-amber-100 text-amber-700';
+                if(data.type === 'match') tagClass = 'bg-purple-100 text-purple-700';
+
+                let interactiveHtml = '';
+
+                // MCQ
+                if (data.type === 'mcq') {
+                    interactiveHtml = `
+                    <div class="grid sm:grid-cols-2 gap-3" id="q-container-${index}" data-answered="false">
+                        <button class="opt-btn" onclick="handleMCQ(${index}, 0)">A) ${data.options[0]}</button>
+                        <button class="opt-btn" onclick="handleMCQ(${index}, 1)">B) ${data.options[1]}</button>
+                    </div>`;
+                } 
+                // FITB
+                else if (data.type === 'fitb') {
+                    interactiveHtml = `
+                    <div id="q-container-${index}" data-answered="false" class="flex flex-col sm:flex-row gap-3">
+                        <input type="text" id="input-${index}" class="fitb-input" placeholder="Escribe el phrasal verb..." autocomplete="off">
+                        <button class="check-btn !w-auto !mt-0" onclick="handleFITB(${index})">Comprobar</button>
+                    </div>
+                    <p class="text-xs font-bold mt-2" id="error-msg-${index}"></p>`;
+                }
+                // ORDER
+                else if (data.type === 'order') {
+                    ActivityState[index] = { currentOrder: [], pool: [...data.words] };
+                    let shuffled = [...data.words].sort(() => Math.random() - 0.5);
+                    let poolHtml = shuffled.map(w => `<div class="scramble-word" onclick="handleOrderClick(${index}, '${w}', this, 'target')">${w}</div>`).join('');
+                    
+                    interactiveHtml = `
+                    <div id="q-container-${index}" data-answered="false">
+                        <p class="text-sm font-bold text-slate-500 mb-2">Construye la oración:</p>
+                        <div id="order-target-${index}" class="scramble-target"></div>
+                        <p class="text-sm font-bold text-slate-500 mt-4 mb-2">Piezas:</p>
+                        <div id="order-pool-${index}" class="scramble-pool bg-slate-50 border border-slate-200">${poolHtml}</div>
+                        <button class="check-btn" onclick="checkOrder(${index})">Comprobar <i class="fas fa-check"></i></button>
+                        <p class="text-xs text-red-500 font-bold mt-2" id="order-err-${index}"></p>
+                    </div>`;
+                }
+                // ERROR
+                else if (data.type === 'error') {
+                    let chunksHtml = data.chunks.map((c, i) => 
+                        `<span class="error-chunk" onclick="handleErrorClick(${index}, ${i})">${c}</span>`
+                    ).join('');
+                    interactiveHtml = `
+                    <div id="q-container-${index}" data-answered="false" class="bg-white border-2 border-slate-100 p-4 rounded-xl text-center leading-loose">
+                        ${chunksHtml}
+                    </div>`;
+                }
+                // MATCH
+                else if (data.type === 'match') {
+                    ActivityState[index] = { selectedLeft: null, pairs: {}, colors: ['#c7d2fe', '#bbf7d0', '#fde68a', '#fbcfe8'] };
+                    let leftHtml = data.left.map((txt, i) => `<div id="match-l-${index}-${i}" class="match-item" onclick="handleMatchLeft(${index}, ${i})">${txt}</div>`).join('');
+                    let rightHtml = data.right.map((txt, i) => `<div id="match-r-${index}-${i}" class="match-item" onclick="handleMatchRight(${index}, ${i})">${txt}</div>`).join('');
+                    
+                    interactiveHtml = `
+                    <div id="q-container-${index}" data-answered="false">
+                        <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                            <div class="match-column">${leftHtml}</div>
+                            <div class="match-column">${rightHtml}</div>
+                        </div>
+                        <button class="check-btn" id="match-btn-${index}" onclick="checkMatch(${index})" disabled>Empareja todas para comprobar</button>
+                    </div>`;
+                }
+
+                html += `
+                <article class="solid-card p-5 md:p-8" id="card-${index}">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-5 border-b border-slate-100 pb-4">
+                        <span class="text-sm font-black text-slate-400 uppercase tracking-widest">Question ${index + 1}</span>
+                        <span class="text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider ${tagClass}">${data.category}</span>
+                    </div>
+                    <p class="text-lg md:text-xl font-bold text-slate-800 mb-6 leading-relaxed">${data.q}</p>
+                    ${interactiveHtml}
+                    <div id="feedback-${index}" class="feedback-box">
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 md:p-6" id="feed-content-${index}"></div>
+                    </div>
+                </article>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function handleMCQ(qIdx, optIdx) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            if (container.dataset.answered === 'true') return;
+            container.dataset.answered = 'true';
+            
+            const isCorrect = (optIdx === practiceData[qIdx].correct);
+            const buttons = container.querySelectorAll('button');
+            buttons.forEach((b, i) => {
+                b.disabled = true;
+                if(i === practiceData[qIdx].correct) b.classList.add('correct');
+                else if(i === optIdx && !isCorrect) b.classList.add('incorrect');
+                else b.style.opacity = '0.3';
+            });
+            processResult(qIdx, isCorrect);
+        }
+
+        function handleFITB(qIdx) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            if (container.dataset.answered === 'true') return;
+            
+            const input = document.getElementById(`input-${qIdx}`);
+            const errorMsg = document.getElementById(`error-msg-${qIdx}`);
+            const val = input.value.trim().toLowerCase();
+            
+            if(!val) { errorMsg.innerText = "Escribe una respuesta."; errorMsg.classList.add('text-red-500'); return; }
+            errorMsg.innerText = "";
+            container.dataset.answered = 'true';
+            
+            const isCorrect = practiceData[qIdx].correct.includes(val);
+            input.disabled = true;
+            container.querySelector('button').disabled = true;
+            
+            if(isCorrect) input.classList.add('correct');
+            else { input.classList.add('incorrect'); input.value = `${input.value} (Resp: ${practiceData[qIdx].correct[0]})`; }
+            
+            processResult(qIdx, isCorrect);
+        }
+
+        function handleOrderClick(qIdx, word, el, destination) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            if (container.dataset.answered === 'true') return;
+            
+            const target = document.getElementById(`order-target-${qIdx}`);
+            const pool = document.getElementById(`order-pool-${qIdx}`);
+            el.remove();
+            
+            const newDest = destination === 'target' ? 'pool' : 'target';
+            const newEl = document.createElement('div');
+            newEl.className = 'scramble-word';
+            newEl.innerText = word;
+            newEl.onclick = function() { handleOrderClick(qIdx, word, this, newDest); };
+            
+            if(destination === 'target') {
+                target.appendChild(newEl);
+                target.classList.add('filled');
+            } else {
+                pool.appendChild(newEl);
+                if(target.children.length === 0) target.classList.remove('filled');
+            }
+        }
+
+        function checkOrder(qIdx) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            if (container.dataset.answered === 'true') return;
+            
+            const target = document.getElementById(`order-target-${qIdx}`);
+            const currentWords = Array.from(target.children).map(el => el.innerText);
+            const correctWords = practiceData[qIdx].correct;
+            
+            if(currentWords.length !== correctWords.length) {
+                document.getElementById(`order-err-${qIdx}`).innerText = "Usa todas las palabras.";
+                return;
+            }
+            document.getElementById(`order-err-${qIdx}`).innerText = "";
+            container.dataset.answered = 'true';
+            container.querySelector('button').disabled = true;
+            Array.from(target.children).forEach(el => el.style.pointerEvents = 'none');
+            
+            const isCorrect = currentWords.join(' ') === correctWords.join(' ');
+            target.style.borderColor = isCorrect ? '#10b981' : '#ef4444';
+            processResult(qIdx, isCorrect);
+        }
+
+        function handleErrorClick(qIdx, chunkIdx) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            if (container.dataset.answered === 'true') return;
+            container.dataset.answered = 'true';
+
+            const correctIdx = practiceData[qIdx].correct;
+            const isCorrect = (chunkIdx === correctIdx);
+            
+            const allChunks = container.querySelectorAll('.error-chunk');
+            allChunks.forEach((chunk, i) => {
+                chunk.classList.add('locked');
+                if(i === correctIdx) chunk.classList.add('correct-guess');
+                else if (i === chunkIdx && !isCorrect) chunk.classList.add('wrong-guess');
+            });
+            processResult(qIdx, isCorrect);
+        }
+
+        function handleMatchLeft(qIdx, i) {
+            if (document.getElementById(`q-container-${qIdx}`).dataset.answered === 'true') return;
+            const state = ActivityState[qIdx];
+            if(state.selectedLeft !== null) document.getElementById(`match-l-${qIdx}-${state.selectedLeft}`).classList.remove('selected');
+            if(!document.getElementById(`match-l-${qIdx}-${i}`).classList.contains('paired')) {
+                state.selectedLeft = i;
+                document.getElementById(`match-l-${qIdx}-${i}`).classList.add('selected');
+            }
+        }
+
+        function handleMatchRight(qIdx, j) {
+            if (document.getElementById(`q-container-${qIdx}`).dataset.answered === 'true') return;
+            const state = ActivityState[qIdx];
+            const rightEl = document.getElementById(`match-r-${qIdx}-${j}`);
+            
+            if(state.selectedLeft !== null && !rightEl.classList.contains('paired')) {
+                const leftEl = document.getElementById(`match-l-${qIdx}-${state.selectedLeft}`);
+                const color = state.colors[Object.keys(state.pairs).length % state.colors.length];
+                
+                leftEl.classList.remove('selected'); leftEl.classList.add('paired');
+                leftEl.style.backgroundColor = color; leftEl.style.borderColor = color;
+                rightEl.classList.add('paired');
+                rightEl.style.backgroundColor = color; rightEl.style.borderColor = color;
+                
+                state.pairs[state.selectedLeft] = j;
+                state.selectedLeft = null;
+                
+                if(Object.keys(state.pairs).length === practiceData[qIdx].left.length) {
+                    document.getElementById(`match-btn-${qIdx}`).disabled = false;
+                    document.getElementById(`match-btn-${qIdx}`).innerText = "Comprobar Parejas";
+                }
+            }
+        }
+
+        function checkMatch(qIdx) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            container.dataset.answered = 'true';
+            document.getElementById(`match-btn-${qIdx}`).disabled = true;
+            const state = ActivityState[qIdx];
+            const correctMap = practiceData[qIdx].correctMap;
+            let isCorrect = true;
+            for (let leftKey in state.pairs) if (state.pairs[leftKey] !== correctMap[leftKey]) isCorrect = false;
+            processResult(qIdx, isCorrect);
+        }
+
+        function processResult(qIdx, isCorrect) {
+            const data = practiceData[qIdx];
+            const feedbackBox = document.getElementById(`feedback-${qIdx}`);
+            
+            if(isCorrect) {
+                AppState.score += AppState.ptsPerQuestion;
+                document.getElementById('score-text').innerText = AppState.score;
+            }
+
+            let iconHtml = isCorrect 
+                ? `<i class="fas fa-check-circle text-emerald-500 text-2xl"></i> <span class="font-black text-emerald-700 uppercase tracking-widest text-sm">¡Correcto!</span>`
+                : `<i class="fas fa-times-circle text-red-500 text-2xl"></i> <span class="font-black text-red-700 uppercase tracking-widest text-sm">Hay Errores</span>`;
+            let colorClass = isCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200';
+
+            const feedbackContent = document.getElementById(`feed-content-${qIdx}`);
+            feedbackContent.className = `rounded-xl p-5 border ${colorClass} shadow-inner`;
+            feedbackContent.innerHTML = `
+                <div class="flex items-center gap-2 mb-3">${iconHtml}</div>
+                <h4 class="font-bold text-slate-900 mb-1 md:text-lg text-base">${data.expTitle}</h4>
+                <p class="text-sm text-slate-700 leading-relaxed font-medium">${data.expText}</p>
+            `;
+
+            requestAnimationFrame(() => feedbackBox.classList.add('show'));
+
+            AppState.answeredCount++;
+            updateProgressUI();
+
+            if (AppState.answeredCount === AppState.totalQuestions) {
+                document.getElementById('final-score').innerText = AppState.score;
+                setTimeout(() => {
+                    const box = document.getElementById('completion-box');
+                    box.classList.remove('hidden');
+                    box.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                }, 1000);
+            }
+        }
+
+        function updateProgressUI() {
+            document.getElementById('progress-text').innerText = `${AppState.answeredCount}/${AppState.totalQuestions}`;
+            const pct = AppState.totalQuestions === 0 ? 0 : (AppState.answeredCount / AppState.totalQuestions) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+        }
+
+        // Initialize App on load
+        window.onload = () => {
+            // Load speech voices to ensure TTS is ready
+            if('speechSynthesis' in window) {
+                window.speechSynthesis.getVoices();
+                // Safari/Chrome sometimes need this event to load voices
+                window.speechSynthesis.onvoiceschanged = function() {
+                    window.speechSynthesis.getVoices();
+                };
+            }
+            renderFlashcards();
+            renderPractice();
+        };
+    </script>
+</body>
+</html>
