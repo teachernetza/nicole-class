@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Future Tenses Ultimate: Master Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f4f4f5; 
+            color: #27272a; 
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+
+        .solid-card {
+            background-color: #ffffff;
+            border: 1px solid #e4e4e7;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+        .solid-card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+
+        .vocab-img-study {
+            width: 100%; height: 160px; object-fit: cover; border-bottom: 2px solid #f4f4f5;
+            transition: transform 0.5s ease;
+        }
+        .solid-card:hover .vocab-img-study { transform: scale(1.05); }
+        .vocab-img-question {
+            width: 100%; height: 200px; object-fit: cover; border-radius: 0.75rem; margin-bottom: 1.25rem; border: 1px solid #e4e4e7;
+        }
+
+        /* Option Buttons (MCQ) */
+        .opt-btn {
+            transition: all 0.2s ease; border: 2px solid #e4e4e7; width: 100%; text-align: left; padding: 1rem 1.25rem; 
+            border-radius: 0.75rem; font-weight: 700; color: #3f3f46; background-color: #fafafa;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: #a1a1aa; background-color: #ffffff; transform: translateY(-2px); }
+        .opt-btn:active:not(:disabled) { transform: scale(0.98); }
+        .opt-btn.correct { background-color: #ecfdf5; border-color: #10b981; color: #047857; font-weight: 800; pointer-events: none; }
+        .opt-btn.incorrect { background-color: #fef2f2; border-color: #ef4444; color: #b91c1c; opacity: 0.7; pointer-events: none; }
+        .opt-btn:disabled { cursor: not-allowed; }
+
+        .check-btn {
+            background-color: #6366f1; color: white; font-weight: bold; padding: 0.6rem 1.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            margin-top: 1rem; display: inline-flex; items-center; gap: 0.5rem; justify-content: center; width: 100%; max-width: 250px;
+        }
+        .check-btn:hover:not(:disabled) { background-color: #4f46e5; transform: translateY(-1px); }
+        .check-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .fitb-input {
+            border: 2px solid #e4e4e7; background-color: #fafafa; border-radius: 0.5rem; padding: 0.5rem 1rem; font-weight: 700; color: #18181b; width: 100%; max-width: 250px; transition: all 0.2s; outline: none;
+        }
+        .fitb-input:focus { border-color: #6366f1; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .fitb-input.correct { border-color: #10b981; background-color: #ecfdf5; color: #047857; }
+        .fitb-input.incorrect { border-color: #ef4444; background-color: #fef2f2; color: #b91c1c; }
+
+        /* Scramble */
+        .scramble-pool, .scramble-target { min-height: 3.5rem; border-radius: 0.75rem; padding: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .scramble-target { border: 2px dashed #a1a1aa; background-color: #fafafa; margin-bottom: 1rem; transition: border-color 0.2s; }
+        .scramble-target.filled { border-color: #6366f1; border-style: solid; background-color: #e0e7ff; }
+        .scramble-word {
+            background-color: #ffffff; border: 1px solid #d4d4d8; padding: 0.4rem 0.8rem; border-radius: 0.5rem; font-weight: 700; color: #3f3f46; cursor: pointer; user-select: none; transition: transform 0.1s, box-shadow 0.1s; box-shadow: 0 2px 4px -1px rgba(0,0,0,0.05);
+        }
+        .scramble-word:active { transform: scale(0.95); }
+
+        /* Error */
+        .error-chunk {
+            display: inline-block; padding: 0.25rem 0.5rem; margin: 0.25rem; background-color: #f4f4f5; border: 2px solid transparent; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 1.1rem;
+        }
+        .error-chunk:hover:not(.locked) { background-color: #e4e4e7; transform: translateY(-2px); }
+        .error-chunk.wrong-guess { background-color: #fef2f2; border-color: #ef4444; color: #b91c1c; pointer-events: none; opacity: 0.7; }
+        .error-chunk.correct-guess { background-color: #ecfdf5; border-color: #10b981; color: #047857; pointer-events: none; }
+        .error-chunk.locked { pointer-events: none; opacity: 0.5; }
+
+        /* Match */
+        .match-column { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .match-item {
+            border: 2px solid #e4e4e7; background-color: #ffffff; padding: 0.75rem 1rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; user-select: none;
+        }
+        .match-item:hover:not(.paired) { border-color: #a1a1aa; }
+        .match-item.selected { border-color: #6366f1; background-color: #eef2ff; transform: scale(1.02); }
+        .match-item.paired { color: #18181b; pointer-events: none; }
+
+        /* Categorize */
+        .cat-pill {
+            display: flex; justify-content: space-between; align-items: center; border: 2px solid #e4e4e7; background-color: #fafafa; padding: 0.75rem 1rem; border-radius: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s; user-select: none;
+        }
+        .cat-pill .badge { font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .cat-state-0 { border-color: #e4e4e7; }
+        .cat-state-0 .badge { background-color: #e4e4e7; color: #71717a; }
+        .cat-state-1 { border-color: #10b981; background-color: #ecfdf5; color: #065f46; }
+        .cat-state-1 .badge { background-color: #10b981; color: #ffffff; }
+        .cat-state-2 { border-color: #3b82f6; background-color: #eff6ff; color: #1e3a8a; }
+        .cat-state-2 .badge { background-color: #3b82f6; color: #ffffff; }
+        
+        /* Feedback Box */
+        .feedback-box { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, margin 0.4s ease; opacity: 0; margin-top: 0; }
+        .feedback-box.show { max-height: 600px; opacity: 1; margin-top: 1.25rem; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <header class="bg-white border-b border-zinc-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white text-lg shadow-md transform rotate-3">
+                    <i class="fas fa-rocket -rotate-3"></i>
+                </div>
+                <div>
+                    <h1 class="font-black text-zinc-900 leading-tight md:text-lg text-base">Future Tenses Ultimate</h1>
+                    <p class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Master Guide</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 md:gap-4">
+                <div class="hidden md:block text-xs font-bold text-zinc-500 bg-zinc-100 px-3 py-1.5 rounded-full border border-zinc-200">
+                    Progreso: <span id="progress-text" class="text-indigo-600 font-black">0/0</span>
+                </div>
+                <div class="text-xs md:text-sm font-black text-white bg-gradient-to-r from-indigo-500 to-purple-600 px-3 md:px-4 py-1.5 rounded-full shadow-md">
+                    <span id="score-text">0</span> PTS
+                </div>
+            </div>
+        </div>
+        <div class="h-1.5 w-full bg-zinc-100">
+            <div id="progress-bar" class="h-full bg-indigo-600 transition-all duration-500 ease-out w-0"></div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 pt-10 space-y-16">
+
+        <section class="text-center">
+            <h2 class="text-3xl md:text-5xl font-black text-zinc-900 mb-4 tracking-tight">Dominio del Futuro</h2>
+            <p class="text-zinc-600 font-medium max-w-2xl mx-auto text-lg">Tu guía definitiva. Revisa el vocabulario, estudia la gramática y supera los desafíos de lógica.</p>
+        </section>
+
+        <!-- 1. VOCABULARIO VISUAL -->
+        <section>
+            <h3 class="text-xl font-extrabold text-zinc-800 mb-4 uppercase tracking-wider text-sm"><i class="fas fa-images text-indigo-500 mr-2"></i> 1. Vocabulario Visual</h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                
+                <div class="solid-card bg-white">
+                    <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=400&q=80" alt="Megacity" class="vocab-img-study">
+                    <div class="p-4 text-center">
+                        <h4 class="font-black text-zinc-800 text-lg">Megacity</h4>
+                        <p class="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Megalópolis</p>
+                    </div>
+                </div>
+
+                <div class="solid-card bg-white">
+                    <img src="https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&w=400&q=80" alt="Colonize" class="vocab-img-study">
+                    <div class="p-4 text-center">
+                        <h4 class="font-black text-zinc-800 text-lg">Colonize</h4>
+                        <p class="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Colonizar</p>
+                    </div>
+                </div>
+
+                <div class="solid-card bg-white">
+                    <img src="https://images.unsplash.com/photo-1506804886640-ed5c368297b8?auto=format&fit=crop&w=400&q=80" alt="Flourish" class="vocab-img-study">
+                    <div class="p-4 text-center">
+                        <h4 class="font-black text-zinc-800 text-lg">Flourish</h4>
+                        <p class="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Florecer / Prosperar</p>
+                    </div>
+                </div>
+
+                <div class="solid-card bg-white">
+                    <img src="https://images.unsplash.com/photo-1584483766114-2cea6facdf57?auto=format&fit=crop&w=400&q=80" alt="Eradicate" class="vocab-img-study">
+                    <div class="p-4 text-center">
+                        <h4 class="font-black text-zinc-800 text-lg">Eradicate</h4>
+                        <p class="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Erradicar / Eliminar</p>
+                    </div>
+                </div>
+
+                <div class="solid-card bg-white">
+                    <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=400&q=80" alt="Breakthrough" class="vocab-img-study">
+                    <div class="p-4 text-center">
+                        <h4 class="font-black text-zinc-800 text-lg">Breakthrough</h4>
+                        <p class="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Gran Descubrimiento</p>
+                    </div>
+                </div>
+
+                <div class="solid-card bg-white">
+                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=80" alt="Innovate" class="vocab-img-study">
+                    <div class="p-4 text-center">
+                        <h4 class="font-black text-zinc-800 text-lg">Innovate</h4>
+                        <p class="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Innovar</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 2. CHEAT SHEET GRAMATICAL -->
+        <section>
+            <h3 class="text-xl font-extrabold text-zinc-800 mb-4 uppercase tracking-wider text-sm"><i class="fas fa-book-open text-indigo-500 mr-2"></i> 2. Resumen Gramatical</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                
+                <!-- Future Continuous -->
+                <div class="solid-card overflow-hidden">
+                    <div class="bg-blue-50 border-b border-blue-100 p-4">
+                        <h4 class="font-bold text-blue-800"><i class="fas fa-spinner mr-2 text-blue-600"></i>Future Continuous</h4>
+                    </div>
+                    <div class="p-5 text-sm space-y-3 text-zinc-700 font-medium">
+                        <p><b>Uso:</b> Para una acción que estará <i>en progreso</i> en un momento específico del futuro.</p>
+                        <div class="bg-white p-3 rounded-lg border border-zinc-200 shadow-sm text-center">
+                            <code class="font-bold text-blue-700 text-base">will be + verbo(ing)</code>
+                        </div>
+                        <p><b>Marcadores Clave:</b> At 8 PM, This time tomorrow, In five years' time.</p>
+                        <p class="italic text-zinc-500 bg-zinc-50 p-2 rounded">"At 8:00, I will be eating." (Estaré en proceso de comer)</p>
+                    </div>
+                </div>
+
+                <!-- Future Perfect -->
+                <div class="solid-card overflow-hidden">
+                    <div class="bg-emerald-50 border-b border-emerald-100 p-4">
+                        <h4 class="font-bold text-emerald-800"><i class="fas fa-check-double mr-2 text-emerald-600"></i>Future Perfect</h4>
+                    </div>
+                    <div class="p-5 text-sm space-y-3 text-zinc-700 font-medium">
+                        <p><b>Uso:</b> Para una acción que estará <i>completada antes</i> de una fecha o momento límite en el futuro.</p>
+                        <div class="bg-white p-3 rounded-lg border border-zinc-200 shadow-sm text-center">
+                            <code class="font-bold text-emerald-700 text-base">will have + participio (-ed)</code>
+                        </div>
+                        <p><b>Marcadores Clave:</b> By 2030, Before you arrive, By the time...</p>
+                        <p class="italic text-zinc-500 bg-zinc-50 p-2 rounded">"By 8:00, I will have eaten." (Ya habré terminado de comer)</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 3. ZONA DE PRÁCTICA (LAS 6 MODALIDADES) -->
+        <section>
+            <div class="border-t border-zinc-200 pt-8 mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <h3 class="text-xl font-extrabold text-zinc-800 uppercase tracking-wider text-sm"><i class="fas fa-gamepad text-indigo-500 mr-2"></i> 3. Desafíos Lógicos</h3>
+                    <p class="text-zinc-500 text-sm mt-1">Supera los 12 retos usando 6 dinámicas interactivas diferentes.</p>
+                </div>
+                <div class="flex gap-2">
+                    <span class="text-[10px] font-bold px-2 py-1 bg-zinc-200 text-zinc-600 rounded">MCQ</span>
+                    <span class="text-[10px] font-bold px-2 py-1 bg-zinc-200 text-zinc-600 rounded">Match</span>
+                    <span class="text-[10px] font-bold px-2 py-1 bg-zinc-200 text-zinc-600 rounded">Scramble</span>
+                    <span class="text-[10px] font-bold px-2 py-1 bg-zinc-200 text-zinc-600 rounded">Error</span>
+                </div>
+            </div>
+
+            <div id="practice-container" class="space-y-8">
+                <!-- Inyectado vía JS -->
+            </div>
+
+            <!-- Caja de Finalización -->
+            <div id="completion-box" class="hidden mt-12 solid-card bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200 p-10 text-center shadow-2xl relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 text-indigo-100 opacity-50 transform rotate-12"><i class="fas fa-trophy text-9xl"></i></div>
+                <div class="relative z-10">
+                    <div class="w-20 h-20 bg-gradient-to-tr from-indigo-600 to-purple-600 text-white rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-lg transform rotate-3"><i class="fas fa-award"></i></div>
+                    <h3 class="text-4xl font-black text-zinc-900 mb-3 tracking-tight">¡Misión Cumplida!</h3>
+                    <p class="text-zinc-600 font-medium text-lg mb-8 max-w-md mx-auto">Has dominado el vocabulario, la gramática y superado los desafíos lógicos.</p>
+                    <div class="bg-white rounded-2xl p-6 border border-zinc-200 mb-8 inline-block w-full max-w-xs shadow-sm">
+                        <p class="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-1">Puntaje Final</p>
+                        <div class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+                            <span id="final-score">0</span><span class="text-2xl text-zinc-300">pts</span>
+                        </div>
+                    </div>
+                    <button onclick="location.reload()" class="block w-full max-w-xs mx-auto bg-zinc-900 hover:bg-zinc-800 text-white font-bold py-4 px-10 rounded-xl transition-all hover:scale-105 shadow-xl text-sm uppercase tracking-widest">
+                        Reiniciar Masterclass
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const AppState = { score: 0, answeredCount: 0, ptsPerQuestion: 10, totalQuestions: 0 };
+        const ActivityState = {}; // Para estados temporales (Match, Order, etc)
+
+        // LA BASE DE DATOS ROBUSTA (Combinando todas las dinámicas)
+        const practiceData = [
+            // 1. MCQ + Imagen (Vocabulario)
+            {
+                type: "mcq", category: "Vocabulario",
+                q: "Before humans can build cities on Mars, they must first _______ the planet.",
+                img: "https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&w=800&q=80",
+                options: ["colonize", "eradicate"],
+                correct: 0,
+                expTitle: "Vocabulario: Colonize",
+                expText: "<b>Colonize</b> significa establecer control sobre un nuevo lugar. <b>Eradicate</b> significa destruir."
+            },
+            // 2. ORDER (Sintaxis Continuous)
+            {
+                type: "order", category: "Sintaxis Lógica",
+                q: "Ordena las palabras para formar una petición educada en Future Continuous.",
+                words: ["the", "projector?", "using", "be", "you", "Will"],
+                correct: ["Will", "you", "be", "using", "the", "projector?"],
+                expTitle: "Polite Requests",
+                expText: "El Future Continuous en pregunta (Will + S + be + verb-ing) se usa a menudo para preguntar planes amablemente."
+            },
+            // 3. FITB (Gramática Perfect)
+            {
+                type: "fitb", category: "Escritura",
+                q: "By the time you wake up, I will have _______ (make) breakfast for everyone.",
+                correct: ["made"],
+                expTitle: "Participio Irregular",
+                expText: "El Future Perfect exige el participio. El participio de 'make' es <b>made</b>."
+            },
+            // 4. MATCH (Vocabulario)
+            {
+                type: "match", category: "Unir Definiciones",
+                q: "Empareja cada palabra de vocabulario con su definición correcta.",
+                left: ["Breakthrough", "Megacity", "Flourish"],
+                right: ["Crecer y prosperar.", "Ciudad con más de 10 millones.", "Un gran descubrimiento."],
+                correctMap: {0: 2, 1: 1, 2: 0},
+                expTitle: "Dominio de Conceptos",
+                expText: "Un <i>Breakthrough</i> es un avance crucial, <i>Megacity</i> es una urbe gigante, y <i>Flourish</i> es florecer o tener éxito."
+            },
+            // 5. ERROR (Corrección Gramatical)
+            {
+                type: "error", category: "Corrección",
+                q: "Toca el fragmento que contiene un ERROR gramatical muy común.",
+                chunks: ["By next month, ", "she ", "will has graduated ", "from college."],
+                correct: 2,
+                expTitle: "Regla estricta: will have",
+                expText: "Nunca se usa 'will has'. El auxiliar 'will' obliga a usar siempre <b>will have</b>, incluso para she/he/it."
+            },
+            // 6. CATEGORIZE (Marcadores)
+            {
+                type: "cat", category: "Clasificación de Marcadores",
+                q: "Clasifica cada marcador de tiempo tocándolo para asignarle su tiempo verbal lógico.",
+                items: ["By 2030", "At 8 PM tonight", "Before you arrive"],
+                categories: ["Future Perfect", "Future Continuous"],
+                correct: [1, 2, 1], // 1 = Perfect, 2 = Continuous
+                expTitle: "By/Before vs At",
+                expText: "<i>By</i> y <i>Before</i> indican una fecha límite (Future Perfect). <i>At</i> indica un punto exacto en medio de una acción (Future Continuous)."
+            },
+            // 7. MCQ (Timeline Lógico)
+            {
+                type: "mcq", category: "Análisis Lógico",
+                q: "Your train departs at 5:00 PM and arrives at 8:00 PM. What is your status at 6:30 PM?",
+                options: ["I will have traveled.", "I will be traveling."],
+                correct: 1,
+                expTitle: "Línea de Tiempo",
+                expText: "A las 6:30 PM estás exactamente a la mitad del viaje. Como la acción está en progreso, debes usar <b>Future Continuous (will be traveling)</b>."
+            },
+            // 8. MATCH (Contexto Crítico)
+            {
+                type: "match", category: "Consecuencia Lógica",
+                q: "Une la estructura (izquierda) con su significado real (derecha).",
+                left: ["When you arrive, we will be eating.", "When you arrive, we will have eaten."],
+                right: ["Llegarás tarde y ya no habrá comida.", "Puedes unirte y cenar con nosotros."],
+                correctMap: {0: 1, 1: 0}, 
+                expTitle: "La importancia del contexto",
+                expText: "<i>Will be eating</i> = acción en proceso (puedes unirte). <i>Will have eaten</i> = acción terminada (te quedas sin cenar)."
+            },
+            // 9. ORDER (Sintaxis Perfect)
+            {
+                type: "order", category: "Sintaxis Lógica",
+                q: "Ordena las palabras para formar una oración correcta en Future Perfect.",
+                words: ["found", "will", "a cure.", "have", "Scientists", "By 2040,"],
+                correct: ["By 2040,", "Scientists", "will", "have", "found", "a cure."],
+                expTitle: "Estructura Correcta",
+                expText: "La fórmula es: <b>Marcador Límite + Sujeto + will have + Participio (found)</b>."
+            },
+            // 10. ERROR (Corrección Participio)
+            {
+                type: "error", category: "Corrección",
+                q: "Toca el fragmento que contiene el error gramatical.",
+                chunks: ["Don't worry, ", "I will ", "have finish ", "my project by tomorrow."],
+                correct: 2,
+                expTitle: "Uso obligatorio del Participio",
+                expText: "El Future Perfect requiere el verbo en participio pasado (V3). Para verbos regulares debes agregar -ed: <b>have finished</b>."
+            },
+            // 11. MCQ (Continuous Negativo)
+            {
+                type: "mcq", category: "Gramática",
+                q: "I can't lend you the book tomorrow because I _______ it yet.",
+                options: ["won't be reading", "won't have finished"],
+                correct: 1,
+                expTitle: "Future Perfect Negativo",
+                expText: "Usamos <b>won't have + Participio</b> para expresar que para ese momento futuro, la acción NO estará completada."
+            },
+            // 12. FITB (Vocabulario)
+            {
+                type: "fitb", category: "Escritura Vocabulario",
+                q: "The main goal of the UN is to completely e_ _ _ _ _ _ _ _ (destruir/eliminar) world hunger by 2050.",
+                correct: ["eradicate"],
+                expTitle: "Vocabulario Clave",
+                expText: "La palabra correcta es <b>eradicate</b>, que significa eliminar algo malo por completo."
+            }
+        ];
+
+        function initApp() {
+            AppState.totalQuestions = practiceData.length;
+            updateProgressUI();
+            const container = document.getElementById('practice-container');
+            let html = '';
+
+            practiceData.forEach((data, index) => {
+                // Colores semánticos para los tags
+                let tagClass = 'bg-zinc-100 text-zinc-600';
+                if(data.category.includes('Lógica') || data.category.includes('Análisis') || data.type==='cat') tagClass = 'bg-blue-100 text-blue-700';
+                if(data.category.includes('Corrección')) tagClass = 'bg-rose-100 text-rose-700';
+                if(data.category.includes('Vocabulario')) tagClass = 'bg-amber-100 text-amber-700';
+                if(data.type === 'match') tagClass = 'bg-purple-100 text-purple-700';
+
+                let imgHtml = '';
+                if(data.img) imgHtml = `<img src="${data.img}" class="vocab-img-question shadow-sm" alt="Reference">`;
+
+                let interactiveHtml = '';
+
+                // --- 1. MCQ ---
+                if (data.type === 'mcq') {
+                    interactiveHtml = `
+                    <div class="grid sm:grid-cols-2 gap-3" id="q-container-${index}" data-answered="false">
+                        <button class="opt-btn" onclick="handleMCQ(${index}, 0)">A) ${data.options[0]}</button>
+                        <button class="opt-btn" onclick="handleMCQ(${index}, 1)">B) ${data.options[1]}</button>
+                    </div>`;
+                } 
+                // --- 2. FITB ---
+                else if (data.type === 'fitb') {
+                    interactiveHtml = `
+                    <div id="q-container-${index}" data-answered="false" class="flex flex-col sm:flex-row gap-3">
+                        <input type="text" id="input-${index}" class="fitb-input" placeholder="Escribe aquí..." autocomplete="off">
+                        <button class="check-btn !w-auto !mt-0" onclick="handleFITB(${index})">Comprobar</button>
+                    </div>
+                    <p class="text-xs font-bold mt-2" id="error-msg-${index}"></p>`;
+                }
+                // --- 3. ORDER (Scramble) ---
+                else if (data.type === 'order') {
+                    ActivityState[index] = { currentOrder: [], pool: [...data.words] };
+                    let shuffled = [...data.words].sort(() => Math.random() - 0.5);
+                    let poolHtml = shuffled.map(w => `<div class="scramble-word" onclick="handleOrderClick(${index}, '${w}', this, 'target')">${w}</div>`).join('');
+                    
+                    interactiveHtml = `
+                    <div id="q-container-${index}" data-answered="false">
+                        <p class="text-sm font-bold text-zinc-500 mb-2">Tu oración:</p>
+                        <div id="order-target-${index}" class="scramble-target"></div>
+                        <p class="text-sm font-bold text-zinc-500 mt-4 mb-2">Banco de palabras:</p>
+                        <div id="order-pool-${index}" class="scramble-pool bg-zinc-100 border border-zinc-200">${poolHtml}</div>
+                        <button class="check-btn" onclick="checkOrder(${index})">Comprobar <i class="fas fa-check"></i></button>
+                        <p class="text-xs text-red-500 font-bold mt-2" id="order-err-${index}"></p>
+                    </div>`;
+                }
+                // --- 4. ERROR (Spot mistake) ---
+                else if (data.type === 'error') {
+                    let chunksHtml = data.chunks.map((c, i) => 
+                        `<span class="error-chunk" onclick="handleErrorClick(${index}, ${i})">${c}</span>`
+                    ).join('');
+                    interactiveHtml = `
+                    <div id="q-container-${index}" data-answered="false" class="bg-white border-2 border-zinc-100 p-4 rounded-xl text-center leading-loose">
+                        ${chunksHtml}
+                    </div>`;
+                }
+                // --- 5. MATCH (Unir Conceptos) ---
+                else if (data.type === 'match') {
+                    ActivityState[index] = { selectedLeft: null, pairs: {}, colors: ['#c7d2fe', '#bbf7d0', '#fde68a', '#fbcfe8'] };
+                    let leftHtml = data.left.map((txt, i) => `<div id="match-l-${index}-${i}" class="match-item" onclick="handleMatchLeft(${index}, ${i})">${txt}</div>`).join('');
+                    let rightHtml = data.right.map((txt, i) => `<div id="match-r-${index}-${i}" class="match-item" onclick="handleMatchRight(${index}, ${i})">${txt}</div>`).join('');
+                    
+                    interactiveHtml = `
+                    <div id="q-container-${index}" data-answered="false">
+                        <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                            <div class="match-column">${leftHtml}</div>
+                            <div class="match-column">${rightHtml}</div>
+                        </div>
+                        <button class="check-btn" id="match-btn-${index}" onclick="checkMatch(${index})" disabled>Empareja todas para comprobar</button>
+                    </div>`;
+                }
+                // --- 6. CATEGORIZE (Clasificación) ---
+                else if (data.type === 'cat') {
+                    ActivityState[index] = { states: new Array(data.items.length).fill(0) };
+                    let itemsHtml = data.items.map((txt, i) => `
+                        <div id="cat-pill-${index}-${i}" class="cat-pill cat-state-0" onclick="handleCatClick(${index}, ${i})">
+                            <span>${txt}</span>
+                            <span class="badge" id="cat-badge-${index}-${i}">Toca para asignar</span>
+                        </div>
+                    `).join('');
+                    
+                    interactiveHtml = `
+                    <div id="q-container-${index}" data-answered="false" class="space-y-3">
+                        <div class="flex gap-2 text-xs font-bold mb-4 bg-zinc-100 p-3 rounded-lg">
+                            <span class="text-zinc-500"><i class="fas fa-hand-pointer mr-1"></i> Toca un elemento para alternar su categoría.</span>
+                        </div>
+                        ${itemsHtml}
+                        <button class="check-btn" id="cat-btn-${index}" onclick="checkCat(${index})" disabled>Clasifica todos para comprobar</button>
+                    </div>`;
+                }
+
+                html += `
+                <article class="solid-card p-5 md:p-8" id="card-${index}">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-5 border-b border-zinc-100 pb-4">
+                        <span class="text-sm font-black text-zinc-400 uppercase tracking-widest">Question ${index + 1}</span>
+                        <span class="text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider ${tagClass}">${data.category}</span>
+                    </div>
+                    ${imgHtml}
+                    <p class="text-lg md:text-xl font-bold text-zinc-800 mb-6 leading-relaxed">${data.q}</p>
+                    ${interactiveHtml}
+                    <div id="feedback-${index}" class="feedback-box">
+                        <div class="bg-zinc-50 border border-zinc-200 rounded-xl p-5 md:p-6" id="feed-content-${index}"></div>
+                    </div>
+                </article>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // 1. MCQ
+        function handleMCQ(qIdx, optIdx) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            if (container.dataset.answered === 'true') return;
+            container.dataset.answered = 'true';
+            
+            const isCorrect = (optIdx === practiceData[qIdx].correct);
+            const buttons = container.querySelectorAll('button');
+            buttons.forEach((b, i) => {
+                b.disabled = true;
+                if(i === practiceData[qIdx].correct) b.classList.add('correct');
+                else if(i === optIdx && !isCorrect) b.classList.add('incorrect');
+                else b.style.opacity = '0.3';
+            });
+            processResult(qIdx, isCorrect);
+        }
+
+        // 2. FITB
+        function handleFITB(qIdx) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            if (container.dataset.answered === 'true') return;
+            
+            const input = document.getElementById(`input-${qIdx}`);
+            const errorMsg = document.getElementById(`error-msg-${qIdx}`);
+            const val = input.value.trim().toLowerCase();
+            
+            if(!val) { errorMsg.innerText = "Escribe una respuesta."; errorMsg.classList.add('text-red-500'); return; }
+            errorMsg.innerText = "";
+            container.dataset.answered = 'true';
+            
+            const isCorrect = practiceData[qIdx].correct.includes(val);
+            input.disabled = true;
+            container.querySelector('button').disabled = true;
+            
+            if(isCorrect) input.classList.add('correct');
+            else { input.classList.add('incorrect'); input.value = `${input.value} (Resp: ${practiceData[qIdx].correct[0]})`; }
+            
+            processResult(qIdx, isCorrect);
+        }
+
+        // 3. ORDER
+        function handleOrderClick(qIdx, word, el, destination) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            if (container.dataset.answered === 'true') return;
+            
+            const target = document.getElementById(`order-target-${qIdx}`);
+            const pool = document.getElementById(`order-pool-${qIdx}`);
+            el.remove();
+            
+            const newDest = destination === 'target' ? 'pool' : 'target';
+            const newEl = document.createElement('div');
+            newEl.className = 'scramble-word';
+            newEl.innerText = word;
+            newEl.onclick = function() { handleOrderClick(qIdx, word, this, newDest); };
+            
+            if(destination === 'target') {
+                target.appendChild(newEl);
+                target.classList.add('filled');
+            } else {
+                pool.appendChild(newEl);
+                if(target.children.length === 0) target.classList.remove('filled');
+            }
+        }
+        function checkOrder(qIdx) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            if (container.dataset.answered === 'true') return;
+            
+            const target = document.getElementById(`order-target-${qIdx}`);
+            const currentWords = Array.from(target.children).map(el => el.innerText);
+            const correctWords = practiceData[qIdx].correct;
+            
+            if(currentWords.length !== correctWords.length) {
+                document.getElementById(`order-err-${qIdx}`).innerText = "Usa todas las palabras.";
+                return;
+            }
+            document.getElementById(`order-err-${qIdx}`).innerText = "";
+            container.dataset.answered = 'true';
+            container.querySelector('button').disabled = true;
+            Array.from(target.children).forEach(el => el.style.pointerEvents = 'none');
+            
+            const isCorrect = currentWords.join(' ') === correctWords.join(' ');
+            target.style.borderColor = isCorrect ? '#10b981' : '#ef4444';
+            processResult(qIdx, isCorrect);
+        }
+
+        // 4. SPOT THE ERROR
+        function handleErrorClick(qIdx, chunkIdx) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            if (container.dataset.answered === 'true') return;
+            container.dataset.answered = 'true';
+
+            const correctIdx = practiceData[qIdx].correct;
+            const isCorrect = (chunkIdx === correctIdx);
+            
+            const allChunks = container.querySelectorAll('.error-chunk');
+            allChunks.forEach((chunk, i) => {
+                chunk.classList.add('locked');
+                if(i === correctIdx) chunk.classList.add('correct-guess');
+                else if (i === chunkIdx && !isCorrect) chunk.classList.add('wrong-guess');
+            });
+            processResult(qIdx, isCorrect);
+        }
+
+        // 5. MATCHING
+        function handleMatchLeft(qIdx, i) {
+            if (document.getElementById(`q-container-${qIdx}`).dataset.answered === 'true') return;
+            const state = ActivityState[qIdx];
+            if(state.selectedLeft !== null) document.getElementById(`match-l-${qIdx}-${state.selectedLeft}`).classList.remove('selected');
+            if(!document.getElementById(`match-l-${qIdx}-${i}`).classList.contains('paired')) {
+                state.selectedLeft = i;
+                document.getElementById(`match-l-${qIdx}-${i}`).classList.add('selected');
+            }
+        }
+        function handleMatchRight(qIdx, j) {
+            if (document.getElementById(`q-container-${qIdx}`).dataset.answered === 'true') return;
+            const state = ActivityState[qIdx];
+            const rightEl = document.getElementById(`match-r-${qIdx}-${j}`);
+            
+            if(state.selectedLeft !== null && !rightEl.classList.contains('paired')) {
+                const leftEl = document.getElementById(`match-l-${qIdx}-${state.selectedLeft}`);
+                const color = state.colors[Object.keys(state.pairs).length % state.colors.length];
+                
+                leftEl.classList.remove('selected'); leftEl.classList.add('paired');
+                leftEl.style.backgroundColor = color; leftEl.style.borderColor = color;
+                rightEl.classList.add('paired');
+                rightEl.style.backgroundColor = color; rightEl.style.borderColor = color;
+                
+                state.pairs[state.selectedLeft] = j;
+                state.selectedLeft = null;
+                
+                if(Object.keys(state.pairs).length === practiceData[qIdx].left.length) {
+                    document.getElementById(`match-btn-${qIdx}`).disabled = false;
+                    document.getElementById(`match-btn-${qIdx}`).innerText = "Comprobar Parejas";
+                }
+            }
+        }
+        function checkMatch(qIdx) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            container.dataset.answered = 'true';
+            document.getElementById(`match-btn-${qIdx}`).disabled = true;
+            const state = ActivityState[qIdx];
+            const correctMap = practiceData[qIdx].correctMap;
+            let isCorrect = true;
+            for (let leftKey in state.pairs) if (state.pairs[leftKey] !== correctMap[leftKey]) isCorrect = false;
+            processResult(qIdx, isCorrect);
+        }
+
+        // 6. CATEGORIZE
+        function handleCatClick(qIdx, i) {
+            if (document.getElementById(`q-container-${qIdx}`).dataset.answered === 'true') return;
+            const state = ActivityState[qIdx];
+            const data = practiceData[qIdx];
+            
+            state.states[i] = (state.states[i] + 1) % 3;
+            const currentState = state.states[i];
+            const pill = document.getElementById(`cat-pill-${qIdx}-${i}`);
+            const badge = document.getElementById(`cat-badge-${qIdx}-${i}`);
+            
+            pill.className = `cat-pill cat-state-${currentState}`;
+            if(currentState === 0) badge.innerText = "Toca para asignar";
+            else if (currentState === 1) badge.innerText = data.categories[0];
+            else if (currentState === 2) badge.innerText = data.categories[1];
+
+            const allAssigned = state.states.every(s => s > 0);
+            const btn = document.getElementById(`cat-btn-${qIdx}`);
+            if(allAssigned) { btn.disabled = false; btn.innerText = "Comprobar Clasificación"; } 
+            else { btn.disabled = true; btn.innerText = "Clasifica todos para comprobar"; }
+        }
+        function checkCat(qIdx) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            container.dataset.answered = 'true';
+            document.getElementById(`cat-btn-${qIdx}`).disabled = true;
+            const state = ActivityState[qIdx];
+            const correctArr = practiceData[qIdx].correct;
+            let isCorrect = true;
+            
+            state.states.forEach((s, i) => {
+                const pill = document.getElementById(`cat-pill-${qIdx}-${i}`);
+                if(s !== correctArr[i]) {
+                    isCorrect = false;
+                    pill.style.borderStyle = 'dashed'; pill.style.borderColor = '#ef4444'; pill.style.opacity = '0.7';
+                }
+            });
+            processResult(qIdx, isCorrect);
+        }
+
+        function processResult(qIdx, isCorrect) {
+            const data = practiceData[qIdx];
+            const feedbackBox = document.getElementById(`feedback-${qIdx}`);
+            
+            if(isCorrect) {
+                AppState.score += AppState.ptsPerQuestion;
+                document.getElementById('score-text').innerText = AppState.score;
+            }
+
+            let iconHtml = isCorrect 
+                ? `<i class="fas fa-check-circle text-emerald-500 text-2xl"></i> <span class="font-black text-emerald-700 uppercase tracking-widest text-sm">¡Correcto!</span>`
+                : `<i class="fas fa-times-circle text-red-500 text-2xl"></i> <span class="font-black text-red-700 uppercase tracking-widest text-sm">Hay Errores</span>`;
+            let colorClass = isCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200';
+
+            const feedbackContent = document.getElementById(`feed-content-${qIdx}`);
+            feedbackContent.className = `rounded-xl p-5 border ${colorClass} shadow-inner`;
+            feedbackContent.innerHTML = `
+                <div class="flex items-center gap-2 mb-3">${iconHtml}</div>
+                <h4 class="font-bold text-zinc-900 mb-1 md:text-lg text-base">${data.expTitle}</h4>
+                <p class="text-sm text-zinc-700 leading-relaxed font-medium">${data.expText}</p>
+            `;
+
+            requestAnimationFrame(() => feedbackBox.classList.add('show'));
+
+            AppState.answeredCount++;
+            updateProgressUI();
+
+            if (AppState.answeredCount === AppState.totalQuestions) {
+                document.getElementById('final-score').innerText = AppState.score;
+                setTimeout(() => {
+                    const box = document.getElementById('completion-box');
+                    box.classList.remove('hidden');
+                    box.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                }, 1000);
+            }
+        }
+
+        function updateProgressUI() {
+            document.getElementById('progress-text').innerText = `${AppState.answeredCount}/${AppState.totalQuestions}`;
+            const pct = AppState.totalQuestions === 0 ? 0 : (AppState.answeredCount / AppState.totalQuestions) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
