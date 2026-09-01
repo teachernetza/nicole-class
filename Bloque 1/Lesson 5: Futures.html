@@ -146,7 +146,7 @@
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                 
                 <div class="solid-card bg-white">
-                    <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=400&q=80" alt="Megacity" class="vocab-img-study">
+                    <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=400&q=80" onerror="this.src='https://placehold.co/400x160/e0e7ff/4f46e5?text=Megacity'" alt="Megacity" class="vocab-img-study" loading="lazy">
                     <div class="p-4 text-center">
                         <h4 class="font-black text-zinc-800 text-lg">Megacity</h4>
                         <p class="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Megalópolis</p>
@@ -154,7 +154,7 @@
                 </div>
 
                 <div class="solid-card bg-white">
-                    <img src="https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&w=400&q=80" alt="Colonize" class="vocab-img-study">
+                    <img src="https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&w=400&q=80" onerror="this.src='https://placehold.co/400x160/e0e7ff/4f46e5?text=Colonize'" alt="Colonize" class="vocab-img-study" loading="lazy">
                     <div class="p-4 text-center">
                         <h4 class="font-black text-zinc-800 text-lg">Colonize</h4>
                         <p class="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Colonizar</p>
@@ -162,7 +162,7 @@
                 </div>
 
                 <div class="solid-card bg-white">
-                    <img src="https://images.unsplash.com/photo-1506804886640-ed5c368297b8?auto=format&fit=crop&w=400&q=80" alt="Flourish" class="vocab-img-study">
+                    <img src="https://images.unsplash.com/photo-1506804886640-ed5c368297b8?auto=format&fit=crop&w=400&q=80" onerror="this.src='https://placehold.co/400x160/e0e7ff/4f46e5?text=Flourish'" alt="Flourish" class="vocab-img-study" loading="lazy">
                     <div class="p-4 text-center">
                         <h4 class="font-black text-zinc-800 text-lg">Flourish</h4>
                         <p class="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Florecer / Prosperar</p>
@@ -170,7 +170,7 @@
                 </div>
 
                 <div class="solid-card bg-white">
-                    <img src="https://images.unsplash.com/photo-1584483766114-2cea6facdf57?auto=format&fit=crop&w=400&q=80" alt="Eradicate" class="vocab-img-study">
+                    <img src="https://images.unsplash.com/photo-1584483766114-2cea6facdf57?auto=format&fit=crop&w=400&q=80" onerror="this.src='https://placehold.co/400x160/e0e7ff/4f46e5?text=Eradicate'" alt="Eradicate" class="vocab-img-study" loading="lazy">
                     <div class="p-4 text-center">
                         <h4 class="font-black text-zinc-800 text-lg">Eradicate</h4>
                         <p class="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Erradicar / Eliminar</p>
@@ -178,7 +178,7 @@
                 </div>
 
                 <div class="solid-card bg-white">
-                    <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=400&q=80" alt="Breakthrough" class="vocab-img-study">
+                    <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=400&q=80" onerror="this.src='https://placehold.co/400x160/e0e7ff/4f46e5?text=Breakthrough'" alt="Breakthrough" class="vocab-img-study" loading="lazy">
                     <div class="p-4 text-center">
                         <h4 class="font-black text-zinc-800 text-lg">Breakthrough</h4>
                         <p class="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Gran Descubrimiento</p>
@@ -186,7 +186,7 @@
                 </div>
 
                 <div class="solid-card bg-white">
-                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=80" alt="Innovate" class="vocab-img-study">
+                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=80" onerror="this.src='https://placehold.co/400x160/e0e7ff/4f46e5?text=Innovate'" alt="Innovate" class="vocab-img-study" loading="lazy">
                     <div class="p-4 text-center">
                         <h4 class="font-black text-zinc-800 text-lg">Innovate</h4>
                         <p class="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Innovar</p>
@@ -281,11 +281,10 @@
 
         // LA BASE DE DATOS ROBUSTA (Combinando todas las dinámicas)
         const practiceData = [
-            // 1. MCQ + Imagen (Vocabulario)
+            // 1. MCQ (Vocabulario) - IMAGEN ELIMINADA COMO SE SOLICITÓ
             {
                 type: "mcq", category: "Vocabulario",
                 q: "Before humans can build cities on Mars, they must first _______ the planet.",
-                img: "https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&w=800&q=80",
                 options: ["colonize", "eradicate"],
                 correct: 0,
                 expTitle: "Vocabulario: Colonize",
@@ -390,6 +389,79 @@
                 correct: ["eradicate"],
                 expTitle: "Vocabulario Clave",
                 expText: "La palabra correcta es <b>eradicate</b>, que significa eliminar algo malo por completo."
+            },
+            // 13. MATCH (Sentence halves)
+            {
+                type: "match", category: "Unir Mitades",
+                q: "Une la primera mitad de la oración con su final lógico basándote en los tiempos verbales.",
+                left: ["At 10 AM tomorrow,", "By 10 AM tomorrow,"],
+                right: ["my flight will have departed.", "I will be flying to Paris."],
+                correctMap: {0: 1, 1: 0},
+                expTitle: "At vs By",
+                expText: "<i>At</i> marca un momento exacto en progreso (estaré volando). <i>By</i> marca un límite para una acción ya terminada (el vuelo ya habrá salido)."
+            },
+            // 14. ORDER (Negative Continuous)
+            {
+                type: "order", category: "Sintaxis Lógica",
+                q: "Ordena las palabras para formar una oración negativa en Future Continuous.",
+                words: ["attending", "tomorrow.", "won't", "the meeting", "be", "I"],
+                correct: ["I", "won't", "be", "attending", "the meeting", "tomorrow."],
+                expTitle: "Negaciones en Proceso",
+                expText: "La estructura correcta es: <b>Sujeto + won't be + verbo(-ing)</b>."
+            },
+            // 15. ERROR (Continuous Mistake)
+            {
+                type: "error", category: "Corrección",
+                q: "Toca el fragmento que contiene un ERROR en el Future Continuous.",
+                chunks: ["Don't call me ", "at 9 PM. ", "I will be study ", "for my exams."],
+                correct: 2,
+                expTitle: "El verbo siempre en -ing",
+                expText: "En el Future Continuous, después de 'will be' el verbo principal siempre debe llevar <b>-ing</b> (studying)."
+            },
+            // 16. FITB (Vocabulario)
+            {
+                type: "fitb", category: "Escritura Vocabulario",
+                q: "With the new farming tech, plants in the desert will f_ _ _ _ _ _ _ (prosperar).",
+                correct: ["flourish"],
+                expTitle: "Vocabulario Clave",
+                expText: "La palabra es <b>flourish</b>, que significa crecer fuerte y sano o prosperar."
+            },
+            // 17. CATEGORIZE (Conceptos)
+            {
+                type: "cat", category: "Clasificación de Usos",
+                q: "Clasifica estas descripciones según el tiempo verbal que representan.",
+                items: ["Acción completada antes de un límite", "Acción en progreso en el futuro"],
+                categories: ["Future Perfect", "Future Continuous"],
+                correct: [1, 2],
+                expTitle: "Usos Principales",
+                expText: "El <b>Future Perfect</b> se enfoca en el resultado ya finalizado, mientras que el <b>Future Continuous</b> se enfoca en la duración de la acción."
+            },
+            // 18. MCQ (Gramática con 'By')
+            {
+                type: "mcq", category: "Gramática",
+                q: "The repairs are taking too long! I don't think they _______ the car by Friday.",
+                options: ["will be fixing", "will have fixed"],
+                correct: 1,
+                expTitle: "Fecha límite (by Friday)",
+                expText: "Al haber una fecha límite ('by Friday'), usamos <b>will have fixed</b> para enfocarnos en si la acción estará finalizada o no para ese entonces."
+            },
+            // 19. ORDER (Perfect Question)
+            {
+                type: "order", category: "Sintaxis Lógica",
+                q: "Ordena las palabras para formar una pregunta en Future Perfect.",
+                words: ["finished", "the report", "you", "by Friday?", "Will", "have"],
+                correct: ["Will", "you", "have", "finished", "the report", "by Friday?"],
+                expTitle: "Preguntas en Perfect",
+                expText: "Estructura de pregunta: <b>Will + Sujeto + have + Participio</b>."
+            },
+            // 20. ERROR (Irregular Verb Mistake)
+            {
+                type: "error", category: "Corrección",
+                q: "Encuentra el error de conjugación en este Future Perfect.",
+                chunks: ["By next year, ", "they ", "will have build ", "a new megacity."],
+                correct: 2,
+                expTitle: "Verbos Irregulares",
+                expText: "El participio pasado del verbo irregular 'build' no es la forma base, es <b>built</b> (con T)."
             }
         ];
 
