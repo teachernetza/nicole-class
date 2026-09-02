@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Relative Clauses Practice: The 200-Point Challenge</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f4f4f5; 
+            color: #27272a; 
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+
+        .solid-card {
+            background-color: #ffffff;
+            border: 1px solid #e4e4e7;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+        .solid-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Vocab Images */
+        .vocab-img-study {
+            width: 100%; height: 160px; object-fit: cover; border-bottom: 2px solid #f4f4f5;
+            transition: transform 0.5s ease;
+        }
+        .vocab-card:hover .vocab-img-study {
+            transform: scale(1.05);
+        }
+
+        /* Option Buttons (MCQ) */
+        .opt-btn {
+            transition: all 0.2s ease;
+            border: 2px solid #e4e4e7;
+            width: 100%; text-align: left; padding: 1rem 1.25rem; border-radius: 0.75rem;
+            font-weight: 700; color: #3f3f46; background-color: #fafafa;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: #a1a1aa; background-color: #ffffff; transform: translateY(-2px); }
+        .opt-btn:active:not(:disabled) { transform: scale(0.98); }
+        .opt-btn.correct { background-color: #ecfdf5; border-color: #10b981; color: #047857; font-weight: 800; pointer-events: none; }
+        .opt-btn.incorrect { background-color: #fef2f2; border-color: #ef4444; color: #b91c1c; opacity: 0.7; pointer-events: none; }
+        .opt-btn:disabled { cursor: not-allowed; }
+
+        /* General Check Button */
+        .check-btn {
+            background-color: #3b82f6; color: white; font-weight: bold; padding: 0.75rem 1.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            margin-top: 1rem; display: inline-flex; align-items: center; gap: 0.5rem; justify-content: center; width: 100%; max-width: 250px;
+        }
+        .check-btn:hover:not(:disabled) { background-color: #2563eb; transform: translateY(-1px); }
+        .check-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Sentence Ordering (Scramble) */
+        .scramble-pool, .scramble-target {
+            min-height: 4rem; border-radius: 0.75rem; padding: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem;
+        }
+        .scramble-target { border: 2px dashed #a1a1aa; background-color: #fafafa; margin-bottom: 1rem; transition: border-color 0.2s; }
+        .scramble-target.filled { border-color: #3b82f6; border-style: solid; background-color: #eff6ff; }
+        .scramble-word {
+            background-color: #ffffff; border: 1px solid #d4d4d8; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 700; color: #3f3f46; cursor: pointer; user-select: none; transition: transform 0.1s, box-shadow 0.1s; box-shadow: 0 2px 4px -1px rgba(0,0,0,0.05);
+        }
+        .scramble-word:active { transform: scale(0.95); }
+
+        /* Spot the Error */
+        .error-chunk {
+            display: inline-block; padding: 0.25rem 0.5rem; margin: 0.25rem; background-color: #f4f4f5; border: 2px solid transparent; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 1.1rem;
+        }
+        .error-chunk:hover:not(.locked) { background-color: #e4e4e7; transform: translateY(-2px); }
+        .error-chunk.wrong-guess { background-color: #fef2f2; border-color: #ef4444; color: #b91c1c; pointer-events: none; opacity: 0.7; }
+        .error-chunk.correct-guess { background-color: #ecfdf5; border-color: #10b981; color: #047857; pointer-events: none; }
+        .error-chunk.locked { pointer-events: none; opacity: 0.5; }
+
+        /* Feedback Box */
+        .feedback-box {
+            max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, margin 0.4s ease; opacity: 0; margin-top: 0;
+        }
+        .feedback-box.show { max-height: 600px; opacity: 1; margin-top: 1.25rem; }
+
+        .highlight-comma {
+            color: #ef4444;
+            font-weight: 900;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body class="pb-24">
+
+    <!-- Header Fijo (Score & Progress) -->
+    <header class="bg-white border-b border-zinc-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white text-lg shadow-md transform -rotate-2">
+                    <i class="fas fa-pencil-alt rotate-2"></i>
+                </div>
+                <div>
+                    <h1 class="font-black text-zinc-900 leading-tight md:text-lg text-base">Relative Clauses</h1>
+                    <p class="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Interactive Practice</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 md:gap-4">
+                <div class="hidden md:block text-xs font-bold text-zinc-500 bg-zinc-100 px-3 py-1.5 rounded-full border border-zinc-200">
+                    Progreso: <span id="progress-text" class="text-blue-600 font-black">0/20</span>
+                </div>
+                <div class="text-xs md:text-sm font-black text-white bg-gradient-to-r from-blue-500 to-indigo-600 px-3 md:px-4 py-1.5 rounded-full shadow-md">
+                    <span id="score-text">0</span> / 200 PTS
+                </div>
+            </div>
+        </div>
+        <div class="h-1.5 w-full bg-zinc-100">
+            <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-500 ease-out w-0"></div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 pt-8 space-y-12">
+
+        <!-- INTRO -->
+        <section class="text-center">
+            <h2 class="text-3xl md:text-5xl font-black text-zinc-900 mb-3 tracking-tight">The 200-Point Challenge</h2>
+            <p class="text-zinc-600 font-medium max-w-2xl mx-auto text-base">Aplica tus conocimientos sobre <b>who, which, where, when, whose</b> y el uso correcto de las <b>comas</b> (información extra). Gana 10 puntos por cada respuesta correcta.</p>
+        </section>
+
+        <!-- ==============================================
+             1. QUICK VOCABULARY REVIEW
+        =============================================== -->
+        <section>
+            <div class="flex items-center gap-3 mb-4">
+                <i class="fas fa-camera-retro text-blue-500 text-xl"></i>
+                <h3 class="text-lg font-extrabold text-zinc-800 uppercase tracking-wider">1. Quick Vocab Review</h3>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="solid-card vocab-card">
+                    <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400&q=80" alt="Colosseum" class="vocab-img-study" onerror="this.onerror=null; this.src='https://placehold.co/400x300/3b82f6/ffffff?text=Colosseum';">
+                    <div class="p-3 text-center">
+                        <h4 class="font-bold text-zinc-800 text-sm">The Colosseum</h4>
+                    </div>
+                </div>
+                <div class="solid-card vocab-card">
+                    <img src="https://images.unsplash.com/photo-1662993040333-6cfc610e206f?w=400&q=80" alt="Mona Lisa" class="vocab-img-study" onerror="this.onerror=null; this.src='https://placehold.co/400x300/3b82f6/ffffff?text=Mona+Lisa';">
+                    <div class="p-3 text-center">
+                        <h4 class="font-bold text-zinc-800 text-sm">Mona Lisa</h4>
+                    </div>
+                </div>
+                <div class="solid-card vocab-card">
+                    <img src="https://images.unsplash.com/photo-1522199710521-72d69614c71c?w=400&q=80" alt="Mt. Everest" class="vocab-img-study" onerror="this.onerror=null; this.src='https://placehold.co/400x300/3b82f6/ffffff?text=Mt+Everest';">
+                    <div class="p-3 text-center">
+                        <h4 class="font-bold text-zinc-800 text-sm">Mt. Everest</h4>
+                    </div>
+                </div>
+                <div class="solid-card vocab-card">
+                    <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e2815cb?w=400&q=80" alt="Central Park" class="vocab-img-study" onerror="this.onerror=null; this.src='https://placehold.co/400x300/3b82f6/ffffff?text=Central+Park';">
+                    <div class="p-3 text-center">
+                        <h4 class="font-bold text-zinc-800 text-sm">Central Park</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             2. INTENSIVE PRACTICE (20 Questions)
+        =============================================== -->
+        <section>
+            <div class="flex items-center gap-3 mb-6 mt-8">
+                <i class="fas fa-dumbbell text-blue-500 text-xl"></i>
+                <h3 class="text-lg font-extrabold text-zinc-800 uppercase tracking-wider">2. Intensive Practice</h3>
+            </div>
+            
+            <div id="practice-container" class="space-y-6">
+                <!-- Inyectado vía JS -->
+            </div>
+
+            <!-- Caja de Finalización -->
+            <div id="completion-box" class="hidden mt-12 solid-card bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 p-10 text-center shadow-2xl relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 text-blue-100 opacity-50 transform rotate-12"><i class="fas fa-trophy text-9xl"></i></div>
+                <div class="relative z-10">
+                    <div class="w-20 h-20 bg-gradient-to-tr from-blue-600 to-indigo-600 text-white rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-lg transform rotate-3"><i class="fas fa-award"></i></div>
+                    <h3 class="text-4xl font-black text-zinc-900 mb-3 tracking-tight">¡Práctica Completada!</h3>
+                    <p class="text-zinc-600 font-medium text-lg mb-8 max-w-md mx-auto">Has repasado pronombres relativos, orden de oraciones y signos de puntuación.</p>
+                    <div class="bg-white rounded-2xl p-6 border border-zinc-200 mb-8 inline-block w-full max-w-xs shadow-sm">
+                        <p class="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-1">Puntaje Final</p>
+                        <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+                            <span id="final-score">0</span><span class="text-2xl text-zinc-300"> / 200</span>
+                        </div>
+                    </div>
+                    <button onclick="location.reload()" class="block w-full max-w-xs mx-auto bg-zinc-900 hover:bg-zinc-800 text-white font-bold py-4 px-10 rounded-xl transition-all hover:scale-105 shadow-xl text-sm uppercase tracking-widest">
+                        Reintentar Desafío
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        /** ESTADO DE LA APLICACIÓN GLOBAL **/
+        const AppState = { score: 0, answeredCount: 0, ptsPerQuestion: 10, totalQuestions: 0 };
+        const ActivityState = {}; // Para guardar estado del drag&drop/scramble
+
+        /** BASE DE DATOS DE PREGUNTAS (20 Questions = 200 pts) **/
+        const practiceData = [
+            // PRONOUNS (MCQ) - Who, Which, Where, When, Whose
+            {
+                type: "mcq", category: "Pronouns: Places",
+                q: "The Colosseum, _____ is located in Rome, is a very old landmark.",
+                options: ["where", "which", "who"], correct: 1,
+                expTitle: "Which (para cosas/lugares como sujeto)",
+                expText: "Aunque el Coliseo es un lugar, en esta oración actúa como el <i>sujeto</i> de 'is located'. Por lo tanto usamos <b>which</b>."
+            },
+            {
+                type: "mcq", category: "Pronouns: People",
+                q: "Leonardo Da Vinci, _____ painted the Mona Lisa, was a genius.",
+                options: ["which", "whose", "who"], correct: 2,
+                expTitle: "Who (para personas)",
+                expText: "Usamos <b>who</b> exclusivamente cuando añadimos información extra sobre una <i>persona</i> (Da Vinci)."
+            },
+            {
+                type: "mcq", category: "Pronouns: Places (Location)",
+                q: "Central Park, _____ New Yorkers go to relax, is huge.",
+                options: ["where", "which", "when"], correct: 0,
+                expTitle: "Where (para lugares como escenario)",
+                expText: "Aquí Central Park es el <i>escenario</i> donde ocurre una acción (la gente va a relajarse). Usamos <b>where</b>."
+            },
+            {
+                type: "mcq", category: "Pronouns: Possession",
+                q: "Elon Musk, _____ company builds rockets, is very rich.",
+                options: ["who", "whose", "which"], correct: 1,
+                expTitle: "Whose (Posesión)",
+                expText: "Usamos <b>whose</b> (cuyo/cuya) para indicar que la compañía le pertenece a él."
+            },
+            {
+                type: "mcq", category: "Pronouns: Time",
+                q: "The year 1999, _____ my brother was born, was a great year.",
+                options: ["when", "which", "where"], correct: 0,
+                expTitle: "When (Tiempo)",
+                expText: "Usamos <b>when</b> para referirnos a un momento en el tiempo, un año, mes o día."
+            },
+            {
+                type: "mcq", category: "Forbidden Pronoun",
+                q: "My laptop, _____ I bought yesterday, is incredibly fast.",
+                options: ["that", "which", "who"], correct: 1,
+                expTitle: "¡Regla de Oro! (Sin 'That')",
+                expText: "En cláusulas con <b>comas</b> (Non-defining), NUNCA podemos usar 'that'. Debemos usar <b>which</b> para cosas."
+            },
+            {
+                type: "mcq", category: "Pronouns: Possession",
+                q: "My neighbor, _____ dog barks all night, is moving away.",
+                options: ["who", "whose", "which"], correct: 1,
+                expTitle: "Whose (Posesión)",
+                expText: "El perro le pertenece al vecino, por lo tanto usamos <b>whose</b> (cuyo perro)."
+            },
+            {
+                type: "mcq", category: "Pronouns: Context",
+                q: "Mt. Everest, _____ is the tallest mountain, is very dangerous.",
+                options: ["where", "which", "who"], correct: 1,
+                expTitle: "Which (Sujeto de la cláusula)",
+                expText: "No usamos 'where' porque no estamos describiendo una acción ocurriendo allí, sino que Mt. Everest es el sujeto del verbo 'is'. Usamos <b>which</b>."
+            },
+
+            // SPOT THE MISTAKE (Error)
+            {
+                type: "error", category: "Spot the Mistake (Punctuation)",
+                q: "Toca el fragmento que contiene el ERROR (falta o sobra algo).",
+                chunks: ["My mother ", "who is 50, ", "lives ", "in Madrid."], correct: 0,
+                expTitle: "Falta la primera coma",
+                expText: "Las cláusulas de información extra deben ir <b>entre comas</b>. Lo correcto es: <i>My mother<span class='highlight-comma'>,</span> who is 50,</i>"
+            },
+            {
+                type: "error", category: "Spot the Mistake (Pronoun)",
+                q: "Toca el fragmento que contiene el ERROR gramatical.",
+                chunks: ["The sun, ", "that is a star, ", "is ", "very hot."], correct: 1,
+                expTitle: "El pronombre prohibido",
+                expText: "Entre comas nunca se usa 'that'. Lo correcto es: <i>The sun, <b>which</b> is a star, is very hot.</i>"
+            },
+            {
+                type: "error", category: "Spot the Mistake (Punctuation)",
+                q: "Toca el fragmento que contiene el ERROR.",
+                chunks: ["Paris, ", "which is in France ", "is ", "beautiful."], correct: 1,
+                expTitle: "Falta la segunda coma",
+                expText: "La información extra debe cerrarse con una coma antes de que continúe la oración principal. <i>...which is in France<span class='highlight-comma'>,</span> is beautiful.</i>"
+            },
+            {
+                type: "error", category: "Spot the Mistake (Pronoun)",
+                q: "Toca el fragmento que contiene el ERROR.",
+                chunks: ["The Taj Mahal, ", "where was built ", "in India, ", "is amazing."], correct: 1,
+                expTitle: "Where vs Which",
+                expText: "Como no hay un sujeto (como 'I' o 'we') después del pronombre, necesitamos un pronombre que actúe como sujeto. Lo correcto es: <i><b>which</b> was built</i>."
+            },
+
+            // SENTENCE ORDERING (Scramble)
+            {
+                type: "order", category: "Sentence Builder",
+                q: "Ordena las palabras para formar una oración correcta (Presta atención a las comas).",
+                words: ["Paris,", "is", "which", "romantic.", "France,", "is", "in"],
+                correct: ["Paris,", "which", "is", "in", "France,", "is", "romantic."],
+                expTitle: "Sujeto + , info extra , + Verbo Principal",
+                expText: "La estructura es: Paris (sujeto) + coma + which is in France (cláusula) + coma + is romantic (verbo principal)."
+            },
+            {
+                type: "order", category: "Sentence Builder",
+                q: "Ordena las palabras:",
+                words: ["strict,", "arrived", "who", "My boss,", "is", "early."],
+                correct: ["My boss,", "who", "is", "strict,", "arrived", "early."],
+                expTitle: "Uso de WHO",
+                expText: "My boss (persona conocida) + coma + who is strict (info extra) + coma + arrived early."
+            },
+            {
+                type: "order", category: "Sentence Builder",
+                q: "Ordena las palabras:",
+                words: ["rains,", "it", "vast.", "The Amazon,", "is", "where"],
+                correct: ["The Amazon,", "where", "it", "rains,", "is", "vast."],
+                expTitle: "Uso de WHERE",
+                expText: "The Amazon (lugar) + coma + where it rains (acción que ocurre allí) + coma + is vast."
+            },
+            {
+                type: "order", category: "Sentence Builder",
+                q: "Ordena las palabras:",
+                words: ["My dog,", "name", "whose", "barks.", "Rex,", "is"],
+                correct: ["My dog,", "whose", "name", "is", "Rex,", "barks."],
+                expTitle: "Uso de WHOSE",
+                expText: "My dog (sujeto) + coma + whose name is Rex (posesión) + coma + barks."
+            },
+            {
+                type: "order", category: "Sentence Builder",
+                q: "Ordena las palabras:",
+                words: ["when", "1969,", "walked", "moon,", "men", "on the", "was", "historic."],
+                correct: ["1969,", "when", "men", "walked", "on the", "moon,", "was", "historic."],
+                expTitle: "Uso de WHEN",
+                expText: "1969 (año) + coma + when men walked on the moon + coma + was historic."
+            },
+
+            // COMBINE IDEAS (MCQ Logic)
+            {
+                type: "mcq", category: "Combine Ideas",
+                q: "Combina estas dos oraciones: 'Tokyo is huge. It is in Japan.'",
+                options: ["Tokyo, that is in Japan, is huge.", "Tokyo, which is in Japan, is huge.", "Tokyo, where is in Japan, is huge."], correct: 1,
+                expTitle: "Combinación Perfecta",
+                expText: "Insertamos 'which is in Japan' entre comas para describir Tokio. No usamos 'that' entre comas."
+            },
+            {
+                type: "mcq", category: "Combine Ideas",
+                q: "Combina estas oraciones: 'My aunt is nice. Her name is Mary.'",
+                options: ["My aunt, whose name is Mary, is nice.", "My aunt, who name is Mary, is nice.", "My aunt, which name is Mary, is nice."], correct: 0,
+                expTitle: "Sustituyendo posesivos",
+                expText: "El adjetivo posesivo 'Her' se convierte en el pronombre relativo 'whose' (cuyo nombre)."
+            },
+            {
+                type: "mcq", category: "Combine Ideas",
+                q: "Combina estas oraciones: 'The restaurant is closed. We ate there yesterday.'",
+                options: ["The restaurant, which we ate yesterday, is closed.", "The restaurant, where we ate yesterday, is closed.", "The restaurant, that we ate yesterday, is closed."], correct: 1,
+                expTitle: "Lugar de la acción",
+                expText: "Como comimos *en* ese lugar, usamos 'where' (donde). <i>The restaurant, where we ate yesterday, is closed.</i>"
+            }
+        ];
+
+        /** RENDERIZADO INICIAL **/
+        function initApp() {
+            AppState.totalQuestions = practiceData.length;
+            updateProgressUI();
+            const container = document.getElementById('practice-container');
+            let html = '';
+
+            practiceData.forEach((data, index) => {
+                let tagClass = 'bg-blue-100 text-blue-700';
+                if(data.type === 'error') tagClass = 'bg-rose-100 text-rose-700';
+                if(data.type === 'order') tagClass = 'bg-amber-100 text-amber-700';
+
+                let interactiveHtml = '';
+
+                // --- 1. MCQ ---
+                if (data.type === 'mcq') {
+                    interactiveHtml = `
+                    <div class="flex flex-col md:flex-row gap-3" id="q-container-${index}" data-answered="false">
+                        ${data.options.map((opt, i) => `<button class="opt-btn" onclick="handleMCQ(${index}, ${i}, this)">${opt}</button>`).join('')}
+                    </div>`;
+                } 
+                // --- 2. ORDER (Scramble) ---
+                else if (data.type === 'order') {
+                    ActivityState[index] = { currentOrder: [], pool: [...data.words] };
+                    let shuffled = [...data.words].sort(() => Math.random() - 0.5);
+                    let poolHtml = shuffled.map(w => `<div class="scramble-word" onclick="handleOrderClick(${index}, '${w}', this, 'target')">${w}</div>`).join('');
+                    
+                    interactiveHtml = `
+                    <div id="q-container-${index}" data-answered="false">
+                        <p class="text-sm font-bold text-zinc-500 mb-2">Construye aquí:</p>
+                        <div id="order-target-${index}" class="scramble-target"></div>
+                        <p class="text-sm font-bold text-zinc-500 mt-4 mb-2">Palabras disponibles:</p>
+                        <div id="order-pool-${index}" class="scramble-pool bg-zinc-100 border border-zinc-200">${poolHtml}</div>
+                        <button class="check-btn" onclick="checkOrder(${index})">Comprobar Oración <i class="fas fa-check ml-1"></i></button>
+                        <p class="text-xs text-red-500 font-bold mt-2" id="order-err-${index}"></p>
+                    </div>`;
+                }
+                // --- 3. ERROR (Spot mistake) ---
+                else if (data.type === 'error') {
+                    let chunksHtml = data.chunks.map((c, i) => 
+                        `<span class="error-chunk" onclick="handleErrorClick(${index}, ${i}, this)">${c}</span>`
+                    ).join('');
+                    interactiveHtml = `
+                    <div id="q-container-${index}" data-answered="false" class="bg-white border-2 border-zinc-100 p-4 rounded-xl text-center leading-loose">
+                        ${chunksHtml}
+                    </div>`;
+                }
+
+                // ESTRUCTURA DE LA TARJETA
+                html += `
+                <article class="solid-card p-5 md:p-8" id="card-${index}">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-5 border-b border-zinc-100 pb-4">
+                        <span class="text-sm font-black text-zinc-400 uppercase tracking-widest">Question ${index + 1}</span>
+                        <span class="text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider ${tagClass}">${data.category}</span>
+                    </div>
+                    
+                    <p class="text-lg md:text-xl font-bold text-zinc-800 mb-6 leading-relaxed">${data.q}</p>
+                    
+                    ${interactiveHtml}
+
+                    <div id="feedback-${index}" class="feedback-box">
+                        <div class="bg-zinc-50 border border-zinc-200 rounded-xl p-5 md:p-6" id="feed-content-${index}"></div>
+                    </div>
+                </article>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        /** LÓGICAS DE CADA ACTIVIDAD **/
+
+        // 1. MCQ
+        function handleMCQ(qIdx, optIdx, btn) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            if (container.dataset.answered === 'true') return;
+            container.dataset.answered = 'true';
+            
+            const isCorrect = (optIdx === practiceData[qIdx].correct);
+            const buttons = container.querySelectorAll('button');
+            buttons.forEach((b, i) => {
+                b.disabled = true;
+                if(i === practiceData[qIdx].correct) b.classList.add('correct');
+                else if(i === optIdx && !isCorrect) b.classList.add('incorrect');
+                else b.style.opacity = '0.3';
+            });
+            processResult(qIdx, isCorrect);
+        }
+
+        // 2. ORDER (Scramble)
+        function handleOrderClick(qIdx, word, el, destination) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            if (container.dataset.answered === 'true') return;
+
+            const target = document.getElementById(`order-target-${qIdx}`);
+            const pool = document.getElementById(`order-pool-${qIdx}`);
+            
+            el.remove(); // Quitamos de donde esté
+            
+            // Recreamos el elemento con nueva dirección
+            const newDest = destination === 'target' ? 'pool' : 'target';
+            const newEl = document.createElement('div');
+            newEl.className = 'scramble-word';
+            newEl.innerText = word;
+            newEl.onclick = function() { handleOrderClick(qIdx, word, this, newDest); };
+            
+            if(destination === 'target') {
+                target.appendChild(newEl);
+                target.classList.add('filled');
+            } else {
+                pool.appendChild(newEl);
+                if(target.children.length === 0) target.classList.remove('filled');
+            }
+        }
+        function checkOrder(qIdx) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            if (container.dataset.answered === 'true') return;
+            
+            const target = document.getElementById(`order-target-${qIdx}`);
+            const currentWords = Array.from(target.children).map(el => el.innerText);
+            const correctWords = practiceData[qIdx].correct;
+            
+            if(currentWords.length !== correctWords.length) {
+                document.getElementById(`order-err-${qIdx}`).innerText = "Usa todas las palabras antes de comprobar.";
+                return;
+            }
+            document.getElementById(`order-err-${qIdx}`).innerText = "";
+            container.dataset.answered = 'true';
+            container.querySelector('button').disabled = true;
+            
+            Array.from(target.children).forEach(el => el.style.pointerEvents = 'none');
+            
+            const isCorrect = currentWords.join(' ') === correctWords.join(' ');
+            if(isCorrect) target.style.borderColor = '#10b981';
+            else target.style.borderColor = '#ef4444';
+            
+            processResult(qIdx, isCorrect);
+        }
+
+        // 3. SPOT THE ERROR
+        function handleErrorClick(qIdx, chunkIdx, el) {
+            const container = document.getElementById(`q-container-${qIdx}`);
+            if (container.dataset.answered === 'true') return;
+            container.dataset.answered = 'true';
+
+            const correctIdx = practiceData[qIdx].correct;
+            const isCorrect = (chunkIdx === correctIdx);
+            
+            const allChunks = container.querySelectorAll('.error-chunk');
+            allChunks.forEach((chunk, i) => {
+                chunk.classList.add('locked');
+                if(i === correctIdx) chunk.classList.add('correct-guess');
+                else if (i === chunkIdx && !isCorrect) chunk.classList.add('wrong-guess');
+            });
+            
+            processResult(qIdx, isCorrect);
+        }
+
+        /** PROCESAMIENTO GENERAL DE RESULTADOS Y FEEDBACK **/
+        function processResult(qIdx, isCorrect) {
+            const data = practiceData[qIdx];
+            const feedbackBox = document.getElementById(`feedback-${qIdx}`);
+            
+            if(isCorrect) {
+                AppState.score += AppState.ptsPerQuestion;
+                document.getElementById('score-text').innerText = AppState.score;
+            }
+
+            let iconHtml = isCorrect 
+                ? `<i class="fas fa-check-circle text-emerald-500 text-2xl"></i> <span class="font-black text-emerald-700 uppercase tracking-widest text-sm">¡Correcto! (+10 pts)</span>`
+                : `<i class="fas fa-times-circle text-red-500 text-2xl"></i> <span class="font-black text-red-700 uppercase tracking-widest text-sm">Incorrecto</span>`;
+            
+            let colorClass = isCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200';
+
+            const feedbackContent = document.getElementById(`feed-content-${qIdx}`);
+            feedbackContent.className = `rounded-xl p-5 border ${colorClass} shadow-inner`;
+            feedbackContent.innerHTML = `
+                <div class="flex items-center gap-2 mb-3">${iconHtml}</div>
+                <h4 class="font-bold text-zinc-900 mb-1 md:text-lg text-base">${data.expTitle}</h4>
+                <p class="text-sm text-zinc-700 leading-relaxed font-medium">${data.expText}</p>
+            `;
+
+            requestAnimationFrame(() => feedbackBox.classList.add('show'));
+
+            AppState.answeredCount++;
+            updateProgressUI();
+
+            if (AppState.answeredCount === AppState.totalQuestions) {
+                document.getElementById('final-score').innerText = AppState.score;
+                setTimeout(() => {
+                    const box = document.getElementById('completion-box');
+                    box.classList.remove('hidden');
+                    box.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                }, 1000);
+            }
+        }
+
+        function updateProgressUI() {
+            document.getElementById('progress-text').innerText = `${AppState.answeredCount}/${AppState.totalQuestions}`;
+            const pct = AppState.totalQuestions === 0 ? 0 : (AppState.answeredCount / AppState.totalQuestions) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
