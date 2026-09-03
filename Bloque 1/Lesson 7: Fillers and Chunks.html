@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fluency Lab: Chunks & Fillers</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc; 
+            color: #0f172a;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(245, 158, 11, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
+            scroll-behavior: smooth;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
+            border-radius: 1.5rem;
+            overflow: hidden;
+        }
+
+        /* Flippable Cards */
+        .flip-card {
+            background-color: transparent;
+            perspective: 1000px;
+            cursor: pointer;
+            height: 280px; /* Increased height for images */
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+        .flip-card-front {
+            /* Image takes up top half on front */
+        }
+        .card-img-container {
+            height: 45%;
+            width: 100%;
+            position: relative;
+        }
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card-img-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+        }
+        .flip-card-back { 
+            transform: rotateY(180deg); 
+            background-color: #f8fafc; 
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .interactive-btn { transition: all 0.2s ease; cursor: pointer; }
+        .interactive-btn:active:not(:disabled) { transform: scale(0.97); }
+        .interactive-btn:disabled { cursor: not-allowed; }
+
+        .quiz-option {
+            width: 100%; text-align: left; padding: 1rem 1.5rem; border-radius: 0.75rem;
+            border: 2px solid #e2e8f0; background: #ffffff; font-weight: 600; color: #334155;
+            transition: all 0.2s;
+        }
+        .quiz-option:hover:not(:disabled) { border-color: #cbd5e1; background: #f1f5f9; }
+        .quiz-option.correct { background: #ecfdf5; border-color: #10b981; color: #047857; }
+        .quiz-option.incorrect { background: #fef2f2; border-color: #ef4444; color: #b91c1c; opacity: 0.7; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        /* Ensure smooth scrolling when jumping to sections */
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="antialiased selection:bg-indigo-100 selection:text-indigo-900 pb-32">
+
+    <!-- Navbar -->
+    <nav class="w-full bg-white/95 backdrop-blur-xl border-b border-slate-200 z-50 sticky top-0 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 h-16 sm:h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-md">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div>
+                    <h1 class="font-black text-lg sm:text-xl text-slate-900 leading-tight">Self-Study Lab</h1>
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Fluency Strategies</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 sm:gap-4">
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-500 bg-slate-100 px-2 sm:px-3 py-1.5 rounded-lg border border-slate-200">
+                    <span id="progress-text">0 / 16</span> <span class="hidden sm:inline">Q's</span>
+                </div>
+                <div class="bg-gradient-to-r from-amber-500 to-emerald-500 text-white px-3 sm:px-4 py-1.5 rounded-full font-black text-xs sm:text-sm shadow-md">
+                    <span id="score-text">0</span><span class="hidden sm:inline"> / 200 PTS</span>
+                </div>
+            </div>
+        </div>
+        <div class="w-full bg-slate-100 h-1">
+            <div id="progress-bar" class="h-full bg-slate-900 transition-all duration-300 w-0"></div>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 space-y-16 sm:space-y-24">
+        
+        <!-- HERO -->
+        <section class="text-center relative">
+            <div class="inline-block px-4 py-1.5 rounded-full bg-slate-100 text-slate-600 font-bold text-xs uppercase tracking-widest mb-4 border border-slate-200 shadow-sm">
+                Advanced Speaking
+            </div>
+            <h2 class="text-4xl sm:text-5xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight">
+                Master <span class="text-amber-500">Fillers</span> & <span class="text-emerald-500">Chunks</span>
+            </h2>
+            <p class="text-slate-600 text-base sm:text-lg font-medium max-w-2xl mx-auto mb-8 px-2">
+                Study the visual flashcards to understand the meaning of these native tools. Then, test your knowledge in the practice challenges to earn 200 points.
+            </p>
+            <div class="flex justify-center gap-4 text-sm font-bold">
+                <a href="#part1" class="bg-amber-50 text-amber-700 border border-amber-200 px-6 py-2 rounded-full hover:bg-amber-100 transition shadow-sm">Part 1: Fillers</a>
+                <a href="#part2" class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-6 py-2 rounded-full hover:bg-emerald-100 transition shadow-sm">Part 2: Chunks</a>
+            </div>
+        </section>
+
+        <!-- PART 1: FILLERS -->
+        <section id="part1" class="scroll-mt-24">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
+                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-xl font-black border border-amber-200 shrink-0"><i class="fas fa-hourglass-half"></i></div>
+                <div>
+                    <h2 class="text-2xl font-black text-slate-900">Part 1: Natural Fillers</h2>
+                    <p class="text-slate-500 font-medium text-sm">Words that buy you time to think. Tap the cards to reveal translations.</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="fillers-cards">
+                <!-- JS Injected -->
+            </div>
+        </section>
+
+        <section>
+            <div class="glass-panel p-5 sm:p-10 border-t-4 border-t-amber-500">
+                <div class="flex items-center gap-3 mb-2">
+                    <i class="fas fa-tasks text-amber-500 text-xl"></i>
+                    <h3 class="text-xl font-black text-slate-800">Fillers Practice</h3>
+                </div>
+                <p class="text-slate-500 text-sm mb-8">Choose the filler that best fits the context of the conversation. (12.5 pts each)</p>
+                
+                <div class="space-y-6 sm:space-y-8" id="fillers-quiz">
+                    <!-- JS Injected -->
+                </div>
+            </div>
+        </section>
+
+        <!-- PART 2: CHUNKS -->
+        <section id="part2" class="scroll-mt-24">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-6 mt-8 sm:mt-12">
+                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-xl font-black border border-emerald-200 shrink-0"><i class="fas fa-link"></i></div>
+                <div>
+                    <h2 class="text-2xl font-black text-slate-900">Part 2: Conversational Chunks</h2>
+                    <p class="text-slate-500 font-medium text-sm">Groups of words that always go together. Tap to reveal.</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="chunks-cards">
+                <!-- JS Injected -->
+            </div>
+        </section>
+
+        <section>
+            <div class="glass-panel p-5 sm:p-10 border-t-4 border-t-emerald-500 mb-12">
+                <div class="flex items-center gap-3 mb-2">
+                    <i class="fas fa-tasks text-emerald-500 text-xl"></i>
+                    <h3 class="text-xl font-black text-slate-800">Chunks Practice</h3>
+                </div>
+                <p class="text-slate-500 text-sm mb-8">Select the correct chunk to complete the meaning of the sentence. (12.5 pts each)</p>
+                
+                <div class="space-y-6 sm:space-y-8" id="chunks-quiz">
+                    <!-- JS Injected -->
+                </div>
+            </div>
+        </section>
+
+        <!-- RESULTS SECTION -->
+        <section id="results-section" class="hidden">
+            <div class="bg-slate-900 rounded-3xl p-8 sm:p-12 text-center text-white shadow-2xl relative overflow-hidden max-w-2xl mx-auto">
+                <div class="absolute -right-10 -top-10 opacity-10 text-9xl text-amber-400"><i class="fas fa-trophy"></i></div>
+                <div class="relative z-10">
+                    <div class="w-20 h-20 bg-gradient-to-tr from-amber-400 to-emerald-400 rounded-full flex items-center justify-center text-4xl text-slate-900 mx-auto mb-6 shadow-lg shadow-amber-500/20">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-black mb-4">Practice Complete!</h2>
+                    <p class="text-slate-300 mb-8 text-sm sm:text-base">You have successfully completed the Fluency Self-Study Lab. Review your score below.</p>
+                    
+                    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 inline-block w-full max-w-xs shadow-inner mb-8">
+                        <p class="text-xs sm:text-sm text-slate-400 font-bold uppercase tracking-widest mb-2">Final Score</p>
+                        <div class="text-5xl sm:text-6xl font-black text-white">
+                            <span id="final-score-display" class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-emerald-400">0</span><span class="text-2xl text-slate-500">/200</span>
+                        </div>
+                    </div>
+                    
+                    <div id="results-message" class="text-lg font-bold mb-8"></div>
+
+                    <div>
+                        <button onclick="location.reload()" class="bg-white text-slate-900 font-bold py-3 px-8 rounded-full hover:bg-slate-200 transition shadow-md interactive-btn w-full sm:w-auto">
+                            <i class="fas fa-redo-alt mr-2"></i> Practice Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- DATA WITH IMAGE URLs ---
+        
+        // Fillers (8 Items)
+        const fillersData = [
+            { en: "Well...", es: "Bueno...", usage: "Used to pause, or before something slightly negative.", ex: "Well, I don't think that's a good idea.", img: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=400&q=80" }, // Person looking slightly unsure
+            { en: "Let me see...", es: "Déjame ver...", usage: "Used when you need seconds to remember a fact.", ex: "Let me see... I think my flight is at 8 PM.", img: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=400&q=80" }, // Person looking up/thinking
+            { en: "To be honest...", es: "Para ser honesto...", usage: "Used before giving your true opinion.", ex: "To be honest, the food wasn't great.", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80" }, // Serious conversation
+            { en: "I mean...", es: "Me refiero a... / O sea...", usage: "Used to clarify or correct yourself.", ex: "It's a nice car. I mean, it's very fast, but expensive.", img: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=400&q=80" }, // Gesturing while talking
+            { en: "That's a good question...", es: "Buena pregunta...", usage: "Used to buy time when asked something difficult.", ex: "That's a good question... I haven't thought about it.", img: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=400&q=80" }, // Interview/Pondering
+            { en: "Actually...", es: "En realidad... / De hecho...", usage: "Used to correct a misunderstanding.", ex: "Actually, I don't drink coffee. I prefer tea.", img: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=400&q=80" }, // Explaining something
+            { en: "Kind of...", es: "Un poco... / Más o menos...", usage: "Used to soften a description.", ex: "I was kind of tired, so I stayed home.", img: "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=400&q=80" }, // Person resting head/tired
+            { en: "Basically...", es: "Básicamente...", usage: "Used to summarize a complex idea.", ex: "Basically, we lost because we were slow.", img: "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=400&q=80" } // Summarizing/Whiteboard
+        ];
+
+        // Chunks (8 Items)
+        const chunksData = [
+            { en: "As far as I know", es: "Que yo sepa", usage: "Used when you think something is true.", ex: "As far as I know, the meeting is still on.", img: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=400&q=80" }, // Discussing in meeting
+            { en: "At the end of the day", es: "Al final del día / En resumen", usage: "Stating the most important fact.", ex: "At the end of the day, health is the most important thing.", img: "https://images.unsplash.com/photo-1472289065668-ce650ce44399?auto=format&fit=crop&w=400&q=80" }, // Sunset/Resolution
+            { en: "To make a long story short", es: "Para resumir", usage: "Skipping details to jump to the end.", ex: "To make a long story short, I missed my flight.", img: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=400&q=80" }, // Looking at watch/rushed
+            { en: "On the other hand", es: "Por otro lado", usage: "Introducing a contrasting point.", ex: "It's expensive. On the other hand, the quality is perfect.", img: "https://images.unsplash.com/photo-1531538512164-966904bcdd49?auto=format&fit=crop&w=400&q=80" }, // Weighing options visually
+            { en: "It depends on", es: "Depende de", usage: "A result determined by something else.", ex: "I might go to the beach, but it depends on the weather.", img: "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?auto=format&fit=crop&w=400&q=80" }, // Looking at weather/sky
+            { en: "By the way", es: "Por cierto", usage: "Adding extra, unrelated information.", ex: "By the way, did you see the new Marvel movie?", img: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=400&q=80" }, // Casual friend chat
+            { en: "First of all", es: "Antes que nada", usage: "Introducing the most important point.", ex: "First of all, I want to thank you for coming.", img: "https://images.unsplash.com/photo-1475721028070-07d5718dfd4b?auto=format&fit=crop&w=400&q=80" }, // Presenting/Speaking
+            { en: "Make sure to", es: "Asegúrate de", usage: "Reminding someone to do something.", ex: "Make sure to lock the door before you leave.", img: "https://images.unsplash.com/photo-1563206767-5b18f218e8de?auto=format&fit=crop&w=400&q=80" } // Checking a list/Keys
+        ];
+
+        // Quizzes (8 Fillers + 8 Chunks = 16 Qs total. 200 pts / 16 = 12.5 pts each)
+        const fillersQuiz = [
+            { q: "A: Did you like the restaurant?<br>B: _____, the service was terrible.", opts: ["Let me see", "To be honest", "Basically"], ans: 1 },
+            { q: "A: What year did World War II end?<br>B: _____, I think it was 1945.", opts: ["Let me see", "I mean", "Actually"], ans: 0 },
+            { q: "He is not my brother. _____, he is my cousin.", opts: ["Well", "Actually", "Kind of"], ans: 1 },
+            { q: "A: Are you angry?<br>B: No, I am just _____ exhausted.", opts: ["kind of", "that's a good question", "basically"], ans: 0 },
+            { q: "A: How do we fix this complex computer issue?<br>B: _____, I have no idea. Let me ask the IT guy.", opts: ["To be honest", "I mean", "That's a good question..."], ans: 2 },
+            { q: "I don't hate my job. _____, the salary is good, I just dislike the schedule.", opts: ["Basically", "I mean", "Let me see"], ans: 1 },
+            { q: "So, _____ what happened is that the engine broke down and we had to walk.", opts: ["basically", "kind of", "actually"], ans: 0 },
+            { q: "_____, I am not sure if I can go to the party. Let me check my calendar.", opts: ["Actually", "Well", "Basically"], ans: 1 }
+        ];
+
+        const chunksQuiz = [
+            { q: "A: Is the boss coming today?<br>B: _____, he is working from home.", opts: ["To make a long story short", "As far as I know", "Make sure to"], ans: 1 },
+            { q: "I love living in the city, but _____, it is very noisy and polluted.", opts: ["on the other hand", "it depends on", "first of all"], ans: 0 },
+            { q: "We had a flat tire, lost our map, and _____, we never arrived at the hotel.", opts: ["by the way", "to make a long story short", "as far as I know"], ans: 1 },
+            { q: "_____, close all the windows before leaving the house.", opts: ["Make sure to", "At the end of the day", "It depends on"], ans: 0 },
+            { q: "A: Are we going to the park?<br>B: _____, if it rains, we will stay home.", opts: ["It depends on the weather", "By the way", "As far as I know"], ans: 0 },
+            { q: "I enjoyed the meeting. Oh, _____, I left my umbrella in your office.", opts: ["on the other hand", "first of all", "by the way"], ans: 2 },
+            { q: "_____, I want to welcome everyone to this conference.", opts: ["Make sure to", "First of all", "To make a long story short"], ans: 1 },
+            { q: "You can argue about the rules, but _____, the referee makes the final decision.", opts: ["at the end of the day", "by the way", "as far as I know"], ans: 0 }
+        ];
+
+        // Global State
+        let score = 0;
+        let answeredQuestions = 0;
+        const totalQuestions = fillersQuiz.length + chunksQuiz.length; // 16 questions
+        const ptsPerQuestion = 200 / totalQuestions; // 12.5
+
+        function playAudio(e, text) {
+            e.stopPropagation();
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'en-US';
+            u.rate = 0.95;
+            window.speechSynthesis.speak(u);
+        }
+
+        function renderCards(containerId, data, colorClass) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = data.map(item => `
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <!-- FRONT -->
+                        <div class="flip-card-front">
+                            <div class="card-img-container">
+                                <img src="${item.img}" alt="${item.en}" class="card-img" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/400x200/f1f5f9/94a3b8?text=Image+Unavailable';">
+                                <div class="card-img-overlay"></div>
+                            </div>
+                            <div class="p-4 flex-grow flex flex-col items-center justify-center">
+                                <h4 class="text-lg sm:text-xl font-black text-slate-800 leading-tight">${item.en}</h4>
+                                <p class="text-[10px] sm:text-xs text-slate-400 mt-2 uppercase tracking-widest"><i class="fas fa-sync-alt mr-1"></i> Tap to flip</p>
+                            </div>
+                        </div>
+                        <!-- BACK -->
+                        <div class="flip-card-back">
+                            <p class="text-sm font-bold text-${colorClass}-600 mb-2 border-b border-slate-200 w-full pb-2">${item.es}</p>
+                            <p class="text-xs text-slate-600 mb-4 italic leading-relaxed">"${item.usage}"</p>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200 w-full mb-4 shadow-inner">
+                                <p class="text-xs sm:text-sm font-medium text-slate-800 leading-snug">"${item.ex}"</p>
+                            </div>
+                            <button onclick="playAudio(event, '${item.ex}')" class="bg-${colorClass}-100 text-${colorClass}-700 hover:bg-${colorClass}-200 px-4 py-2 rounded-full text-xs font-bold interactive-btn w-full transition shadow-sm">
+                                <i class="fas fa-volume-up mr-1"></i> Listen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderQuiz(containerId, data, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = data.map((item, qIdx) => `
+                <div class="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-md transition" id="${type}-q-${qIdx}" data-answered="false">
+                    <p class="text-base sm:text-lg font-medium text-slate-800 mb-5 leading-relaxed">${item.q}</p>
+                    <div class="flex flex-col gap-3">
+                        ${item.opts.map((opt, oIdx) => `
+                            <button onclick="checkAnswer('${type}', ${qIdx}, ${oIdx}, ${item.ans}, this)" class="quiz-option interactive-btn text-sm sm:text-base">
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="${type}-fb-${qIdx}" class="hidden mt-4 text-sm font-bold px-4 py-3 rounded-xl flex items-center gap-2 border"></div>
+                </div>
+            `).join('');
+        }
+
+        function checkAnswer(type, qIdx, selectedIdx, correctIdx, btnElement) {
+            const container = document.getElementById(`${type}-q-${qIdx}`);
+            if(container.dataset.answered === 'true') return;
+            
+            const buttons = container.querySelectorAll('button');
+            const feedback = document.getElementById(`${type}-fb-${qIdx}`);
+            container.dataset.answered = 'true';
+
+            // Disable buttons
+            buttons.forEach(b => b.disabled = true);
+
+            const isCorrect = (selectedIdx === correctIdx);
+
+            if(isCorrect) {
+                btnElement.classList.add('correct');
+                feedback.innerHTML = `<i class="fas fa-check-circle text-lg"></i> Correct! Natural choice.`;
+                feedback.className = "mt-4 text-sm font-bold px-4 py-3 rounded-xl flex items-center gap-2 border bg-emerald-50 border-emerald-200 text-emerald-700";
+                score += ptsPerQuestion; 
+            } else {
+                btnElement.classList.add('incorrect');
+                buttons[correctIdx].classList.add('correct');
+                feedback.innerHTML = `<i class="fas fa-times-circle text-lg"></i> Incorrect. Review the highlighted answer.`;
+                feedback.className = "mt-4 text-sm font-bold px-4 py-3 rounded-xl flex items-center gap-2 border bg-rose-50 border-rose-200 text-rose-700";
+            }
+
+            feedback.classList.remove('hidden');
+            
+            // Update UI Counters
+            answeredQuestions++;
+            document.getElementById('progress-text').innerText = `${answeredQuestions} / ${totalQuestions}`;
+            document.getElementById('score-text').innerText = Math.round(score);
+            document.getElementById('progress-bar').style.width = `${(answeredQuestions / totalQuestions) * 100}%`;
+
+            // Check if finished
+            if(answeredQuestions === totalQuestions) {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            setTimeout(() => {
+                const resultsSection = document.getElementById('results-section');
+                const finalScoreDisplay = document.getElementById('final-score-display');
+                const message = document.getElementById('results-message');
+                
+                const finalScore = Math.round(score);
+                finalScoreDisplay.innerText = finalScore;
+                
+                if(finalScore >= 180) {
+                    message.innerHTML = "<span class='text-emerald-400'>Outstanding!</span> You are a fluency master.";
+                } else if(finalScore >= 140) {
+                    message.innerHTML = "<span class='text-amber-400'>Good job!</span> You have a solid grasp of these concepts.";
+                } else {
+                    message.innerHTML = "<span class='text-slate-400'>Keep practicing!</span> Review the cards and try again.";
+                }
+
+                resultsSection.classList.remove('hidden');
+                
+                // Scroll to bottom smoothly
+                window.scrollTo({
+                    top: document.documentElement.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 800);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Render Cards
+            renderCards('fillers-cards', fillersData, 'amber');
+            renderCards('chunks-cards', chunksData, 'emerald');
+
+            // Render Quizzes
+            renderQuiz('fillers-quiz', fillersQuiz, 'fillers');
+            renderQuiz('chunks-quiz', chunksQuiz, 'chunks');
+
+            // Update initial progress text
+            document.getElementById('progress-text').innerText = `0 / ${totalQuestions}`;
+        });
+    </script>
+</body>
+</html>
