@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>I Wish / If Only - Masterclass</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap');
+        
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background-color: #f8fafc;
+            color: #0f172a;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.04) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 1);
+            box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.06);
+            border-radius: 2rem;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .interactive-btn { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .interactive-btn:active:not(:disabled) { transform: scale(0.97) translateY(2px); }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .formula-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 1.5rem 2.5rem;
+            border-radius: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: white;
+            border: 2px solid #e2e8f0;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            60% { transform: scale(1.03); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop { animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        ::-webkit-scrollbar { width: 12px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 6px; border: 3px solid #f1f5f9; }
+    </style>
+</head>
+<body class="antialiased selection:bg-purple-200 selection:text-purple-900 flex flex-col min-h-screen">
+
+    <!-- Sticky Navigation -->
+    <nav class="w-full bg-white/95 backdrop-blur-2xl border-b border-slate-200 z-50 sticky top-0 shadow-sm transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center text-white text-2xl shadow-lg">
+                    <i class="fas fa-magic"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight">Grammar Lab</h1>
+                    <p class="text-xs sm:text-sm font-bold text-purple-600 uppercase tracking-widest">I Wish / If Only</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-5">
+                <div id="score-badge" class="relative bg-slate-100 text-slate-700 px-6 py-3 rounded-xl text-xl font-black border border-slate-300 shadow-inner flex items-center gap-3 transition-all duration-300">
+                    <i class="fas fa-star text-purple-500 text-2xl"></i> 
+                    <span><span id="score-display">0</span> / 12 Pts</span>
+                </div>
+            </div>
+        </div>
+        <div class="w-full bg-slate-100 h-1.5">
+            <div id="scroll-progress" class="bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 h-full w-0 transition-all duration-150 ease-out"></div>
+        </div>
+    </nav>
+
+    <!-- Main Content (15 Sections) -->
+    <main class="flex-grow max-w-6xl mx-auto w-full px-4 sm:px-6 py-12 flex flex-col gap-24 pb-40">
+        
+        <!-- SEC 1: Hero -->
+        <section id="sec-1" class="text-center pt-10 sm:pt-16 reveal relative">
+            <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-purple-50 text-purple-700 font-extrabold text-sm uppercase tracking-widest mb-8 border border-purple-200 shadow-sm">
+                <i class="fas fa-cloud-moon"></i> Dreams, Regrets & Desires
+            </div>
+            <h2 class="text-6xl sm:text-7xl md:text-8xl font-black text-slate-900 mb-8 tracking-tight leading-tight">
+                Mastering <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">I Wish / If Only</span>
+            </h2>
+            <p class="text-slate-600 text-xl sm:text-3xl font-medium max-w-4xl mx-auto leading-relaxed mb-10">
+                How do we talk about things we want to change? Whether it's a current dissatisfaction, a past regret, or an annoying habit, these structures are your best tools.
+            </p>
+        </section>
+
+        <!-- SEC 2: The Core Concept -->
+        <section id="sec-2" class="reveal scroll-mt-24">
+            <div class="flex items-center gap-6 mb-10">
+                <div class="w-20 h-20 bg-slate-800 text-white rounded-2xl flex items-center justify-center text-4xl shadow-lg shrink-0">💡</div>
+                <div>
+                    <h2 class="text-5xl font-black text-slate-900">2. The Core Concept</h2>
+                    <p class="text-slate-500 font-bold text-2xl mt-2">The Golden Rule of "Unreal" Time.</p>
+                </div>
+            </div>
+            <div class="glass-card p-10 bg-white border-t-[8px] border-slate-800 text-center">
+                <p class="text-2xl text-slate-700 font-medium leading-relaxed mb-8">
+                    When we use "I wish" or "If only," we are talking about situations that are <b>not real</b> or <b>not true</b> right now. Because they are imaginary, we must step <i>one tense back</i> in time.
+                </p>
+                <div class="grid md:grid-cols-3 gap-6 text-left">
+                    <div class="bg-blue-50 p-6 rounded-2xl border border-blue-200">
+                        <p class="font-black text-xl text-blue-800 mb-2">Want to change the Present?</p>
+                        <p class="text-blue-600 font-bold">Use Past Simple</p>
+                    </div>
+                    <div class="bg-rose-50 p-6 rounded-2xl border border-rose-200">
+                        <p class="font-black text-xl text-rose-800 mb-2">Want to change the Past?</p>
+                        <p class="text-rose-600 font-bold">Use Past Perfect</p>
+                    </div>
+                    <div class="bg-amber-50 p-6 rounded-2xl border border-amber-200">
+                        <p class="font-black text-xl text-amber-800 mb-2">Want to change a Behavior?</p>
+                        <p class="text-amber-600 font-bold">Use Would + Verb</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEC 3: Present Desires (Grammar) -->
+        <section id="sec-3" class="reveal scroll-mt-24">
+            <div class="flex items-center gap-6 mb-10">
+                <div class="w-20 h-20 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg shrink-0"><i class="fas fa-clock"></i></div>
+                <div>
+                    <h2 class="text-5xl font-black text-slate-900">3. Present Desires</h2>
+                    <p class="text-blue-600 font-black uppercase tracking-widest text-2xl mt-2">I wish + Past Simple</p>
+                </div>
+            </div>
+            <div class="glass-card p-10 bg-white border-t-[12px] border-blue-500">
+                <div class="text-center mb-8">
+                    <div class="formula-box">
+                        <span class="text-slate-500">I wish</span> <span class="text-blue-500">+</span> <span class="text-slate-800">Subject</span> <span class="text-blue-500">+</span> <span class="text-blue-600 border-b-4 border-blue-500">Past Simple</span>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                        <p class="text-slate-500 font-bold mb-2">Reality: I don't have a car.</p>
+                        <p class="text-3xl font-black text-slate-800">I wish I <span class="text-blue-600">had</span> a car.</p>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                        <p class="text-slate-500 font-bold mb-2">Reality: I can't speak French.</p>
+                        <p class="text-3xl font-black text-slate-800">I wish I <span class="text-blue-600">could speak</span> French.</p>
+                    </div>
+                    <div class="bg-blue-50 p-6 rounded-2xl border-l-8 border-blue-500">
+                        <p class="text-xl font-bold text-blue-800"><i class="fas fa-exclamation-triangle mr-2"></i> Grammar Note for Verb 'To Be'</p>
+                        <p class="text-lg text-slate-700">In formal English, we use <b>WERE</b> for all subjects (I, he, she, it). <br><i>Reality: I am not rich.</i> ➔ <b>I wish I WERE rich.</b></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEC 4: Practice 1 -->
+        <section id="sec-4" class="reveal scroll-mt-24">
+            <div class="flex items-center gap-6 mb-10">
+                <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg shrink-0"><i class="fas fa-gamepad"></i></div>
+                <div>
+                    <h2 class="text-5xl font-black text-slate-900">4. Practice: Present Desires</h2>
+                    <p class="text-slate-500 font-bold text-2xl mt-2">Choose the correct way to express the wish.</p>
+                </div>
+            </div>
+            <div id="quiz-present" class="space-y-6"></div>
+        </section>
+
+        <!-- SEC 5: Past Regrets (Grammar) -->
+        <section id="sec-5" class="reveal scroll-mt-24">
+            <div class="flex items-center gap-6 mb-10">
+                <div class="w-20 h-20 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg shrink-0"><i class="fas fa-history"></i></div>
+                <div>
+                    <h2 class="text-5xl font-black text-slate-900">5. Past Regrets</h2>
+                    <p class="text-rose-600 font-black uppercase tracking-widest text-2xl mt-2">I wish + Past Perfect</p>
+                </div>
+            </div>
+            <div class="glass-card p-10 bg-white border-t-[12px] border-rose-500">
+                <div class="text-center mb-8">
+                    <div class="formula-box">
+                        <span class="text-slate-500">I wish</span> <span class="text-rose-500">+</span> <span class="text-slate-800">Subject</span> <span class="text-rose-500">+</span> <span class="text-rose-600 border-b-4 border-rose-500">Past Perfect (had + V3)</span>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                        <p class="text-slate-500 font-bold mb-2">Reality (Past): I ate too much pizza last night.</p>
+                        <p class="text-3xl font-black text-slate-800">I wish I <span class="text-rose-600">hadn't eaten</span> so much pizza.</p>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                        <p class="text-slate-500 font-bold mb-2">Reality (Past): I didn't study for the exam.</p>
+                        <p class="text-3xl font-black text-slate-800">I wish I <span class="text-rose-600">had studied</span> for the exam.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEC 6: Practice 2 -->
+        <section id="sec-6" class="reveal scroll-mt-24">
+            <div class="flex items-center gap-6 mb-10">
+                <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg shrink-0"><i class="fas fa-gamepad"></i></div>
+                <div>
+                    <h2 class="text-5xl font-black text-slate-900">6. Practice: Past Regrets</h2>
+                    <p class="text-slate-500 font-bold text-2xl mt-2">Fix the past! Choose the correct option.</p>
+                </div>
+            </div>
+            <div id="quiz-past" class="space-y-6"></div>
+        </section>
+
+        <!-- SEC 7: Future/Annoyances (Grammar) -->
+        <section id="sec-7" class="reveal scroll-mt-24">
+            <div class="flex items-center gap-6 mb-10">
+                <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg shrink-0"><i class="fas fa-volume-up"></i></div>
+                <div>
+                    <h2 class="text-5xl font-black text-slate-900">7. Annoyances & Complaints</h2>
+                    <p class="text-amber-600 font-black uppercase tracking-widest text-2xl mt-2">I wish + Would</p>
+                </div>
+            </div>
+            <div class="glass-card p-10 bg-white border-t-[12px] border-amber-500">
+                <div class="text-center mb-8">
+                    <div class="formula-box">
+                        <span class="text-slate-500">I wish</span> <span class="text-amber-500">+</span> <span class="text-slate-800">Subject</span> <span class="text-amber-500">+</span> <span class="text-amber-600 border-b-4 border-amber-500">WOULD + Base Verb</span>
+                    </div>
+                </div>
+                <p class="text-xl text-slate-700 font-medium mb-6 text-center">We use this when someone's behavior (or the weather) annoys us, and we want it to change.</p>
+                <div class="space-y-6">
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                        <p class="text-slate-500 font-bold mb-2">Reality: You are tapping your pen on the desk. It's annoying.</p>
+                        <p class="text-3xl font-black text-slate-800">I wish you <span class="text-amber-600">would stop</span> tapping your pen.</p>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                        <p class="text-slate-500 font-bold mb-2">Reality: It is raining, and I want to go out.</p>
+                        <p class="text-3xl font-black text-slate-800">I wish it <span class="text-amber-600">would stop</span> raining.</p>
+                    </div>
+                    <div class="bg-amber-50 p-6 rounded-2xl border-l-8 border-amber-500">
+                        <p class="text-xl font-bold text-amber-800"><i class="fas fa-times-circle mr-2"></i> Grammar Note</p>
+                        <p class="text-lg text-slate-700">You <b>cannot</b> use "would" for yourself (I wish I would). You can only use it for other people or things!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEC 8: Practice 3 -->
+        <section id="sec-8" class="reveal scroll-mt-24">
+            <div class="flex items-center gap-6 mb-10">
+                <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg shrink-0"><i class="fas fa-gamepad"></i></div>
+                <div>
+                    <h2 class="text-5xl font-black text-slate-900">8. Practice: Complaints</h2>
+                    <p class="text-slate-500 font-bold text-2xl mt-2">How would you complain about these situations?</p>
+                </div>
+            </div>
+            <div id="quiz-annoy" class="space-y-6"></div>
+        </section>
+
+        <!-- SEC 9: If Only -->
+        <section id="sec-9" class="reveal scroll-mt-24">
+            <div class="flex items-center gap-6 mb-10">
+                <div class="w-20 h-20 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg shrink-0"><i class="fas fa-theater-masks"></i></div>
+                <div>
+                    <h2 class="text-5xl font-black text-slate-900">9. "If Only..."</h2>
+                    <p class="text-purple-600 font-black uppercase tracking-widest text-2xl mt-2">Adding Drama and Emotion</p>
+                </div>
+            </div>
+            <div class="glass-card p-10 bg-white border-t-[12px] border-purple-500">
+                <p class="text-2xl text-slate-700 font-medium mb-8">
+                    "If only" follows the <b>exact same grammar rules</b> as "I wish", but it is much stronger, more emphatic, and more emotional.
+                </p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-slate-50 p-8 rounded-2xl border border-slate-200">
+                        <p class="text-slate-500 font-bold uppercase tracking-wider mb-2">Standard Wish</p>
+                        <p class="text-2xl font-black text-slate-800">I wish I knew the answer.</p>
+                        <p class="text-lg text-slate-500 mt-2">(A simple desire)</p>
+                    </div>
+                    <div class="bg-purple-50 p-8 rounded-2xl border-2 border-purple-200 shadow-sm">
+                        <p class="text-purple-500 font-bold uppercase tracking-wider mb-2">Dramatic Wish</p>
+                        <p class="text-2xl font-black text-purple-900">If only I knew the answer!</p>
+                        <p class="text-lg text-purple-700 mt-2">(Desperation! Frustration!)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEC 10: Vocabulary Building -->
+        <section id="sec-10" class="reveal scroll-mt-24">
+            <div class="flex items-center gap-6 mb-10">
+                <div class="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg shrink-0"><i class="fas fa-book"></i></div>
+                <div>
+                    <h2 class="text-5xl font-black text-slate-900">10. Vocabulary Building</h2>
+                    <p class="text-indigo-600 font-black uppercase tracking-widest text-2xl mt-2">Words to express feelings</p>
+                </div>
+            </div>
+            <div class="glass-card p-10 bg-white border-t-[12px] border-indigo-500">
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                        <h4 class="font-black text-2xl text-indigo-700 mb-2">Regret (noun/verb)</h4>
+                        <p class="text-slate-600 font-medium">To feel sad about a mistake you made in the past. <br><i>"I regret not studying."</i></p>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                        <h4 class="font-black text-2xl text-indigo-700 mb-2">Dissatisfied (adj)</h4>
+                        <p class="text-slate-600 font-medium">Not happy or pleased with a current situation. <br><i>"He is dissatisfied with his job."</i></p>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                        <h4 class="font-black text-2xl text-indigo-700 mb-2">Annoying (adj)</h4>
+                        <p class="text-slate-600 font-medium">Causing irritation. <br><i>"That loud noise is really annoying."</i></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEC 11: Practice 4 (Vocab) -->
+        <section id="sec-11" class="reveal scroll-mt-24">
+            <div class="flex items-center gap-6 mb-10">
+                <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg shrink-0"><i class="fas fa-gamepad"></i></div>
+                <div>
+                    <h2 class="text-5xl font-black text-slate-900">11. Practice: Vocabulary</h2>
+                    <p class="text-slate-500 font-bold text-2xl mt-2">Fill in the blanks with the correct word.</p>
+                </div>
+            </div>
+            <div id="quiz-vocab" class="space-y-6"></div>
+        </section>
+
+        <!-- SEC 12: Reading Comprehension -->
+        <section id="sec-12" class="reveal scroll-mt-24">
+            <div class="flex items-center gap-6 mb-10">
+                <div class="w-20 h-20 bg-pink-100 text-pink-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg shrink-0"><i class="fas fa-book-reader"></i></div>
+                <div>
+                    <h2 class="text-5xl font-black text-slate-900">12. Reading Comprehension</h2>
+                    <p class="text-pink-600 font-black uppercase tracking-widest text-2xl mt-2">The Tale of Timmy's Regrets</p>
+                </div>
+            </div>
+            <div class="glass-card p-10 md:p-14 bg-white border-2 border-pink-200 shadow-xl relative">
+                <h3 class="font-black text-4xl mb-8 text-slate-900 border-b-2 border-slate-100 pb-4">A Very Bad Day</h3>
+                <div class="text-2xl space-y-6 text-slate-700 leading-relaxed font-medium">
+                    <p>
+                        Timmy sat on the side of the highway, staring at smoke coming from his car engine. He felt deeply <b>dissatisfied</b> with his recent choices. Last week, he had a choice between buying a reliable Honda and a cheap, rusty sports car. He chose the sports car.
+                    </p>
+                    <p>
+                        "<b>If only I had listened</b> to my dad," he muttered to himself. "He told me not to buy it. <b>I wish I had bought</b> the Honda."
+                    </p>
+                    <p>
+                        To make matters worse, it started to rain. Timmy didn't have an umbrella. "<b>I wish it would stop</b> raining," he yelled at the sky. A truck drove by, splashing mud all over his new shoes. Timmy sighed. "<b>I wish I were</b> at home in my warm bed right now." It was a day full of <b>regrets</b>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEC 13: Reading Practice -->
+        <section id="sec-13" class="reveal scroll-mt-24">
+            <div class="flex items-center gap-6 mb-10">
+                <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg shrink-0"><i class="fas fa-clipboard-check"></i></div>
+                <div>
+                    <h2 class="text-5xl font-black text-slate-900">13. Reading Quiz</h2>
+                    <p class="text-slate-500 font-bold text-2xl mt-2">Answer based on Timmy's terrible day.</p>
+                </div>
+            </div>
+            <div id="quiz-reading" class="space-y-6"></div>
+        </section>
+
+        <!-- SEC 14: Speaking/Writing Prompts -->
+        <section id="sec-14" class="reveal scroll-mt-24">
+            <div class="flex items-center gap-6 mb-10">
+                <div class="w-20 h-20 bg-cyan-100 text-cyan-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg shrink-0"><i class="fas fa-comments"></i></div>
+                <div>
+                    <h2 class="text-5xl font-black text-slate-900">14. Class Discussion</h2>
+                    <p class="text-cyan-600 font-black uppercase tracking-widest text-2xl mt-2">Your turn to talk!</p>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <i class="fas fa-pastafarianism text-4xl text-cyan-500 mb-4"></i>
+                    <h4 class="font-black text-2xl text-slate-800 mb-2">Think of a past regret.</h4>
+                    <p class="text-slate-600 text-lg">Use: <i>"I wish I had / hadn't..."</i></p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <i class="fas fa-volume-mute text-4xl text-cyan-500 mb-4"></i>
+                    <h4 class="font-black text-2xl text-slate-800 mb-2">Think of an annoyance.</h4>
+                    <p class="text-slate-600 text-lg">Use: <i>"I wish [my brother/the dog] would..."</i></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEC 15: Final Summary & Score -->
+        <section id="sec-15" class="reveal pt-20 pb-20 text-center scroll-mt-24">
+            <div class="w-32 h-32 bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-full mx-auto flex items-center justify-center text-6xl mb-10 shadow-2xl">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h2 class="text-6xl font-black text-slate-900 mb-6 tracking-tight">End of the Masterclass</h2>
+            <p class="text-slate-500 text-2xl font-medium mb-12 max-w-2xl mx-auto">
+                Excellent job! Let's check your final lab score.
+            </p>
+            
+            <div class="bg-white p-12 max-w-lg mx-auto rounded-[3rem] border-t-[10px] border-t-purple-600 shadow-xl relative">
+                <p class="text-slate-400 font-black uppercase tracking-widest text-lg mb-4">Total Points</p>
+                <div class="text-[100px] leading-none font-black text-slate-800 mb-6">
+                    <span id="final-score" class="text-transparent bg-clip-text bg-gradient-to-br from-purple-600 to-pink-600">0</span><span class="text-5xl text-slate-300">/12</span>
+                </div>
+                <button onclick="window.scrollTo(0,0); setTimeout(() => location.reload(), 500);" class="bg-slate-900 text-white font-bold py-4 px-10 rounded-2xl hover:bg-slate-800 shadow-lg transition interactive-btn text-xl inline-flex items-center gap-3">
+                    <i class="fas fa-redo-alt"></i> Restart Lab
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- SCORE SYSTEM ---
+        let currentScore = 0;
+        
+        function addScore() {
+            currentScore++;
+            document.getElementById('score-display').innerText = currentScore;
+            document.getElementById('final-score').innerText = currentScore;
+            
+            const badge = document.getElementById('score-badge');
+            badge.classList.add('bg-emerald-100', 'text-emerald-700', 'scale-110');
+            setTimeout(() => badge.classList.remove('bg-emerald-100', 'text-emerald-700', 'scale-110'), 300);
+        }
+
+        // --- QUIZ DATA ---
+        const quizPresent = [
+            { q: "Reality: I don't have enough money to travel.", opts: ["I wish I have enough money.", "I wish I had enough money.", "I wish I had had enough money."], ans: 1 },
+            { q: "Reality: I am not tall.", opts: ["I wish I am tall.", "I wish I was tall.", "I wish I were tall."], ans: 2 }
+        ];
+
+        const quizPast = [
+            { q: "Reality: I didn't wake up on time.", opts: ["I wish I had woken up on time.", "I wish I woke up on time.", "I wish I would wake up on time."], ans: 0 },
+            { q: "Reality: She lost her passport.", opts: ["If only she hasn't lost it.", "If only she didn't lose it.", "If only she hadn't lost it."], ans: 2 }
+        ];
+
+        const quizAnnoy = [
+            { q: "Reality: Your roommate plays loud music at night.", opts: ["I wish you stopped playing music.", "I wish you would stop playing loud music.", "I wish you had stopped."], ans: 1 },
+            { q: "Reality: The bus is always late.", opts: ["I wish the bus would arrive on time.", "I wish the bus arrives on time.", "I wish the bus had arrived."], ans: 0 }
+        ];
+
+        const quizVocab = [
+            { q: "When you feel sad about a past mistake, you feel ________.", opts: ["annoyed", "regret", "satisfied"], ans: 1 },
+            { q: "If you don't like your current phone, you are ________ with it.", opts: ["dissatisfied", "regretting", "annoying"], ans: 0 },
+            { q: "Someone chewing loudly is very ________.", opts: ["dissatisfied", "regretful", "annoying"], ans: 2 }
+        ];
+
+        const quizReading = [
+            { q: "Why did Timmy use 'Past Perfect' when talking about the car?", opts: ["Because he is buying a car right now.", "Because the choice was made in the past (Regret).", "Because he is annoyed at the car seller."], ans: 1 },
+            { q: "Timmy says 'I wish it would stop raining'. Why did he use 'would'?", opts: ["He wants a present situation to change.", "He wants a behavior/event (the rain) to change.", "He regrets buying the rain."], ans: 1 },
+            { q: "Timmy says 'I wish I were at home'. Why 'were'?", opts: ["Because it's a past regret.", "Because it's a formal unreal present state (Verb To Be).", "Because his house is annoying."], ans: 1 }
+        ];
+
+        // --- RENDER FUNCTION ---
+        function buildQuiz(containerId, data) {
+            const container = document.getElementById(containerId);
+            
+            data.forEach((item, idx) => {
+                const block = document.createElement('div');
+                block.dataset.answered = "false";
+                block.className = `quiz-block bg-white p-8 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden`;
+                
+                let htmlStr = `<p class="text-2xl font-bold text-slate-800 mb-6">${idx+1}. ${item.q}</p>
+                               <div class="flex flex-col gap-4">`;
+                
+                item.opts.forEach((opt, i) => {
+                    htmlStr += `<button onclick="checkAnswer(this, ${i}, ${item.ans})" 
+                                class="text-left w-full bg-slate-50 border-2 border-slate-200 text-slate-700 font-bold py-4 px-6 rounded-2xl hover:bg-slate-100 hover:border-slate-300 transition interactive-btn text-lg">
+                                ${opt}
+                                </button>`;
+                });
+                
+                htmlStr += `</div><div class="feedback-msg hidden mt-6 text-xl"></div>`;
+                block.innerHTML = htmlStr;
+                container.appendChild(block);
+            });
+        }
+
+        window.checkAnswer = function(btn, selectedIdx, correctIdx) {
+            const block = btn.closest('.quiz-block');
+            if (block.dataset.answered === "true") return;
+            block.dataset.answered = "true";
+
+            const buttons = block.querySelectorAll('button');
+            const feedback = block.querySelector('.feedback-msg');
+
+            buttons.forEach(b => {
+                b.disabled = true;
+                b.classList.add('opacity-50', 'cursor-not-allowed');
+                b.classList.remove('hover:bg-slate-100', 'interactive-btn');
+            });
+
+            feedback.classList.remove('hidden');
+
+            if (selectedIdx === correctIdx) {
+                addScore();
+                btn.classList.replace('bg-slate-50', 'bg-emerald-600');
+                btn.classList.replace('text-slate-700', 'text-white');
+                btn.classList.add('border-emerald-600');
+                
+                feedback.innerHTML = `<i class="fas fa-check-circle mr-2"></i> Correct!`;
+                feedback.className = `feedback-msg mt-6 p-4 rounded-xl font-bold flex items-center text-emerald-700 bg-emerald-50 border border-emerald-200 animate-pop`;
+            } else {
+                btn.classList.replace('bg-slate-50', 'bg-rose-500');
+                btn.classList.replace('text-slate-700', 'text-white');
+                btn.classList.add('border-rose-500');
+                
+                const correctBtn = buttons[correctIdx];
+                correctBtn.classList.replace('opacity-50', 'opacity-100');
+                correctBtn.classList.replace('bg-slate-50', 'bg-emerald-50');
+                correctBtn.classList.replace('text-slate-700', 'text-emerald-700');
+                correctBtn.classList.replace('border-slate-200', 'border-emerald-400');
+                correctBtn.classList.add('border-4');
+
+                feedback.innerHTML = `<i class="fas fa-times-circle mr-2"></i> Incorrect`;
+                feedback.className = `feedback-msg mt-6 p-4 rounded-xl font-bold flex items-center text-rose-700 bg-rose-50 border border-rose-200 animate-pop`;
+            }
+        };
+
+        // --- INIT ---
+        function initApp() {
+            buildQuiz('quiz-present', quizPresent);
+            buildQuiz('quiz-past', quizPast);
+            buildQuiz('quiz-annoy', quizAnnoy);
+            buildQuiz('quiz-vocab', quizVocab);
+            buildQuiz('quiz-reading', quizReading);
+            
+            const reveals = document.querySelectorAll('.reveal');
+            const observerOptions = { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0.1 };
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) { entry.target.classList.add('active'); }
+                });
+            }, observerOptions);
+            reveals.forEach(reveal => revealObserver.observe(reveal));
+
+            window.addEventListener('scroll', () => {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                document.getElementById('scroll-progress').style.width = scrolled + "%";
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
