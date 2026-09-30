@@ -2,26 +2,32 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Block 1 Review - Nicole Ayón</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;700;800&display=swap" rel="stylesheet">
     
     <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.5);
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
-            /* Vibrant animated background */
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background: linear-gradient(-45deg, #fbc2eb, #a6c1ee, #c2e9fb, #e0c3fc);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             color: #1e293b;
+            overflow-x: hidden;
         }
 
-        h1, h2, h3, .font-poppins {
-            font-family: 'Poppins', sans-serif;
-        }
+        h1, h2, h3, .font-poppins { font-family: 'Poppins', sans-serif; }
 
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
@@ -29,127 +35,179 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Glassmorphism effects */
+        /* Glassmorphism Classes */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 40px -10px rgba(31, 38, 135, 0.15);
         }
 
         .glass-header {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.6);
         }
 
-        /* Shake Animation for incorrect answers */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-6px); }
-            40%, 80% { transform: translateX(6px); }
+        /* Scroll Reveal Animations */
+        .reveal-item {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .animate-shake {
-            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        .reveal-item.is-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        /* Option Card Styles */
+        /* Question Interactive Styles */
         .option-card {
-            transition: all 0.2s ease-in-out;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .option-card:active {
-            transform: scale(0.97);
+        
+        .option-card:hover:not(.state-disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
         }
 
-        /* State Classes added via JS */
+        .option-card:active:not(.state-disabled) { transform: scale(0.97); }
+
         .state-correct {
-            background-color: #10b981 !important; /* Tailwind emerald-500 */
+            background-color: #10b981 !important; /* emerald-500 */
             color: white !important;
             border-color: #059669 !important;
-            box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.39);
-            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+            animation: pop 0.4s ease-out forwards;
         }
 
         .state-incorrect {
-            background-color: #ef4444 !important; /* Tailwind red-500 */
+            background-color: #ef4444 !important; /* red-500 */
             color: white !important;
             border-color: #dc2626 !important;
-            box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.39);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
 
-        .state-disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            filter: grayscale(0.5);
+        .state-correct-highlight {
+            background-color: #d1fae5 !important; /* emerald-100 */
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+            border-width: 2px;
         }
 
-        /* Smooth scroll */
+        .state-disabled { pointer-events: none; opacity: 0.6; }
+
+        /* Keyframes */
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        /* Custom Scrollbar for Dictionary */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
+        
         html { scroll-behavior: smooth; }
     </style>
 </head>
-<body class="min-h-screen pb-24">
+<body class="min-h-screen pb-24 relative">
 
-    <header class="sticky top-0 z-50 glass-header shadow-sm pt-6 pb-4 px-4">
-        <div class="max-w-3xl mx-auto">
-            <div class="flex justify-between items-end mb-3">
+    <header class="sticky top-0 z-40 glass-header pt-4 pb-3 px-4 shadow-sm">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex justify-between items-center mb-3">
                 <div>
-                    <h1 class="text-3xl font-poppins font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+                    <h1 class="text-2xl sm:text-3xl font-poppins font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
                         Block 1 Review
                     </h1>
-                    <p class="text-gray-600 font-medium text-sm mt-1 flex items-center gap-1">
-                        <span class="text-xl">👩‍🎓</span> Student: <span class="font-bold text-gray-800">Nicole Ayón</span>
+                    <p class="text-gray-600 font-medium text-xs sm:text-sm mt-0.5 flex items-center gap-1">
+                        👩‍🎓 Student: <span class="font-bold text-gray-800">Nicole Ayón</span>
                     </p>
                 </div>
-                <div class="text-right">
-                    <span id="progress-text" class="text-lg font-bold text-purple-700">0/15</span>
+                <div class="flex flex-col items-end gap-2">
+                    <button id="open-dict-btn" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-700 text-sm font-semibold py-2 px-4 rounded-full transition-colors flex items-center gap-2 shadow-sm">
+                        <span>📖</span> <span class="hidden sm:inline">Dictionary</span>
+                    </button>
+                    <span id="progress-text" class="text-sm font-bold text-indigo-600 hidden sm:block">0 / 14</span>
                 </div>
             </div>
             
             <!-- Progress Bar -->
-            <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden shadow-inner">
-                <div id="progress-bar" class="bg-gradient-to-r from-green-400 to-emerald-500 h-3 rounded-full transition-all duration-500 ease-out w-0 relative">
-                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-white/20 animate-pulse"></div>
-                </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden shadow-inner">
+                <div id="progress-bar" class="bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 h-full rounded-full transition-all duration-700 ease-out w-0 relative"></div>
+            </div>
+            <div class="text-right sm:hidden mt-1">
+                <span id="progress-text-mobile" class="text-xs font-bold text-indigo-600">0 / 14 completado</span>
             </div>
         </div>
     </header>
 
-    <main class="max-w-3xl mx-auto px-4 mt-8 space-y-10" id="quiz-container">
+    <!-- Dictionary Modal Overlay -->
+    <div id="dictionary-modal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex-col justify-end sm:justify-center p-0 sm:p-4 opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-full sm:max-w-md mx-auto rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full sm:translate-y-10 transition-transform duration-300" id="dictionary-card">
+            <div class="p-5 border-b border-gray-200/50 bg-white/50 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                    📖 Mini Dictionary
+                </h3>
+                <button id="close-dict-btn" class="text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                    ✕
+                </button>
+            </div>
+            <div class="p-5 bg-white/60">
+                <input type="text" id="dict-search" placeholder="Search a word (e.g. piece, hang)..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white/80 shadow-inner mb-4 transition-all">
+                
+                <div class="h-64 overflow-y-auto custom-scrollbar pr-2 space-y-3" id="dict-results">
+                    <!-- Dictionary items injected via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-12" id="quiz-container">
         
-        <section class="glass-panel rounded-3xl overflow-hidden shadow-xl">
-            <div class="h-48 w-full relative">
-                <img src="https://images.unsplash.com/photo-1501139083538-0139583c060f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Time and History" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-                    <h2 class="text-white text-2xl font-bold flex items-center gap-2">
-                        <span class="bg-white text-purple-600 rounded-full w-8 h-8 flex items-center justify-center text-sm">1</span>
+        <!-- SECTION 1 -->
+        <section class="glass-panel rounded-[2rem] overflow-hidden reveal-item">
+            <div class="h-40 sm:h-56 w-full relative">
+                <img src="https://images.unsplash.com/photo-1501139083538-0139583c060f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Time" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent flex items-end p-6">
+                    <h2 class="text-white text-2xl sm:text-3xl font-bold flex items-center gap-3 font-poppins">
+                        <span class="bg-indigo-500 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg shadow-lg">1</span>
                         Tenses Review & Connected Past
                     </h2>
                 </div>
             </div>
             
-            <div class="p-6">
-                <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-xl mb-8 text-sm text-gray-700 shadow-sm">
-                    <strong>¡Hola Nicole! 👋 Vamos a conectar el pasado.</strong> Usamos <em>Past Simple</em> para acciones terminadas, <em>Past Continuous</em> para acciones en progreso y <em>Past Perfect</em> (had + participio) para la acción que ocurrió <strong>antes</strong> de otra en el pasado. 🕵️‍♀️
+            <div class="p-6 sm:p-8">
+                <div class="bg-indigo-50/80 border-l-4 border-indigo-500 p-5 rounded-xl rounded-l-none mb-8 text-sm sm:text-base text-indigo-900 shadow-sm leading-relaxed backdrop-blur-sm">
+                    <strong>¡Vamos a conectar el pasado! 🕰️</strong> Usa <em>Past Simple</em> para acciones terminadas, <em>Past Continuous</em> para acciones en progreso y <em>Past Perfect</em> (had + participio) para la acción que ocurrió <strong>antes</strong> de otra en el pasado.
                 </div>
 
                 <div class="space-y-8">
                     <!-- Q1 -->
                     <div class="question-block" data-q="q1">
                         <p class="font-semibold text-lg mb-4 text-gray-800">1. While I _____ (walk) home, it started to rain suddenly.</p>
-                        <div class="grid grid-cols-1 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <label class="cursor-pointer relative block">
                                 <input type="radio" name="q1" value="walked" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">walked</div>
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">walked</div>
                             </label>
                             <label class="cursor-pointer relative block">
                                 <input type="radio" name="q1" value="was walking" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">was walking</div>
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">was walking</div>
                             </label>
                             <label class="cursor-pointer relative block">
                                 <input type="radio" name="q1" value="had walked" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">had walked</div>
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">had walked</div>
                             </label>
                         </div>
                     </div>
@@ -157,37 +215,18 @@
                     <!-- Q2 -->
                     <div class="question-block" data-q="q2">
                         <p class="font-semibold text-lg mb-4 text-gray-800">2. By the time we arrived at the cinema, the movie _____ (start).</p>
-                        <div class="grid grid-cols-1 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <label class="cursor-pointer relative block">
                                 <input type="radio" name="q2" value="started" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">started</div>
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">started</div>
                             </label>
                             <label class="cursor-pointer relative block">
                                 <input type="radio" name="q2" value="was starting" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">was starting</div>
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">was starting</div>
                             </label>
                             <label class="cursor-pointer relative block">
                                 <input type="radio" name="q2" value="had started" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">had started</div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Q3 -->
-                    <div class="question-block" data-q="q3">
-                        <p class="font-semibold text-lg mb-4 text-gray-800">3. I _____ (live) in Paris for 5 years before I moved to London.</p>
-                        <div class="grid grid-cols-1 gap-3">
-                            <label class="cursor-pointer relative block">
-                                <input type="radio" name="q3" value="lived" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">lived</div>
-                            </label>
-                            <label class="cursor-pointer relative block">
-                                <input type="radio" name="q3" value="was living" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">was living</div>
-                            </label>
-                            <label class="cursor-pointer relative block">
-                                <input type="radio" name="q3" value="had lived" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">had lived</div>
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">had started</div>
                             </label>
                         </div>
                     </div>
@@ -195,76 +234,117 @@
             </div>
         </section>
 
-        <section class="glass-panel rounded-3xl overflow-hidden shadow-xl">
-            <div class="h-48 w-full relative">
-                <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Starry Sky Wish" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-                    <h2 class="text-white text-2xl font-bold flex items-center gap-2">
-                        <span class="bg-white text-indigo-600 rounded-full w-8 h-8 flex items-center justify-center text-sm">2</span>
+        <!-- SECTION 2 -->
+        <section class="glass-panel rounded-[2rem] overflow-hidden reveal-item">
+            <div class="h-40 sm:h-56 w-full relative">
+                <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Starry Sky Wish" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent flex items-end p-6">
+                    <h2 class="text-white text-2xl sm:text-3xl font-bold flex items-center gap-3 font-poppins">
+                        <span class="bg-pink-500 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg shadow-lg">2</span>
                         Past Wishes
                     </h2>
                 </div>
             </div>
             
-            <div class="p-6">
-                <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-xl mb-8 text-sm text-gray-700 shadow-sm">
-                    <strong>¿Arrepentimientos? 🌠</strong> Usamos <em>wish</em> o <em>if only</em> + <em>Past Perfect</em> para cosas del pasado que desearíamos que fueran diferentes. ¡Es súper dramático! 🎭
+            <div class="p-6 sm:p-8">
+                <div class="bg-pink-50/80 border-l-4 border-pink-500 p-5 rounded-xl rounded-l-none mb-8 text-sm sm:text-base text-pink-900 shadow-sm leading-relaxed backdrop-blur-sm">
+                    <strong>¿Arrepentimientos? 🌠</strong> Usamos <em>wish</em> o <em>if only</em> + <em>Past Perfect</em> para cosas del pasado que desearíamos que hubieran sido diferentes. ¡Es hora de un poco de drama! 🎭
                 </div>
 
                 <div class="space-y-8">
-                    <!-- Q4 -->
-                    <div class="question-block" data-q="q4">
-                        <p class="font-semibold text-lg mb-4 text-gray-800">4. I have a terrible stomachache. I wish I _____ so much pizza!</p>
+                    <!-- Q3 -->
+                    <div class="question-block" data-q="q3">
+                        <p class="font-semibold text-lg mb-4 text-gray-800">3. I have a terrible stomachache. I wish I _____ so much pizza!</p>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q4" value="didn't eat" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">didn't eat</div>
+                                <input type="radio" name="q3" value="didn't eat" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">didn't eat</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q4" value="wouldn't eat" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">wouldn't eat</div>
+                                <input type="radio" name="q3" value="wouldn't eat" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">wouldn't eat</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q4" value="hadn't eaten" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">hadn't eaten</div>
+                                <input type="radio" name="q3" value="hadn't eaten" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">hadn't eaten</div>
                             </label>
                         </div>
                     </div>
 
+                    <!-- Q4 -->
+                    <div class="question-block" data-q="q4">
+                        <p class="font-semibold text-lg mb-4 text-gray-800">4. If only we _____ an umbrella. Now we are completely soaked!</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <label class="cursor-pointer relative block">
+                                <input type="radio" name="q4" value="brought" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">brought</div>
+                            </label>
+                            <label class="cursor-pointer relative block">
+                                <input type="radio" name="q4" value="had brought" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">had brought</div>
+                            </label>
+                            <label class="cursor-pointer relative block">
+                                <input type="radio" name="q4" value="bring" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">bring</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3 -->
+        <section class="glass-panel rounded-[2rem] overflow-hidden reveal-item">
+            <div class="h-40 sm:h-56 w-full relative">
+                <img src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Friends talking" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent flex items-end p-6">
+                    <h2 class="text-white text-2xl sm:text-3xl font-bold flex items-center gap-3 font-poppins">
+                        <span class="bg-cyan-500 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg shadow-lg">3</span>
+                        Idioms & Phrasal Verbs
+                    </h2>
+                </div>
+            </div>
+            
+            <div class="p-6 sm:p-8">
+                <div class="bg-cyan-50/80 border-l-4 border-cyan-500 p-5 rounded-xl rounded-l-none mb-8 text-sm sm:text-base text-cyan-900 shadow-sm leading-relaxed backdrop-blur-sm">
+                    <strong>¡Hablemos como nativos! 🗣️️</strong> Los <em>Phrasal Verbs</em> e <em>Idioms</em> son la clave de la fluidez. No intentes traducirlos palabra por palabra, mejor entiende la imagen o el concepto global.
+                </div>
+
+                <div class="space-y-8">
                     <!-- Q5 -->
                     <div class="question-block" data-q="q5">
-                        <p class="font-semibold text-lg mb-4 text-gray-800">5. If only we _____ an umbrella. Now we are completely soaked!</p>
-                        <div class="grid grid-cols-1 gap-3">
+                        <p class="font-semibold text-lg mb-4 text-gray-800">5. Don't give up on your project! Hang _____ there, it will get better.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q5" value="brought" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">brought</div>
+                                <input type="radio" name="q5" value="on" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">on</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q5" value="had brought" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">had brought</div>
+                                <input type="radio" name="q5" value="in" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">in</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q5" value="bring" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">bring</div>
+                                <input type="radio" name="q5" value="up" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">up</div>
                             </label>
                         </div>
                     </div>
 
                     <!-- Q6 -->
                     <div class="question-block" data-q="q6">
-                        <p class="font-semibold text-lg mb-4 text-gray-800">6. She wishes she _____ that text message to her ex. Oops! 📱</p>
+                        <p class="font-semibold text-lg mb-4 text-gray-800">6. We need to _____ the meeting because the boss is sick today. (cancel)</p>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q6" value="hasn't sent" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">hasn't sent</div>
+                                <input type="radio" name="q6" value="call off" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">call off</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q6" value="didn't send" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">didn't send</div>
+                                <input type="radio" name="q6" value="put off" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">put off</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q6" value="hadn't sent" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">hadn't sent</div>
+                                <input type="radio" name="q6" value="take off" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">take off</div>
                             </label>
                         </div>
                     </div>
@@ -272,76 +352,58 @@
             </div>
         </section>
 
-        <section class="glass-panel rounded-3xl overflow-hidden shadow-xl">
-            <div class="h-48 w-full relative">
-                <img src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Friends talking" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-                    <h2 class="text-white text-2xl font-bold flex items-center gap-2">
-                        <span class="bg-white text-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-sm">3</span>
-                        Idioms & Phrasal Verbs
+        <!-- SECTION 4 -->
+        <section class="glass-panel rounded-[2rem] overflow-hidden reveal-item">
+            <div class="h-40 sm:h-56 w-full relative">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Future path" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent flex items-end p-6">
+                    <h2 class="text-white text-2xl sm:text-3xl font-bold flex items-center gap-3 font-poppins">
+                        <span class="bg-amber-500 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg shadow-lg">4</span>
+                        Futures
                     </h2>
                 </div>
             </div>
             
-            <div class="p-6">
-                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl mb-8 text-sm text-gray-700 shadow-sm">
-                    <strong>¡Hablemos como nativos! 🗣️</strong> Los <em>Phrasal Verbs</em> e <em>Idioms</em> son el secreto para sonar natural. No los traduzcas palabra por palabra, ¡entiende el concepto completo! 🧠
+            <div class="p-6 sm:p-8">
+                <div class="bg-amber-50/80 border-l-4 border-amber-500 p-5 rounded-xl rounded-l-none mb-8 text-sm sm:text-base text-amber-900 shadow-sm leading-relaxed backdrop-blur-sm">
+                    <strong>¿Qué nos depara el destino? 🔮</strong> Usa <em>Will</em> para decisiones espontáneas o promesas, y <em>Going to</em> cuando ya tienes un plan previo o hay evidencia visual de que algo sucederá.
                 </div>
 
                 <div class="space-y-8">
                     <!-- Q7 -->
                     <div class="question-block" data-q="q7">
-                        <p class="font-semibold text-lg mb-4 text-gray-800">7. Don't give up! Hang _____ there, things will get better soon.</p>
+                        <p class="font-semibold text-lg mb-4 text-gray-800">7. Look at those dark clouds in the sky! It _____ rain very soon.</p>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q7" value="on" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">on</div>
+                                <input type="radio" name="q7" value="will" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">will</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q7" value="in" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">in</div>
+                                <input type="radio" name="q7" value="is going to" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">is going to</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q7" value="up" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">up</div>
+                                <input type="radio" name="q7" value="is raining" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">is raining</div>
                             </label>
                         </div>
                     </div>
 
                     <!-- Q8 -->
                     <div class="question-block" data-q="q8">
-                        <p class="font-semibold text-lg mb-4 text-gray-800">8. The exam was a piece of _____. I finished in 10 minutes!</p>
-                        <div class="grid grid-cols-1 gap-3">
-                            <label class="cursor-pointer relative block">
-                                <input type="radio" name="q8" value="cake" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">cake</div>
-                            </label>
-                            <label class="cursor-pointer relative block">
-                                <input type="radio" name="q8" value="pie" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">pie</div>
-                            </label>
-                            <label class="cursor-pointer relative block">
-                                <input type="radio" name="q8" value="bread" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">bread</div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Q9 -->
-                    <div class="question-block" data-q="q9">
-                        <p class="font-semibold text-lg mb-4 text-gray-800">9. We need to _____ the meeting because the boss is sick. (cancel)</p>
+                        <p class="font-semibold text-lg mb-4 text-gray-800">8. "Oh no, I forgot my wallet!" - "Don't worry, I _____ pay for your coffee."</p>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q9" value="call off" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">call off</div>
+                                <input type="radio" name="q8" value="am going to" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">am going to</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q9" value="put off" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">put off</div>
+                                <input type="radio" name="q8" value="will" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">will</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q9" value="take off" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">take off</div>
+                                <input type="radio" name="q8" value="pay" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">pay</div>
                             </label>
                         </div>
                     </div>
@@ -349,76 +411,117 @@
             </div>
         </section>
 
-        <section class="glass-panel rounded-3xl overflow-hidden shadow-xl">
-            <div class="h-48 w-full relative">
-                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Future path" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-                    <h2 class="text-white text-2xl font-bold flex items-center gap-2">
-                        <span class="bg-white text-pink-600 rounded-full w-8 h-8 flex items-center justify-center text-sm">4</span>
-                        Futures
+        <!-- SECTION 5 -->
+        <section class="glass-panel rounded-[2rem] overflow-hidden reveal-item">
+            <div class="h-40 sm:h-56 w-full relative">
+                <img src="https://images.unsplash.com/photo-1494178270175-e96de2971df9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Puzzle and coffee" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent flex items-end p-6">
+                    <h2 class="text-white text-2xl sm:text-3xl font-bold flex items-center gap-3 font-poppins">
+                        <span class="bg-teal-500 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg shadow-lg">5</span>
+                        Indefinite Clauses
                     </h2>
                 </div>
             </div>
             
-            <div class="p-6">
-                <div class="bg-pink-50 border-l-4 border-pink-500 p-4 rounded-r-xl mb-8 text-sm text-gray-700 shadow-sm">
-                    <strong>¿Qué nos depara el destino? 🔮</strong> Usa <em>Will</em> para decisiones al momento o promesas, y <em>Going to</em> cuando ya tienes un plan o ves evidencia clara de lo que va a pasar en tu entorno. 🚀
+            <div class="p-6 sm:p-8">
+                <div class="bg-teal-50/80 border-l-4 border-teal-500 p-5 rounded-xl rounded-l-none mb-8 text-sm sm:text-base text-teal-900 shadow-sm leading-relaxed backdrop-blur-sm">
+                    <strong>¡Conectando ideas! 🧩</strong> Los pronombres relativos (who, which, where) y los pronombres indefinidos (anyone, something) nos ayudan a dar más detalles fluidamente sin repetir palabras.
                 </div>
 
                 <div class="space-y-8">
-                    <!-- Q10 -->
-                    <div class="question-block" data-q="q10">
-                        <p class="font-semibold text-lg mb-4 text-gray-800">10. Look at those dark clouds! It _____ rain very soon.</p>
+                    <!-- Q9 -->
+                    <div class="question-block" data-q="q9">
+                        <p class="font-semibold text-lg mb-4 text-gray-800">9. The beautiful cafe _____ we had our first date is closing down.</p>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q10" value="will" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">will</div>
+                                <input type="radio" name="q9" value="which" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">which</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q10" value="is going to" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">is going to</div>
+                                <input type="radio" name="q9" value="where" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">where</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q10" value="is raining" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">is raining</div>
+                                <input type="radio" name="q9" value="that" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">that</div>
                             </label>
                         </div>
                     </div>
 
+                    <!-- Q10 -->
+                    <div class="question-block" data-q="q10">
+                        <p class="font-semibold text-lg mb-4 text-gray-800">10. I can't find my keys. Does _____ know where they are?</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <label class="cursor-pointer relative block">
+                                <input type="radio" name="q10" value="somewhere" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">somewhere</div>
+                            </label>
+                            <label class="cursor-pointer relative block">
+                                <input type="radio" name="q10" value="anyone" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">anyone</div>
+                            </label>
+                            <label class="cursor-pointer relative block">
+                                <input type="radio" name="q10" value="nothing" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">nothing</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6 -->
+        <section class="glass-panel rounded-[2rem] overflow-hidden reveal-item">
+            <div class="h-40 sm:h-56 w-full relative">
+                <img src="https://images.unsplash.com/photo-1577563908411-5077b6dc7624?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Conversation" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent flex items-end p-6">
+                    <h2 class="text-white text-2xl sm:text-3xl font-bold flex items-center gap-3 font-poppins">
+                        <span class="bg-rose-500 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg shadow-lg">6</span>
+                        Fillers & Chunks
+                    </h2>
+                </div>
+            </div>
+            
+            <div class="p-6 sm:p-8">
+                <div class="bg-rose-50/80 border-l-4 border-rose-500 p-5 rounded-xl rounded-l-none mb-8 text-sm sm:text-base text-rose-900 shadow-sm leading-relaxed backdrop-blur-sm">
+                    <strong>¿Te quedaste en blanco? 💭</strong> Usa <em>fillers</em> (like, well, you know) para ganar tiempo mientras piensas y sonar más natural en una conversación informal.
+                </div>
+
+                <div class="space-y-8">
                     <!-- Q11 -->
                     <div class="question-block" data-q="q11">
-                        <p class="font-semibold text-lg mb-4 text-gray-800">11. "Oh no, I forgot my wallet!" - "Don't worry, I _____ pay for your coffee."</p>
-                        <div class="grid grid-cols-1 gap-3">
+                        <p class="font-semibold text-lg mb-4 text-gray-800">11. So, it was, _____, the best concert I've ever been to! Seriously.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q11" value="am going to" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">am going to</div>
+                                <input type="radio" name="q11" value="like" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">like</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q11" value="will" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">will</div>
+                                <input type="radio" name="q11" value="whatever" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">whatever</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q11" value="pay" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">pay</div>
+                                <input type="radio" name="q11" value="anyway" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">anyway</div>
                             </label>
                         </div>
                     </div>
 
                     <!-- Q12 -->
                     <div class="question-block" data-q="q12">
-                        <p class="font-semibold text-lg mb-4 text-gray-800">12. Next summer, we _____ travel to Japan. We already bought the tickets!</p>
+                        <p class="font-semibold text-lg mb-4 text-gray-800">12. _____, I think we should go home now. It's getting really late.</p>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q12" value="will" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">will</div>
+                                <input type="radio" name="q12" value="By the way" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">By the way</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q12" value="are going to" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">are going to</div>
+                                <input type="radio" name="q12" value="Anyway" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">Anyway</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q12" value="travel" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">travel</div>
+                                <input type="radio" name="q12" value="You know" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">You know</div>
                             </label>
                         </div>
                     </div>
@@ -426,76 +529,58 @@
             </div>
         </section>
 
-        <section class="glass-panel rounded-3xl overflow-hidden shadow-xl">
-            <div class="h-48 w-full relative">
-                <img src="https://images.unsplash.com/photo-1494178270175-e96de2971df9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Puzzle and coffee" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-                    <h2 class="text-white text-2xl font-bold flex items-center gap-2">
-                        <span class="bg-white text-teal-600 rounded-full w-8 h-8 flex items-center justify-center text-sm">5</span>
-                        Indefinite Clauses & Fillers
+        <!-- SECTION 7 -->
+        <section class="glass-panel rounded-[2rem] overflow-hidden reveal-item">
+            <div class="h-40 sm:h-56 w-full relative">
+                <img src="https://images.unsplash.com/photo-1455390582262-044cdead2708?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Vintage writing" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent flex items-end p-6">
+                    <h2 class="text-white text-2xl sm:text-3xl font-bold flex items-center gap-3 font-poppins">
+                        <span class="bg-violet-500 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg shadow-lg">7</span>
+                        Past Tenses (General)
                     </h2>
                 </div>
             </div>
             
-            <div class="p-6">
-                <div class="bg-teal-50 border-l-4 border-teal-500 p-4 rounded-r-xl mb-8 text-sm text-gray-700 shadow-sm">
-                    <strong>¿Te quedaste en blanco? 🧩</strong> Usa <em>fillers</em> (like, well, you know) para ganar tiempo mientras piensas. Y usa pronombres (who, which, where) para dar más detalles y conectar ideas fluidamente. 🗣️
+            <div class="p-6 sm:p-8">
+                <div class="bg-violet-50/80 border-l-4 border-violet-500 p-5 rounded-xl rounded-l-none mb-8 text-sm sm:text-base text-violet-900 shadow-sm leading-relaxed backdrop-blur-sm">
+                    <strong>¡Último repaso! 📚</strong> Mezclemos los tiempos pasados para asegurar que dominas la narrativa y estructuración de anécdotas.
                 </div>
 
                 <div class="space-y-8">
                     <!-- Q13 -->
                     <div class="question-block" data-q="q13">
-                        <p class="font-semibold text-lg mb-4 text-gray-800">13. So, it was, _____, the best concert I've ever been to!</p>
+                        <p class="font-semibold text-lg mb-4 text-gray-800">13. I _____ (live) in Paris for 5 years before I finally moved to London.</p>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q13" value="like" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">like</div>
+                                <input type="radio" name="q13" value="lived" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">lived</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q13" value="whatever" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">whatever</div>
+                                <input type="radio" name="q13" value="was living" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">was living</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q13" value="anyway" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">anyway</div>
+                                <input type="radio" name="q13" value="had lived" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">had lived</div>
                             </label>
                         </div>
                     </div>
 
                     <!-- Q14 -->
                     <div class="question-block" data-q="q14">
-                        <p class="font-semibold text-lg mb-4 text-gray-800">14. The cafe _____ we had our first date is closing down.</p>
-                        <div class="grid grid-cols-1 gap-3">
-                            <label class="cursor-pointer relative block">
-                                <input type="radio" name="q14" value="which" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">which</div>
-                            </label>
-                            <label class="cursor-pointer relative block">
-                                <input type="radio" name="q14" value="where" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">where</div>
-                            </label>
-                            <label class="cursor-pointer relative block">
-                                <input type="radio" name="q14" value="that" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">that</div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Q15 -->
-                    <div class="question-block" data-q="q15">
-                        <p class="font-semibold text-lg mb-4 text-gray-800">15. Does _____ know the password for the WiFi?</p>
+                        <p class="font-semibold text-lg mb-4 text-gray-800">14. What _____ you doing at 8 PM last night when I called you?</p>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q15" value="somewhere" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">somewhere</div>
+                                <input type="radio" name="q14" value="were" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">were</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q15" value="anyone" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700" data-correct="true">anyone</div>
+                                <input type="radio" name="q14" value="was" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">was</div>
                             </label>
                             <label class="cursor-pointer relative block">
-                                <input type="radio" name="q15" value="nothing" class="sr-only">
-                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-100 bg-white shadow-sm text-center font-medium text-gray-700">nothing</div>
+                                <input type="radio" name="q14" value="did" class="sr-only">
+                                <div class="option-card w-full p-4 rounded-xl border-2 border-gray-200 bg-white shadow-sm text-center font-medium text-gray-700">did</div>
                             </label>
                         </div>
                     </div>
@@ -503,53 +588,170 @@
             </div>
         </section>
 
-        <div class="pt-8 pb-12 text-center">
-            <button id="finish-btn" class="glass-panel text-gray-800 font-bold py-5 px-10 rounded-full shadow-2xl hover:shadow-3xl hover:scale-105 transition-all transform active:scale-95 text-xl flex items-center justify-center gap-3 mx-auto w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed">
-                🎉 Finalizar y ver calificación
+        <div class="pt-8 pb-12 text-center reveal-item" id="finish-section">
+            <button id="finish-btn" class="glass-panel bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-none font-bold py-5 px-12 rounded-full shadow-2xl hover:shadow-indigo-500/50 hover:-translate-y-1 transition-all transform active:scale-95 text-xl flex items-center justify-center gap-3 mx-auto w-full sm:w-auto">
+                🚀 Finalizar Repaso
             </button>
-            <p id="finish-warning" class="text-white font-medium mt-3 drop-shadow-md hidden">¡Responde todas las preguntas primero!</p>
+            <p id="finish-warning" class="bg-white/80 text-red-600 px-6 py-2 rounded-full inline-block font-medium mt-4 shadow-sm hidden backdrop-blur-sm border border-red-200">
+                ¡Hey! Aún faltan preguntas por responder. 👀
+            </p>
         </div>
     </main>
 
-    <!-- Modal Background -->
-    <div id="result-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-        <!-- Modal Content -->
-        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl transform scale-95 transition-transform duration-300" id="modal-card">
-            <div class="w-24 h-24 mx-auto bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg mb-6">
-                <span class="text-4xl" id="modal-emoji">🏆</span>
+    <!-- Full Screen Results -->
+    <div id="results-screen" class="hidden fixed inset-0 z-[100] bg-white/30 backdrop-blur-xl flex flex-col items-center justify-center p-6">
+        <div class="glass-panel w-full max-w-lg p-10 rounded-[3rem] text-center transform scale-95 opacity-0 transition-all duration-700 shadow-2xl" id="results-card">
+            
+            <div class="w-28 h-28 mx-auto bg-gradient-to-tr from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg mb-6 border-4 border-white">
+                <span class="text-5xl" id="results-emoji">🎉</span>
             </div>
             
-            <h2 class="text-3xl font-extrabold text-gray-800 mb-2">¡Terminaste!</h2>
-            <p class="text-gray-500 mb-6 text-sm">Block 1 Review - Nicole Ayón</p>
+            <h1 class="text-3xl sm:text-4xl font-black text-slate-800 mb-2 font-poppins">¡Excelente trabajo, Nicole!</h1>
+            <p class="text-slate-500 mb-8 font-medium">Has completado el Block 1 Review</p>
             
-            <div class="text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500 mb-4" id="final-score">
-                100%
+            <div class="relative inline-block mb-8">
+                <svg class="w-40 h-40 transform -rotate-90">
+                    <circle cx="80" cy="80" r="70" fill="transparent" stroke="#e2e8f0" stroke-width="12" />
+                    <circle id="score-circle" cx="80" cy="80" r="70" fill="transparent" stroke="url(#gradient)" stroke-width="12" stroke-dasharray="439.8" stroke-dashoffset="439.8" class="transition-all duration-1000 ease-out" />
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#4f46e5" />
+                            <stop offset="100%" stop-color="#ec4899" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl font-black text-slate-800">
+                    <span id="score-percentage">0</span>%
+                </div>
             </div>
-            
-            <p class="text-lg font-medium text-gray-700 mb-8 px-2" id="modal-message">
-                ¡Impresionante! Tienes un dominio perfecto del idioma.
-            </p>
-            
-            <button onclick="window.location.reload()" class="w-full bg-gray-900 text-white font-bold py-4 rounded-xl hover:bg-gray-800 transition-colors shadow-md">
-                Volver a intentarlo 🔄
-            </button>
+
+            <p class="text-lg text-slate-700 mb-10 font-medium" id="results-message"></p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button id="review-errors-btn" class="bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 px-8 rounded-2xl transition-colors shadow-lg flex items-center justify-center gap-2">
+                    🔍 Revisar Errores
+                </button>
+                <button onclick="window.location.reload()" class="bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-200 font-bold py-4 px-8 rounded-2xl transition-colors flex items-center justify-center gap-2">
+                    🔄 Reintentar
+                </button>
+            </div>
         </div>
     </div>
 
     <script>
-        const totalQuestions = 15;
+        // Quiz State
+        const totalQuestions = 14;
         let answeredCount = 0;
         let correctCount = 0;
-        const answeredQuestions = new Set(); // To keep track of which questions are done
+        const answeredQuestions = new Set();
+
+        // Dictionary Data
+        const dictData = [
+            { en: "Piece of cake", es: "Pan comido", desc: "Algo que es muy fácil de hacer." },
+            { en: "Hang in there", es: "Aguanta / No te rindas", desc: "Se usa para animar a alguien en una situación difícil." },
+            { en: "Call off", es: "Cancelar", desc: "Suspender un evento o reunión (ej. call off a meeting)." },
+            { en: "Put off", es: "Posponer", desc: "Retrasar algo para después (ej. put off a decision)." },
+            { en: "By the way", es: "Por cierto", desc: "Filler para añadir información adicional repentina." },
+            { en: "Anyway", es: "De todos modos / En fin", desc: "Filler para cambiar de tema o resumir." },
+            { en: "Take off", es: "Despegar / Quitarse", desc: "Cuando un avión despega, o quitarse ropa." },
+            { en: "Like", es: "Como / O sea", desc: "Muletilla súper común para ganar tiempo (informal)." },
+            { en: "Wish", es: "Desear / Ojalá", desc: "+ Past Perfect expresa arrepentimiento de algo pasado." },
+            { en: "If only", es: "Si tan solo", desc: "Más dramático que 'wish' para expresar lamentos." }
+        ];
 
         document.addEventListener('DOMContentLoaded', () => {
+            // --- 1. INTERSECTION OBSERVER FOR SCROLL ANIMATIONS ---
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target); // Only animate once
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal-item').forEach(el => observer.observe(el));
+
+            // --- 2. DICTIONARY MODAL LOGIC ---
+            const dictBtn = document.getElementById('open-dict-btn');
+            const closeDictBtn = document.getElementById('close-dict-btn');
+            const dictModal = document.getElementById('dictionary-modal');
+            const dictCard = document.getElementById('dictionary-card');
+            const searchInput = document.getElementById('dict-search');
+            const resultsContainer = document.getElementById('dict-results');
+
+            function toggleDictionary(show) {
+                if (show) {
+                    dictModal.classList.remove('hidden');
+                    // Small delay for display block to register before transition
+                    setTimeout(() => {
+                        dictModal.classList.remove('opacity-0');
+                        if(window.innerWidth < 640) {
+                            dictCard.classList.remove('translate-y-full'); // Mobile slide up
+                        } else {
+                            dictCard.classList.remove('translate-y-10'); // Desktop slight slide
+                        }
+                    }, 10);
+                    searchInput.focus();
+                } else {
+                    dictModal.classList.add('opacity-0');
+                    if(window.innerWidth < 640) {
+                        dictCard.classList.add('translate-y-full');
+                    } else {
+                        dictCard.classList.add('translate-y-10');
+                    }
+                    setTimeout(() => dictModal.classList.add('hidden'), 300);
+                }
+            }
+
+            dictBtn.addEventListener('click', () => toggleDictionary(true));
+            closeDictBtn.addEventListener('click', () => toggleDictionary(false));
+            dictModal.addEventListener('click', (e) => {
+                if(e.target === dictModal) toggleDictionary(false);
+            });
+
+            function renderDictionary(data) {
+                resultsContainer.innerHTML = '';
+                if(data.length === 0) {
+                    resultsContainer.innerHTML = '<p class="text-gray-500 text-center mt-4 text-sm">No results found 😢</p>';
+                    return;
+                }
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'bg-white p-3 rounded-xl shadow-sm border border-gray-100 transition-all hover:border-indigo-200';
+                    div.innerHTML = `
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="font-bold text-indigo-700">${item.en}</span>
+                            <span class="text-xs bg-indigo-50 text-indigo-600 px-2 py-1 rounded-md font-medium border border-indigo-100">${item.es}</span>
+                        </div>
+                        <p class="text-xs text-gray-500 leading-tight">${item.desc}</p>
+                    `;
+                    resultsContainer.appendChild(div);
+                });
+            }
+
+            // Initial render
+            renderDictionary(dictData);
+
+            // Search filter
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = dictData.filter(item => 
+                    item.en.toLowerCase().includes(term) || 
+                    item.es.toLowerCase().includes(term) ||
+                    item.desc.toLowerCase().includes(term)
+                );
+                renderDictionary(filtered);
+            });
+
+
+            // --- 3. QUIZ INTERACTION LOGIC ---
             const inputs = document.querySelectorAll('input[type="radio"]');
             
             inputs.forEach(input => {
                 input.addEventListener('change', function() {
                     const qName = this.name;
-                    
-                    // If already answered, ignore
                     if (answeredQuestions.has(qName)) return;
 
                     const questionBlock = document.querySelector(`.question-block[data-q="${qName}"]`);
@@ -557,133 +759,159 @@
                     const selectedLabel = this.nextElementSibling;
                     const isCorrect = selectedLabel.getAttribute('data-correct') === 'true';
 
-                    // Mark question as answered
                     answeredQuestions.add(qName);
                     answeredCount++;
 
-                    // Disable all options in this question
+                    // Disable inputs and style
                     allInputsInQuestion.forEach(inp => {
                         inp.disabled = true;
                         const labelCard = inp.nextElementSibling;
                         labelCard.classList.add('state-disabled');
                         
-                        // Always highlight the correct answer so the user learns
+                        // Highlight correct answer if missed
                         if (labelCard.getAttribute('data-correct') === 'true') {
                             labelCard.classList.remove('state-disabled');
-                            labelCard.classList.add('state-correct');
+                            if(!isCorrect) {
+                                labelCard.classList.add('state-correct-highlight');
+                            }
                         }
                     });
 
-                    // Handle selected style
                     selectedLabel.classList.remove('state-disabled');
                     
                     if (isCorrect) {
                         correctCount++;
-                        // It's already highlighted green from the logic above, but let's ensure popped out look
-                        selectedLabel.style.transform = 'scale(1.05)';
+                        selectedLabel.classList.add('state-correct');
                     } else {
-                        // Mark wrong answer red and shake
-                        selectedLabel.classList.remove('state-correct'); // In case logic conflicted
-                        selectedLabel.classList.add('state-incorrect', 'animate-shake');
+                        selectedLabel.classList.remove('state-correct-highlight'); 
+                        selectedLabel.classList.add('state-incorrect');
                     }
 
                     updateProgress();
                 });
             });
 
-            // Finish button logic
+            function updateProgress() {
+                const textDesktop = document.getElementById('progress-text');
+                const textMobile = document.getElementById('progress-text-mobile');
+                textDesktop.innerText = `${answeredCount} / ${totalQuestions}`;
+                textMobile.innerText = `${answeredCount} / ${totalQuestions} completado`;
+                
+                const percentage = (answeredCount / totalQuestions) * 100;
+                document.getElementById('progress-bar').style.width = `${percentage}%`;
+
+                document.getElementById('finish-warning').classList.add('hidden');
+            }
+
+            // --- 4. FINISH & RESULTS LOGIC ---
             const finishBtn = document.getElementById('finish-btn');
+            
             finishBtn.addEventListener('click', () => {
                 if (answeredCount < totalQuestions) {
                     const warning = document.getElementById('finish-warning');
                     warning.classList.remove('hidden');
-                    // Shake the button a bit
-                    finishBtn.classList.add('animate-shake');
-                    setTimeout(() => finishBtn.classList.remove('animate-shake'), 400);
+                    // Soft error animation on button
+                    finishBtn.style.transform = 'translateX(-5px)';
+                    setTimeout(() => finishBtn.style.transform = 'translateX(5px)', 100);
+                    setTimeout(() => finishBtn.style.transform = 'translateX(0)', 200);
                 } else {
                     showResults();
                 }
             });
-        });
 
-        function updateProgress() {
-            // Update text
-            document.getElementById('progress-text').innerText = `${answeredCount}/${totalQuestions}`;
-            
-            // Update bar width
-            const percentage = (answeredCount / totalQuestions) * 100;
-            document.getElementById('progress-bar').style.width = `${percentage}%`;
+            function showResults() {
+                const percentage = Math.round((correctCount / totalQuestions) * 100);
+                
+                // Hide main app
+                document.getElementById('quiz-container').style.display = 'none';
+                document.querySelector('header').style.display = 'none';
+                window.scrollTo(0, 0);
 
-            // Hide warning if user starts answering again
-            document.getElementById('finish-warning').classList.add('hidden');
-        }
+                // Setup content
+                document.getElementById('score-percentage').innerText = percentage;
+                const messageEl = document.getElementById('results-message');
+                const emojiEl = document.getElementById('results-emoji');
+                
+                if (percentage === 100) {
+                    messageEl.innerText = "¡Nivel Nativo, Nicole! Dominas las estructuras a la perfección. 🌟";
+                    emojiEl.innerText = "👑";
+                } else if (percentage >= 80) {
+                    messageEl.innerText = "¡Brillante! Solo unos detalles técnicos, pero tienes excelente nivel. 🚀";
+                    emojiEl.innerText = "🔥";
+                } else if (percentage >= 60) {
+                    messageEl.innerText = "¡Bien hecho! Aprobado, aunque es buena idea darle un repaso a los errores. 💪";
+                    emojiEl.innerText = "👍";
+                } else {
+                    messageEl.innerText = "Keep practicing! Revisa tus respuestas y sigue mejorando, tú puedes. 📚";
+                    emojiEl.innerText = "🌱";
+                }
 
-        function showResults() {
-            const percentage = Math.round((correctCount / totalQuestions) * 100);
-            
-            // Set Modal content based on score
-            const scoreEl = document.getElementById('final-score');
-            const messageEl = document.getElementById('modal-message');
-            const emojiEl = document.getElementById('modal-emoji');
-            
-            scoreEl.innerText = `${percentage}%`;
+                // Show Screen
+                const screen = document.getElementById('results-screen');
+                const card = document.getElementById('results-card');
+                
+                screen.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    screen.classList.remove('bg-transparent');
+                    card.classList.remove('scale-95', 'opacity-0');
+                    
+                    // Animate SVG Circle (circumference = 2 * pi * r = 2 * 3.14 * 70 = ~439.8)
+                    const circle = document.getElementById('score-circle');
+                    const offset = 439.8 - (percentage / 100) * 439.8;
+                    circle.style.strokeDashoffset = offset;
 
-            if (percentage === 100) {
-                messageEl.innerText = "¡Perfecto Nicole! Tienes un dominio total de estos temas. Sigue así. 🌟";
-                emojiEl.innerText = "👑";
-            } else if (percentage >= 80) {
-                messageEl.innerText = "¡Excelente trabajo! Solo unos detallitos, pero lo hiciste súper bien. 🚀";
-                emojiEl.innerText = "🔥";
-            } else if (percentage >= 60) {
-                messageEl.innerText = "Aprobado, pero un repaso extra no vendría mal. ¡Tú puedes! 💪";
-                emojiEl.innerText = "👍";
-            } else {
-                messageEl.innerText = "Parece que necesitamos repasar más a fondo. ¡No te rindas! 📚";
-                emojiEl.innerText = "😅";
+                    // Confetti if passed
+                    if (percentage >= 60) {
+                        fireConfetti();
+                    }
+                }, 50);
             }
 
-            // Show Modal with animation
-            const modal = document.getElementById('result-modal');
-            const card = document.getElementById('modal-card');
-            
-            modal.classList.remove('hidden');
-            // Allow display block to render before changing opacity
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                card.classList.remove('scale-95');
+            function fireConfetti() {
+                var duration = 4000;
+                var end = Date.now() + duration;
+
+                (function frame() {
+                    confetti({
+                        particleCount: 4,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#4f46e5', '#ec4899', '#06b6d4', '#facc15']
+                    });
+                    confetti({
+                        particleCount: 4,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#4f46e5', '#ec4899', '#06b6d4', '#facc15']
+                    });
+
+                    if (Date.now() < end) {
+                        requestAnimationFrame(frame);
+                    }
+                }());
+            }
+
+            // --- 5. REVIEW MODE LOGIC ---
+            document.getElementById('review-errors-btn').addEventListener('click', () => {
+                const screen = document.getElementById('results-screen');
+                screen.classList.add('hidden');
                 
-                // Shoot Confetti if passed
-                if (percentage >= 60) {
-                    triggerConfetti();
+                document.getElementById('quiz-container').style.display = 'block';
+                document.querySelector('header').style.display = 'block';
+                
+                // Hide finish section since it's just review
+                document.getElementById('finish-section').style.display = 'none';
+                
+                // Optional: Scroll to first incorrect answer
+                const firstError = document.querySelector('.state-incorrect');
+                if(firstError) {
+                    firstError.scrollIntoView({behavior: "smooth", block: "center"});
                 }
-            }, 50);
-        }
-
-        function triggerConfetti() {
-            var duration = 3000;
-            var end = Date.now() + duration;
-
-            (function frame() {
-                confetti({
-                    particleCount: 5,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 },
-                    colors: ['#ee7752', '#e73c7e', '#23a6d5', '#23d5ab']
-                });
-                confetti({
-                    particleCount: 5,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 },
-                    colors: ['#ee7752', '#e73c7e', '#23a6d5', '#23d5ab']
-                });
-
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
-            }());
-        }
+            });
+        });
     </script>
 </body>
 </html>
